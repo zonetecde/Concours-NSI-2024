@@ -11,22 +11,24 @@ class Labyrinthe:
         self.width = width
         self.height = height
 
-        # Creation de la matrice représentant le labyrinthe
-        self.matrice = []
+        self.matrice = self.init_matrice()
 
+    def init_matrice(self):
+        """Création de la matrice représentant le labyrinthe
+        """
         # 0 = vide, 1 = mur
-        for x in range(height):
+        for x in range(self.height):
             self.matrice.append([])
-            for y in range(width):
+            for y in range(self.width):
                 self.matrice[x].append('0')
 
         # Ajout des bordures tout autour du labyrinthe
-        for x in range(width):
+        for x in range(self.width):
             self.matrice[0][x] = '1'
-            self.matrice[height - 1][x] = '1'
-        for y in range(height):
+            self.matrice[self.height - 1][x] = '1'
+        for y in range(self.height):
             self.matrice[y][0] = '1'
-            self.matrice[y][width - 1] = '1'
+            self.matrice[y][self.width - 1] = '1'
 
     def draw(self):
         """Dessine le labyrinthe dans la console
