@@ -33,7 +33,9 @@ class Api:
 
         # création de l'objet à renvoyer
         reponse = {
-            'thing': 'hi there'
+            'thing': 'hi there',
+            'age': 34,
+            'aaa': [1, 2, 3]
         }
 
         # [test] : on appel ici une fonction javascript depuis python
