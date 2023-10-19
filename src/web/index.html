@@ -12,7 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
-      rel="stylesheet" />
+      rel="stylesheet"
+    />
 
     <style type="text/tailwindcss">
       @layer utilities {
@@ -24,7 +25,9 @@
         }
         .pattern-bg {
           background-color: #ffffff;
-          background-image: url("./assets/bg-img.png");
+          background-image: url("./assets/bg-img.jpg");
+          /* background-repeat: no-repeat; */
+          background-size: cover;
         }
         .roboto {
           font-family: "VCR OSD Mono", sans-serif;
@@ -33,15 +36,18 @@
     </style>
   </head>
   <body
-    class="w-screen h-screen flex flex-col items-center roboto pattern-bg overflow-x-hidden">
+    class="w-screen h-screen flex flex-col items-center roboto pattern-bg overflow-x-hidden"
+  >
     <h1
       class="text-2xl md:text-5xl font-bold mt-14 border-4 border-black px-8 md:px-14 py-4 md:py-8 rounded-3xl bg-white bg-opacity-10 text-center text-white"
-      onmousedown="testapi()">
+      onmousedown="testapi()"
+    >
       Nom du logiciel
     </h1>
 
     <section
-      class="mt-10 w-11/12 border-2 border-gray-600 shadow-xl shadow-black">
+      class="mt-10 w-11/12 border-2 border-gray-600 shadow-xl shadow-black"
+    >
       <div class="flex bg-white p-2 border-b-2 border-b-gray-500">
         <p class="font-bold underline text-lg">
           Nos algorithmes de génération :
@@ -50,15 +56,18 @@
         <input
           type="text"
           placeholder="Rechercher..."
-          class="ml-auto border px-2 border-gray-700 rounded-xl w-2/12 min-w-[150px] max-h-[40px]" />
+          class="ml-auto border px-2 border-gray-700 rounded-xl w-2/12 min-w-[150px] max-h-[40px]"
+        />
       </div>
 
       <div
         class="flex flex-row px-5 py-3 bg-white overflow-auto flex-wrap justify-evenly gap-5 max-h-[600px]"
-        id="maze-generator-container">
+        id="maze-generator-container"
+      >
         <div
           id="maze-generator"
-          class="flex flex-col items-center bg-gray-400 px-5 pb-5 py-2 rounded-2xl cursor-pointer border-2 border-gray-600 shadow-lg shadow-black hover:scale-105 duration-100">
+          class="flex flex-col items-center bg-gray-400 px-5 pb-5 py-2 rounded-2xl cursor-pointer border-2 border-gray-600 shadow-lg shadow-black hover:scale-105 duration-100"
+        >
           <p class="text-xl mb-1">Nom de l'algorithme</p>
           <img src="assets/procedural-maze1.gif" class="w-52" />
         </div>
@@ -66,8 +75,9 @@
     </section>
 
     <section
-      class="mt-10 w-11/12 border-2 border-gray-600 shadow-xl shadow-black">
-      <div class="flex bg-white p-2 border-b-2 border-b-gray-500">
+      class="mt-10 w-11/12 border-2 border-gray-600 shadow-xl shadow-black"
+    >
+      <div class="flex bg-slate-500 p-2 border-b-2 border-b-gray-500">
         <p class="font-bold underline text-lg">
           Nos algorithmes de résolution :
         </p>
@@ -75,15 +85,18 @@
         <input
           type="text"
           placeholder="Rechercher..."
-          class="ml-auto border px-2 border-gray-700 rounded-xl w-2/12 min-w-[150px] max-h-[40px]" />
+          class="ml-auto border px-2 border-gray-700 rounded-xl w-2/12 min-w-[150px] max-h-[40px]"
+        />
       </div>
 
       <div
         class="flex flex-row px-5 py-3 bg-white overflow-auto flex-wrap justify-evenly gap-5 max-h-[600px]"
-        id="maze-resolution-container">
+        id="maze-resolution-container"
+      >
         <div
           id="maze-resolution"
-          class="flex flex-col items-center bg-gray-400 px-5 pb-5 py-2 rounded-2xl cursor-pointer border-2 border-gray-600 shadow-lg shadow-black hover:scale-105 duration-100">
+          class="flex flex-col items-center bg-gray-400 px-5 pb-5 py-2 rounded-2xl cursor-pointer border-2 border-gray-600 shadow-lg shadow-black hover:scale-105 duration-100"
+        >
           <p class="text-xl mb-1">Nom de l'algorithme</p>
           <img src="assets/resolution-1.gif" class="w-52" />
         </div>
