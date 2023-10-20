@@ -1,6 +1,8 @@
 import json
 
 class Labyrinthe:
+    matrice = []
+
     def __init__(self, width, height):
         """Initialisation d'un labyrinthe
 
@@ -11,7 +13,7 @@ class Labyrinthe:
         self.width = width
         self.height = height
 
-        self.matrice = self.init_matrice()
+        self.init_matrice()
 
     def init_matrice(self):
         """Création de la matrice représentant le labyrinthe
