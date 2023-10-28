@@ -1,19 +1,19 @@
 <script>
-    import { Router, Link, Route } from "svelte-routing";
-    import About from './About.svelte'
-    import Main from './Main.svelte'
+	import Api from '../api/Api';
+</script>
 
-  
-    export let url = "";
-  </script>
-  
-  <Router url="{url}">
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="about">About</Link>
-    </nav>
-    <div>
-      <Route path="about" component="{About}" />
-      <Route path="/"><Main></Main></Route>
-    </div>
-  </Router>
+<button
+	on:click={() => {
+		/**
+		 * Appel la méthode `getThingFromPython` de l'objet Api de python
+		 */
+		Api.api.getThingFromPython().then(
+			/** 
+			 @param {*} e 
+			*/
+			(e) => {
+				window.alert(e.aaa);
+			}
+		);
+	}}>Test me</button
+>
