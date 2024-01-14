@@ -4,11 +4,10 @@ import http.server
 import socketserver
 import threading
 from api.api import Api
-from models.Labyrinthe import Labyrinthe
 
 def start_server():
     # Dossier contenant les fichiers du site
-    os.chdir("./web/build")
+    os.chdir(os.path.dirname(os.path.abspath(__file__)) + "/web/build")
     
     # Lancement du serveur pour le site
     PORT = 3000
