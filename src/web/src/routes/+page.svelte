@@ -1,21 +1,13 @@
 <script>
 	import Api from '../api/Api';
+
+	//Api.api.getThingFromPython()
 </script>
 
-<button
-	on:click={() => {
-		/**
-		 * Appel la méthode `getThingFromPython` de l'objet Api de python
-		 */
-		Api.api.getThingFromPython().then(
-			/** 
-			 @param {*} e 
-			*/
-			(e) => {
-				window.alert(e.aaa);
-			}
-		);
-	}}>Test me</button
->
+<div class="flex items-center justify-center w-full h-full">
+	<div class="w-8/12 h-4/6 flex flex-col items-center gap-y-16">
+		<h1 class="font-bold text-5xl">Nom du projet</h1>
 
-<p>ok</p>
+		<img src="keyboard.png" class="w-2/3" alt="Clavier" />
+	</div>
+</div>
