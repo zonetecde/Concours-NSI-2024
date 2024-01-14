@@ -11,7 +11,7 @@ def start_server():
     # Dossier contenant les fichiers du site
     os.chdir(os.path.dirname(os.path.abspath(__file__)) + "/web/build")
     
-    # Lancement du serveur pour le site
+    # Lancement du serveur pour le site sur le port 5170
     PORT = 5170
     Handler = http.server.SimpleHTTPRequestHandler
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
@@ -20,6 +20,8 @@ def start_server():
 
 
 def main():
+    # En mode debug, le site est lancé sur le port 5173 (développement avec hot reload) 
+    # sinon, le site est lancé sur le port 5170 (production)
     if not DEBUG:
         # Lancement du serveur dans un thread séparé 
         server_thread = threading.Thread(target=start_server)
@@ -28,8 +30,8 @@ def main():
 
     # Création de l'API pour communiquer avec le site
     api = Api()
-    print("test")
-    # Création de la fenêtre avec le site 
+
+    # Création de la fenêtre avec le site
     website_port = DEBUG and 5173 or 5170
     window = webview.create_window('Nom du projet', 'http://localhost:' + str(website_port), js_api=api, resizable=True, min_size=(800, 600), width=1080, height=720)
     api.set_window(window)
