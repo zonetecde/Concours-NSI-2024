@@ -23,27 +23,16 @@ class Api:
         """
         self.window = window
 
-    def getThingFromPython(self):
+    def openMouseTrain(self):
         """Ex: cette fonction est appelé par le code javascript
         lors du clique sur le titre principal
 
         Returns:
             obj: Un objet avec tout ce qu'on veut renvoyer à la page
         """
-
-        # création de l'objet à renvoyer
-        reponse = {
-            'thing': 'hi there',
-            'age': 34,
-            'aaa': [1, 2, 3]
-        }
-
-        # [test] : on appel ici une fonction javascript depuis python
-        self.call_js_function("TestFunction", '"yes"')
-
-        return reponse
+        pass
     
-    def call_js_function(self, function_name, params):
+    def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
 
         Args:

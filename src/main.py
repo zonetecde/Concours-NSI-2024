@@ -3,9 +3,9 @@ import webview
 import http.server
 import socketserver
 import threading
-from api.api import Api
+from api import Api
 
-DEBUG = False
+DEBUG = True
 
 def start_server():
     # Dossier contenant les fichiers du site
