@@ -1,5 +1,5 @@
 from generateur import Generateur
 
-gen = Generateur()
+gen  = Generateur()
 
-gen.getRandomArticle()
+gen.get_random_article()
