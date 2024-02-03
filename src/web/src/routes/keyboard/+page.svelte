@@ -1,11 +1,18 @@
 <script>
+	import Exercice from '$lib/Exercice.svelte';
 	import Retour from '$lib/Retour.svelte';
 </script>
 
-<div class="flex items-center justify-center w-full h-full">
-	<p class="text-3xl font-bold">Entrainement au clavier</p>
+<div class="flex pt-10 h-screen justify-center flex-col items-center w-screen">
+	<h1 class="font-bold text-3xl -mt-12">Entrainement au clavier</h1>
 
-	<div />
+	<div class="flex gap-x-8 gap-y-10 items-center justify-center flex-wrap mt-10 w-[90%]">
+		<Exercice image="" nom="Type Script" />
+		<Exercice image="" nom="Falling words" />
+		<Exercice image="" nom="Reaction" />
+		<Exercice image="" nom="Nom de l'exercice" />
+		<Exercice image="" nom="Nom de l'exercice" />
+	</div>
 
 	<Retour />
 </div>
