@@ -14,5 +14,5 @@
 		<Exercice image="" nom="Nom de l'exercice" />
 	</div>
 
-	<Retour />
+	<Retour urlToGo="/" />
 </div>
