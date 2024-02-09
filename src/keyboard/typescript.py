@@ -18,9 +18,9 @@ class TypeScript:
         minutes = temps_mis // 60000
         secondes = int((temps_mis % 60000) / 1000)
 
-        temps_mis_string = f"{minutes}:{secondes if secondes >= 10 else '0' + str(secondes)}"
+        #temps mis string mm:ss without using string containation
+        temps_mis_string = str(minutes) + ":" + str(secondes if secondes >= 10 else '0' + str(secondes))
         nb_caracteres_corrects = nb_caracteres - nb_erreurs
-        pourcentage_reussite = (nb_caracteres_corrects / nb_caracteres) * 100
         nbre_caractere_minute = nb_caracteres_corrects / (temps_mis / 60000)
         nbre_caractere_seconde = nb_caracteres_corrects / (temps_mis / 1000)
         precision = nb_caracteres_corrects / nb_caracteres
@@ -30,8 +30,6 @@ class TypeScript:
             "tempsMisString": temps_mis_string,
             "nbErreurs": nb_erreurs,
             "nbCaracteres": nb_caracteres,
-            "nbCaracteresCorrects": nb_caracteres_corrects,
-            "pourcentageReussite": round(pourcentage_reussite, 2),
             "vitesse":  round(nbre_caractere_seconde, 2),
             "precision":  round(precision, 2),
             "score":  round(score, 2)

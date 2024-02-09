@@ -37,8 +37,6 @@
 	 * tempsMisString: string,
 	 * nbErreurs: number,
 	 * nbCaracteres: number,
-	 * nbCaracteresCorrects: number,
-	 * pourcentageReussite: number,
 	 * vitesse: number,
 	 * precision: number,
 	 * score: number}} */
@@ -46,8 +44,6 @@
 		tempsMisString: '0:00',
 		nbErreurs: 0,
 		nbCaracteres: 0,
-		nbCaracteresCorrects: 0,
-		pourcentageReussite: 0,
 		vitesse: 0,
 		precision: 0,
 		score: 0
@@ -176,12 +172,9 @@
 
 						<p class="text-white">Temps mis : {resultats.tempsMisString}</p>
 						<p class="text-white">Nombre de caractères : {resultats.nbCaracteres}</p>
-						<p class="text-white">
-							Nombre de caractères corrects : {resultats.nbCaracteresCorrects}
-						</p>
+
 						<p class="text-white">Nombre d'erreurs : {resultats.nbErreurs}</p>
 
-						<p class="text-white">Pourcentage de réussite : {resultats.pourcentageReussite}%</p>
 						<p class="text-white">Vitesse : {resultats.vitesse} caractères par seconde</p>
 						<p class="text-white">Précision : {resultats.precision}</p>
 
