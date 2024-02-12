@@ -1,3 +1,6 @@
+from keyboard.typescript import TypeScript
+
+
 class Api:
     """Classe Api
     Cette classe permet la communication entre le code python
@@ -31,6 +34,10 @@ class Api:
             obj: Un objet avec tout ce qu'on veut renvoyer à la page
         """
         pass
+
+    def calculer_score_typescript(self, data):
+        """Biais de communication entre le code javascript et le code python """
+        return TypeScript.calculer_score_typescript(self, data)
     
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web

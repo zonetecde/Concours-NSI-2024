@@ -1,0 +1,1 @@
+var e=Object.defineProperty;var t=(i,a,p)=>a in i?e(i,a,{enumerable:!0,configurable:!0,writable:!0,value:p}):i[a]=p;var s=(i,a,p)=>(t(i,typeof a!="symbol"?a+"":a,p),p);class c{}s(c,"api",pywebview.api);export{c as A};
