@@ -63,7 +63,7 @@ while running:
     if current_tick < 5000:
         font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
         color = (255, 0, 0)
-        label = font.render(str(current_tick), 1, color)
+        label = font.render(str(5000 - current_tick), 1, color)
         screen.blit(label, (520, 320))
     
     # Draw circles based on the list
