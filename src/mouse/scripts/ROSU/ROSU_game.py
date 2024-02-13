@@ -62,7 +62,6 @@ def GAMELOOP(musicIndex):
 
         # Draw circles based on the list
         for circle_info in circlesListIngame:
-            print(RS.Storage[0][4][1])
             circle_tick, (x, y), color, size, pointNumber = circle_info
             if current_tick >= circle_tick - 100 * size:
                 pygame.draw.circle(screen, color, (x, y), size, width=int(
@@ -85,8 +84,7 @@ def GAMELOOP(musicIndex):
                 elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
                     circlesListIngame.pop(0)
                 else:
-                    font = pygame.font.SysFont(
-                        "monospace", 75, bold=False, italic=False)
+                    font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
                     color = (255, 0, 0)
                     labelMistake = font.render("XXXXX", 1, color)
                     mistakeTick = current_tick
@@ -104,12 +102,10 @@ def GAMELOOP(musicIndex):
                 renderMistake = False
 
         if len(circlesListIngame) == 0 and current_tick > 6000:
-            font = pygame.font.SysFont(
-                "monospace", 75, bold=False, italic=False)
+            font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
             color = (255, 0, 0)
 
-            pygame.draw.rect(screen, (135, 135, 135),
-                             (390, 40, 480, 100), 0, 10, 10, 10, 10, 10)
+            pygame.draw.rect(screen, (135, 135, 135),(390, 40, 480, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font.render("Complete!", 1, BLACK)
             screen.blit(textLabel, (400, 50))
 
@@ -119,24 +115,17 @@ def GAMELOOP(musicIndex):
                 rectLength = 470
             else:
                 rectLength = 420
-            pygame.draw.rect(screen, (135, 135, 135),
-                             (40, 190, rectLength, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font.render(
-                str("Missed: " + str(playerMiss)), 1, BLACK)
+            pygame.draw.rect(screen, (135, 135, 135),(40, 190, rectLength, 100), 0, 10, 10, 10, 10, 10)
+            textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
             screen.blit(textLabel, (50, 200))
 
-            pygame.draw.rect(screen, (135, 135, 135),
-                             (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font.render(str(
-                "Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
+            pygame.draw.rect(screen, (135, 135, 135), (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
+            textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
             screen.blit(textLabel, (50, 300))
 
-            font2 = pygame.font.SysFont(
-                "monospace", 35, bold=False, italic=False)
-            pygame.draw.rect(screen, (135, 135, 135),
-                             (190, 640, 720, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font2.render(
-                str("Press \"escape\" to get back to the menu."), 1, BLACK)
+            font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
+            pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
+            textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
             screen.blit(textLabel, (200, 650))
 
         # Update the display

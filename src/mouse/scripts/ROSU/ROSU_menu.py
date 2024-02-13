@@ -48,7 +48,7 @@ while running:
         if mouseX > x and mouseX < x + 600 and mouseY > y and mouseY < y + 150:
             bgImage = pygame.image.load(storage.Storage[i][2])
             
-        rectZones.append((i, x, y, x + 600, x + 150))  
+        rectZones.append((i, x, y, x + 600, y + 150))  
         y += 160
         
         
@@ -57,12 +57,13 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
+            mouseX = pygame.mouse.get_pos()[0]
+            mouseY = pygame.mouse.get_pos()[1]
             for j in range(len(rectZones)):
                 if mouseX > rectZones[j][1] and mouseX < rectZones[j][3] and mouseY > rectZones[j][2] and mouseY < rectZones[j][4]:
+                    print("in " + str(j)) 
                     import ROSU_game as game
-                    print(storage.Storage[j][4][1])
                     game.GAMELOOP(j)
-                    print(storage.Storage[j][4][1])
                     
         
     # Update the display
