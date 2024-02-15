@@ -17,7 +17,7 @@ def GAMELOOP(musicIndex):
     obj = 0
     bestScore = 0
     bestGrade = "F"
-    bestAccuracy = 0
+    bestAccuracy = "0%"
     for item in data:
         if str(item[0]) == str(RS.Storage[musicIndex][0]):
             songName = str(item[0])
@@ -30,7 +30,7 @@ def GAMELOOP(musicIndex):
         
     if bestScore == "-----": bestScore = 0
     if bestGrade == "None": bestGrade = "F"
-    if bestAccuracy == "None": bestAccuracy = 0
+    if bestAccuracy == "None": bestAccuracy = "0%"
 
     circlesList, backgroundImage, audio = RS.Storage[musicIndex][4].copy(), RS.Storage[musicIndex][2], RS.Storage[musicIndex][1]
     circlesListIngame = circlesList
@@ -162,7 +162,7 @@ def GAMELOOP(musicIndex):
             
             pygame.draw.rect(screen, (135, 135, 135), (40, 390, 750, 100), 0, 10, 10, 10, 10, 10)
             scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
-            screen.blit(textLabel, (50, 300))
+            screen.blit(scoreLabel, (50, 400))
 
             font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
             pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
@@ -173,6 +173,8 @@ def GAMELOOP(musicIndex):
                 
                 if score > bestScore:
                     bestScore = score
+                
+                bestAccuracy = float(str(bestAccuracy)[:-1])
                 
                 if accuracy > bestAccuracy:
                     bestAccuracy = accuracy
@@ -189,11 +191,11 @@ def GAMELOOP(musicIndex):
                     grade = "A+"
                 elif accuracy > 88:
                     grade = "A"
-                elif accuracy > 80:
+                elif accuracy > 76:
                     grade = "B"
-                elif accuracy > 70:
-                    grade = "C"
                 elif accuracy > 60:
+                    grade = "C"
+                elif accuracy > 40:
                     grade = "D"
                 else:
                     grade = "F"
