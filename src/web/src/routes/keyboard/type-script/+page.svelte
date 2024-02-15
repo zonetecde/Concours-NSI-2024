@@ -15,11 +15,13 @@
 	let hasExerciceEnded = false;
 
 	/** @type {string}*/
-	let sentences =
-		'La rose est l’une des plantes les plus cultivées au monde et elle occupe la première place dans le marché des fleurs. Mais les rosiers sont aussi des plantes sauvages.';
+	let sentences = ''; // La phrase à taper
 
 	/** @type {Date} */
-	let dateDebut = new Date();
+	let tempsDebut = new Date();
+
+	/** @type {boolean} */
+	let isFetching = false; // Est-ce qu'on est en train de récupérer une phrase depuis l'API python ?
 
 	/** @type {Array<string>} */
 	$: letters = sentences.split('');
@@ -92,7 +94,7 @@
 		let dateFin = new Date();
 
 		/** @type {number} */
-		let tempsMis = Number(dateFin) - Number(dateDebut);
+		let tempsMis = Number(dateFin) - Number(tempsDebut);
 
 		// Calcul de stats
 		let nbErreurs = lettersStatus.filter((letter) => letter.mistake).length;
@@ -115,16 +117,19 @@
 			);
 	}
 
-	function startExercice() {
-		//TODO: Récupère une phrase aléatoire depuis l'API python
-
-		// Remplace les apostrophes par des simples quotes
-		sentences = sentences.replaceAll('’', "'");
-
+	async function startExercice() {
+		// Récupère une phrase aléatoire depuis l'API python
 		hasExerciceStarted = true;
 
+		isFetching = true;
+
+		const response = await Api.api.recuperer_phrase_aleatoire_typescript();
+		sentences = response.phrase;
+
+		isFetching = false;
+
 		// Enregistre la date de début (pour calculer le temps mis pour taper la phrase)
-		dateDebut = new Date();
+		tempsDebut = new Date();
 	}
 </script>
 
@@ -132,7 +137,12 @@
 	{#if !hasExerciceStarted}
 		<h1 class="font-bold text-3xl -mt-12 mb-8">Type Script</h1>
 
-		<Exercice image="" link="/keyboard/type-script" nom="Type Script" handleClick={startExercice} />
+		<Exercice
+			image="/keyboard/typescript.png"
+			link="/keyboard/type-script"
+			nom="Type Script"
+			handleClick={startExercice}
+		/>
 
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
@@ -145,40 +155,85 @@
 	{:else}
 		<div class="flex flex-col gap-y-4">
 			<p class="text-2xl text-justify">
-				{#each lettersStatus as letter}
+				{#each lettersStatus as letter, i}
 					<span
 						class={'inconsolata ' +
+							// Couleur des lettres tapées
 							(letter.typed && !letter.mistake ? 'text-gray-500' : '') +
 							' ' +
+							// Couleur des lettres tapées et fausses
 							(letter.mistake ? ' text-red-400' : '') +
 							' ' +
+							// Taille des espaces
 							(letter.letter === ESPACE ? 'text-sm -mx-1 font-bold' : '') +
 							' ' +
-							(letter.letter === ESPACE && !letter.typed ? 'text-yellow-400' : '')}
-						>{letter.letter}</span
+							// Couleur des espaces non tapés
+							(letter.letter === ESPACE && !letter.typed ? 'text-gray-800' : '') +
+							' ' +
+							// Souligne la lettre à taper
+							(i === 0 || (i > 0 && lettersStatus[i - 1].typed && !lettersStatus[i].typed)
+								? ' underline'
+								: '')}>{letter.letter}</span
 					>
 				{/each}
 			</p>
 		</div>
+
+		{#if isFetching}
+			<div
+				transition:fade
+				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
+			>
+				<!-- Roue de chargement -->
+				<div class="flex justify-center flex-col gap-y-3 items-center h-full">
+					<svg
+						class="animate-spin h-10 w-10 text-black"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<circle
+							class="opacity-25"
+							cx="12"
+							cy="12"
+							r="10"
+							stroke="currentColor"
+							stroke-width="4"
+						/>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8z"
+						/>
+					</svg>
+
+					<p class="text-black font-bold text-2xl ml-3">
+						Récupération d'une phrase aléatoire depuis python...
+					</p>
+				</div>
+			</div>
+		{/if}
 
 		{#if hasExerciceEnded}
 			<div
 				transition:fade
 				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
 			>
-				<div class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#625a66] shadow-xl rounded-xl">
+				<div
+					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#b9e6ec] text-black shadow-xl rounded-xl"
+				>
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
 
-						<p class="text-white">Temps mis : {resultats.tempsMisString}</p>
-						<p class="text-white">Nombre de caractères : {resultats.nbCaracteres}</p>
+						<p>Temps mis : {resultats.tempsMisString}</p>
+						<p>Nombre de caractères : {resultats.nbCaracteres}</p>
 
-						<p class="text-white">Nombre d'erreurs : {resultats.nbErreurs}</p>
+						<p>Nombre d'erreurs : {resultats.nbErreurs}</p>
 
-						<p class="text-white">Vitesse : {resultats.vitesse} caractères par seconde</p>
-						<p class="text-white">Précision : {resultats.precision}</p>
+						<p>Vitesse : {resultats.vitesse} caractères par seconde</p>
+						<p>Précision : {resultats.precision}</p>
 
-						<p class="text-white font-bold text-center mt-8">Score : {resultats.score}</p>
+						<p class=" font-bold text-center mt-8">Score : {resultats.score}</p>
 					</div>
 
 					<div class="flex justify-center gap-x-8 mt-4 h-14">
