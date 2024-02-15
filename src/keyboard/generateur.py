@@ -1,5 +1,7 @@
 import requests
 import urllib.request
+import re
+import random
 
 class Generateur:
     def __init__(self, langue = "fr") -> None:
@@ -22,43 +24,15 @@ class Generateur:
     
     def get_paragraph_h1(self):
         html = self.get_random_article()
-        coo = []
-        stock = []
-        for text in range(len(html)):
-            if html[text] == "<" and html[text+1] == "p" and html[text+2] == ">":
-                stock.append(text + 2)
-            if html[text] == "/" and html[text+1] == "p":
-                coo = [stock.pop(-1), text-1]
-                return html[coo[0]: coo[1]]
-    
-    def get_paragraph_a(self):
-        paragraph = self.get_paragraph_h1()
-        coo = []
-        stock = []
+        paragraphes = re.findall(r'<p>(.*?)</p>', html, re.DOTALL)
+        if paragraphes:
+            return random.choice(paragraphes)
+        else:
+            return "Paragraphe non trouvé"
         
-        for text in range(len(paragraph)):
-            if text < len(paragraph)-2:
-                if paragraph[text] == "<" and paragraph[text+1] == "a":
-                    stock.append(text-1)
-                if paragraph[text] == "a" and paragraph[text+1] == ">":
-                    coo.append(stock.pop(-1), text+2)
-        return paragraph, coo
-    
-    def get_phonetique(self):
-        paragraph, coo_a = self.get_paragraph_a()
-        coo = []
-        stock = []
-        
-        for text in range(len(paragraph)):
-            if paragraph[text] == "/":
-                stock.append(text)
-            if paragraph[text] == "/":
-                coo.append(stock.pop(-1), text+1)
-        print(coo_a, coo)
-        return paragraph, coo_a, coo
-
-    def pop_paragraph(self):
-        paragraph, coo_a, coo_phon = self.get_phonetique()
-        text = ""
-        pass
-        #regex regarder chatgpt
+    def clean_text(self):
+        text = self.get_paragraph_h1()
+        clean_text = re.sub(r'<.*?>', '', text)
+        clean_text = re.sub(r'\(.*?\)', '', clean_text)
+        clean_text = re.sub(r'\[.*?\]', '', clean_text)
+        return clean_text.strip()
