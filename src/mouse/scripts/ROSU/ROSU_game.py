@@ -4,7 +4,8 @@ def GAMELOOP(musicIndex):
     import math
     import json
     
-    import ROSU_storage as RS
+    storage = open("src/mouse/scripts/ROSU/data/storage.json")
+    storage = json.load(storage)
     
     savefile = open("src/mouse/scripts/ROSU/savefile.json")
     rawData = json.load(savefile)
@@ -17,7 +18,7 @@ def GAMELOOP(musicIndex):
     bestGrade = "F"
     bestAccuracy = "0%"
     for item in data:
-        if str(item[0]) == str(RS.Storage[musicIndex][0]):
+        if str(item[0]) == str(storage[musicIndex][0]):
             songName = str(item[0])
             saveDict = data[obj][1]
             bestScore = saveDict["Best Score"]
@@ -30,7 +31,7 @@ def GAMELOOP(musicIndex):
     if bestGrade == "None": bestGrade = "F"
     if bestAccuracy == "None": bestAccuracy = "0%"
 
-    circlesList, backgroundImage, audio = RS.Storage[musicIndex][4].copy(), RS.Storage[musicIndex][2], RS.Storage[musicIndex][1]
+    circlesList, backgroundImage, audio = storage[musicIndex][4].copy(), storage[musicIndex][2], storage[musicIndex][1]
     circlesListIngame = circlesList
 
     # Screen dimensions
