@@ -11,8 +11,6 @@ def GAMELOOP(musicIndex):
     data = []
     for save in rawData:
         data.append((save, rawData[save]))
-    print(rawData)
-    print(data)
     
     obj = 0
     bestScore = 0
