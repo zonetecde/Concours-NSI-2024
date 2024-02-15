@@ -2,7 +2,33 @@ def GAMELOOP(musicIndex):
     import pygame
     import sys
     import math
+    import json
+    
     import ROSU_storage as RS
+    
+    savefile = open("src/mouse/scripts/ROSU/savefile.json")
+    rawData = json.load(savefile)
+    data = []
+    for save in rawData:
+        data.append((save, rawData[save]))
+    
+    obj = 0
+    bestScore = 0
+    bestGrade = "F"
+    bestAccuracy = "0%"
+    for item in data:
+        if str(item[0]) == str(RS.Storage[musicIndex][0]):
+            songName = str(item[0])
+            saveDict = data[obj][1]
+            bestScore = saveDict["Best Score"]
+            bestGrade = saveDict["Grade"]
+            bestAccuracy = saveDict["Accuracy"]
+            
+        obj += 1
+        
+    if bestScore == "-----": bestScore = 0
+    if bestGrade == "None": bestGrade = "F"
+    if bestAccuracy == "None": bestAccuracy = "0%"
 
     circlesList, backgroundImage, audio = RS.Storage[musicIndex][4].copy(), RS.Storage[musicIndex][2], RS.Storage[musicIndex][1]
     circlesListIngame = circlesList
@@ -12,7 +38,7 @@ def GAMELOOP(musicIndex):
     SCREEN_HEIGHT = 720
 
     # Initialize the screen
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 
     # Colors
     WHITE = (255, 255, 255)
@@ -37,6 +63,11 @@ def GAMELOOP(musicIndex):
 
     totalNotes = len(circlesListIngame)
     playerMiss = 0
+    
+    score = 0
+    saved = False
+    
+    multiplicator = 1
     #white running == True:
     while not (185 == 175):
         # Clear the screen
@@ -82,6 +113,8 @@ def GAMELOOP(musicIndex):
                 if len(circleClickList) == 0:
                     pass
                 elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
+                    score += 50 * multiplicator
+                    multiplicator += 0.01
                     circlesListIngame.pop(0)
                 else:
                     font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
@@ -90,6 +123,7 @@ def GAMELOOP(musicIndex):
                     mistakeTick = current_tick
                     renderMistake = True
                     playerMiss += 1
+                    multiplicator = 1
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.mixer.stop()
@@ -119,14 +153,69 @@ def GAMELOOP(musicIndex):
             textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
             screen.blit(textLabel, (50, 200))
 
+            accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
             pygame.draw.rect(screen, (135, 135, 135), (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
             screen.blit(textLabel, (50, 300))
+            
+            pygame.draw.rect(screen, (135, 135, 135), (40, 390, 750, 100), 0, 10, 10, 10, 10, 10)
+            scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
+            screen.blit(scoreLabel, (50, 400))
 
             font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
             pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
             screen.blit(textLabel, (200, 650))
+            
+            if saved == False:
+                
+                if score > bestScore:
+                    bestScore = score
+                
+                bestAccuracy = float(str(bestAccuracy)[:-1])
+                
+                if accuracy > bestAccuracy:
+                    bestAccuracy = accuracy
+                    
+                gradeList = [("F", 0), ("D", 1), ("C", 2), ("B", 3), ("A", 4), ("A+", 5), ("S", ), ("SS", 7), ("SSS", 8)]
+                
+                if accuracy >= 100 and playerMiss == 0:
+                    grade = "SSS"
+                elif accuracy > 98.5:
+                    grade = "SS"
+                elif accuracy > 96:
+                    grade = "S"
+                elif accuracy > 92.5:
+                    grade = "A+"
+                elif accuracy > 88:
+                    grade = "A"
+                elif accuracy > 76:
+                    grade = "B"
+                elif accuracy > 60:
+                    grade = "C"
+                elif accuracy > 40:
+                    grade = "D"
+                else:
+                    grade = "F"
+                    
+                gradeIndex = None
+                bestGradeIndex = None
+                for gradeListIndex in range(len(gradeList)):
+                    if grade == gradeList[gradeListIndex][0]:
+                        gradeIndex = gradeList[gradeListIndex][1]
+                    if bestGrade == gradeList[gradeListIndex][0]:
+                        bestGradeIndex = gradeList[gradeListIndex][1]
+                        
+                if gradeIndex >= bestGradeIndex:
+                    bestGrade = grade
+                    
+                bestAccuracy = str(bestAccuracy) + "%"
+                
+                rawData.update({songName : {"Best Score" : bestScore, "Grade" : bestGrade, "Accuracy" : bestAccuracy}})
+                open("src/mouse/scripts/ROSU/savefile.json", "w").close()
+                with open("src/mouse/scripts/ROSU/savefile.json", "w") as savefile:
+                    json.dump(rawData, savefile)
+                saved = True
 
         # Update the display
         pygame.display.flip()
