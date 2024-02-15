@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,4 +7,10 @@
 
 body {
 	font-family: 'Raleway', sans-serif;
+	background-color: #b1dee9;
+	color: black;
+}
+
+.inconsolata {
+	font-family: 'Inconsolata', monospace;
 }

@@ -1,3 +1,6 @@
+from keyboard.typescript import TypeScript
+from mouse.scripts.ROSU.ROSU_menu import Rosu
+
 class Api:
     """Classe Api
     Cette classe permet la communication entre le code python
@@ -23,14 +26,22 @@ class Api:
         """
         self.window = window
 
-    def openMouseTrain(self):
-        """Ex: cette fonction est appelé par le code javascript
-        lors du clique sur le titre principal
+    def openPythonProject(self, nom):
+        """Ouvre un exercice fait en python
 
-        Returns:
-            obj: Un objet avec tout ce qu'on veut renvoyer à la page
+        Args:
+            nom (str): Le nom de l'exercice
         """
-        pass
+        print("test")
+        if nom == "Rosu!":
+            print("test2")
+
+            Rosu.start_rosu()
+
+
+    def calculer_score_typescript(self, data):
+        """Biais de communication entre le code javascript et le code python """
+        return TypeScript.calculer_score_typescript(self, data)
     
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
