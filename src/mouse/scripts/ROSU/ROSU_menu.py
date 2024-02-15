@@ -5,22 +5,27 @@ import json
 from os.path import exists
 
 class Rosu:
+    #Création objet ROSU
     @staticmethod
+    #Lancement du jeu 
     def start_rosu():
         print("test3")
         try:
+            ##Initialisation des variables
+            #Création de la sauvegarde si elle n'existe pas
             if not exists("src/mouse/scripts/ROSU/savefile.json"):
                 with open("src/mouse/scripts/ROSU/savefile.json", "w") as f:
                     json.dump(
                         { "Gravity Falls" : { "Best Score" : "-----", "Grade" : "None", "Accuracy" : "None"}, "Okami" : { "Best Score" : "-----", "Grade" : "None", "Accuracy" : "None"}, "Zelda -- Hidden Village" : { "Best Score" : "-----", "Grade" : "None", "Accuracy" : "None"}}
                         , f)
-                    
+            #Récupération des données de la sauvegarde        
             savefile = open("src/mouse/scripts/ROSU/savefile.json")
             tempData = json.load(savefile)
             data = []
             for save in tempData:
                 data.append((save, tempData[save]))
 
+            #Récupération des maps avec leurs musiques et le background
             storage = open("src/mouse/scripts/ROSU/data/storage.json")
             storage = json.load(storage)
 
@@ -50,15 +55,18 @@ class Rosu:
 
             playSong = None
             
+            # Main loop
             while running:
                 mouseX = pygame.mouse.get_pos()[0]
                 mouseY = pygame.mouse.get_pos()[1]
                 
+                # Si pas d'image le fond est mis en noir
                 if bgImage != None:
                     screen.blit(bgImage, (0, 0))
                 
                 x, y = 10, 10
                 rectZones = []
+                #Création d'un rectangle pour chaque map
                 for i in range(len(storage)):
                     pygame.draw.rect(screen, (255, 255, 255), (x, y, 600, 150), 3, 2, 2, 2, 2, 2)
                     
@@ -69,6 +77,7 @@ class Rosu:
                     songInfos = textFont.render(str(storage[i][3]), 1, (255, 255, 255))
                     screen.blit(songInfos, (x + 10, y + 110))
                     
+                    #Si la souris est mise sur le rectangle, la map s'affiche
                     if mouseX > x and mouseX < x + 600 and mouseY > y and mouseY < y + 150:
                         bgImage = pygame.image.load(storage[i][2])
                         selected = storage[i][0]
@@ -76,6 +85,7 @@ class Rosu:
                     rectZones.append((i, x, y, x + 600, y + 150)) 
                     y += 160
                 
+                #Récupération des best score de la map et affichage de ces derniers
                 obj = 0
                 for item in data:
                     if str(item[0]) == str(selected):
@@ -85,7 +95,7 @@ class Rosu:
                         grade = saveDict["Grade"]
                         accuracy = saveDict["Accuracy"]
                         
-                        
+                        #Affichage des infos lié aux meilleurs score de la map
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                         nameLabel = textFont.render((songName), 1, (255, 255, 255))
                         screen.blit(nameLabel, (650, 10))
@@ -105,8 +115,10 @@ class Rosu:
                     obj += 1
                                 
                 for event in pygame.event.get():
+                    #Si problème quitte
                     if event.type == pygame.QUIT:
                         running = False
+                    #Si souris cliquer, lancement de la map choisie
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         mouseX = pygame.mouse.get_pos()[0]
                         mouseY = pygame.mouse.get_pos()[1]
@@ -119,6 +131,7 @@ class Rosu:
                                 data = []
                                 for save in tempData:
                                     data.append((save, tempData[save]))
+                    #Permet de quitter le jeu avec echap
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             pygame.mixer.stop()
