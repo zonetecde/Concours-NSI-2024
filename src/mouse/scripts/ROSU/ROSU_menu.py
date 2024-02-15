@@ -112,7 +112,10 @@ while running:
                     data = []
                     for save in tempData:
                         data.append((save, tempData[save]))
-        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                pygame.mixer.stop()
+                running = False
     # Update the display
     pygame.display.flip()
 
