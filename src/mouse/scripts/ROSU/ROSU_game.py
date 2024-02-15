@@ -1,22 +1,26 @@
 def GAMELOOP(musicIndex):
+    #Imports utilisés
     import pygame
     import sys
     import math
     import json
-    
     storage = open("src/mouse/scripts/ROSU/data/storage.json")
     storage = json.load(storage)
     
+    
+    #Récupération sauvegarde si elle existe
     savefile = open("src/mouse/scripts/ROSU/savefile.json")
     rawData = json.load(savefile)
     data = []
     for save in rawData:
         data.append((save, rawData[save]))
     
+    #Initialisation  des variables
     obj = 0
     bestScore = 0
     bestGrade = "F"
     bestAccuracy = "0%"
+    #Récupération des éléments de la sauvegarde
     for item in data:
         if str(item[0]) == str(storage[musicIndex][0]):
             songName = str(item[0])
@@ -26,7 +30,7 @@ def GAMELOOP(musicIndex):
             bestAccuracy = saveDict["Accuracy"]
             
         obj += 1
-        
+    #Si fichier nouveau, on adapte les variables    
     if bestScore == "-----": bestScore = 0
     if bestGrade == "None": bestGrade = "F"
     if bestAccuracy == "None": bestAccuracy = "0%"
@@ -47,28 +51,33 @@ def GAMELOOP(musicIndex):
 
     pygame.display.set_caption("ROSU! Game")
 
+    #Fond charger
     bg = pygame.image.load(backgroundImage)
 
+    #Musique charger
     pygame.mixer.init()
     pygame.mixer.music.load(audio)
 
     pointFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
 
     # Main game loop
+    ## Initialisation Variables
+    #Celles qui permettent de savoir si le jeu la musique  tourne
     running = True
     renderMistake = False
     playing = False
 
+    #Lancement de la clock et récupéaration du "premier" tick
     clock = pygame.time.Clock()
     startingTick = pygame.time.get_ticks()
 
+    #Variable du score
     totalNotes = len(circlesListIngame)
     playerMiss = 0
-    
     score = 0
-    saved = False
-    
+    saved = False 
     multiplicator = 1
+
     #white running == True:
     while not (185 == 175):
         # Clear the screen
@@ -80,11 +89,13 @@ def GAMELOOP(musicIndex):
         mouseY = pygame.mouse.get_pos()[1]
         circleClickList = []
 
+        #Lancement de la musique après 5 secondes
         if current_tick >= 5000:
             if playing == False:
                 pygame.mixer.music.play()
                 playing = True
 
+        #Affichage du temps pendant les 5 secondes 
         if current_tick < 5000:
             font = pygame.font.SysFont(
                 "monospace", 75, bold=False, italic=False)
@@ -108,23 +119,28 @@ def GAMELOOP(musicIndex):
 
         # Handle events
         for event in pygame.event.get():
+            #Quitte le circuit 
             if event.type == pygame.QUIT:
                 running = False
+            #Vérification des cercles clickés et ajout du score
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if len(circleClickList) == 0:
                     pass
+                #Si bien clické on ajoute des points + on augmente le mutiplicateur et on pense à retirer le cercle
                 elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
                     score += 50 * multiplicator
                     multiplicator += 0.01
                     circlesListIngame.pop(0)
+                #Sinon remise du score à 0 et du multiplicateur à 1 + affichage du text RATÉ 
                 else:
                     font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
                     color = (255, 0, 0)
-                    labelMistake = font.render("XXXXX", 1, color)
+                    labelMistake = font.render("RATÉ", 1, color)
                     mistakeTick = current_tick
                     renderMistake = True
                     playerMiss += 1
                     multiplicator = 1
+                #Si on appuie sur échappe on quitte le jeu
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.mixer.stop()
@@ -135,39 +151,47 @@ def GAMELOOP(musicIndex):
                 screen.blit(labelMistake, (520, 320))
             else:
                 renderMistake = False
-
+        #Affichage du score
         if len(circlesListIngame) == 0 and current_tick > 6000:
             font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
             color = (255, 0, 0)
-
+            
+            #Text complete! et le rectangle gris derrière ce dernier
             pygame.draw.rect(screen, (135, 135, 135),(390, 40, 480, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font.render("Complete!", 1, BLACK)
             screen.blit(textLabel, (400, 50))
 
+            #Modification de la taille du rectagle selon le nombre d'erreurs 
             if playerMiss > 100:
                 rectLength = 520
             elif playerMiss > 10:
                 rectLength = 470
             else:
                 rectLength = 420
+            
+            #Nombre d'erreurs et son rectangle
             pygame.draw.rect(screen, (135, 135, 135),(40, 190, rectLength, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
             screen.blit(textLabel, (50, 200))
 
+            #Accuracy et son rectangle
             accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
             pygame.draw.rect(screen, (135, 135, 135), (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
             screen.blit(textLabel, (50, 300))
             
+            #Score et son rectangle
             pygame.draw.rect(screen, (135, 135, 135), (40, 390, 750, 100), 0, 10, 10, 10, 10, 10)
             scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
             screen.blit(scoreLabel, (50, 400))
 
+            #Retour possible et son rectangle
             font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
             pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
             textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
             screen.blit(textLabel, (200, 650))
             
+            #Enregistrement du score et remplacement si il est meilleur
             if saved == False:
                 
                 if score > bestScore:
@@ -212,6 +236,7 @@ def GAMELOOP(musicIndex):
                     
                 bestAccuracy = str(bestAccuracy) + "%"
                 
+                #Update du fichier json pour la sauvegarde 
                 rawData.update({songName : {"Best Score" : bestScore, "Grade" : bestGrade, "Accuracy" : bestAccuracy}})
                 open("src/mouse/scripts/ROSU/savefile.json", "w").close()
                 with open("src/mouse/scripts/ROSU/savefile.json", "w") as savefile:
