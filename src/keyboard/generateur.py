@@ -25,9 +25,9 @@ class Generateur:
         coo = []
         stock = []
         for text in range(len(html)):
-            if html[text] == "<" and html[text+1] == "p":
+            if html[text] == "<" and html[text+1] == "p" and html[text+2] == ">":
                 stock.append(text + 2)
-            if html[text] == "p" and html[text+1] == ">":
+            if html[text] == "/" and html[text+1] == "p":
                 coo = [stock.pop(-1), text-1]
                 return html[coo[0]: coo[1]]
     
@@ -35,26 +35,30 @@ class Generateur:
         paragraph = self.get_paragraph_h1()
         coo = []
         stock = []
-        for depart, arrivee in paragraph:
-            for text in range(len(paragraph)):
+        
+        for text in range(len(paragraph)):
+            if text < len(paragraph)-2:
                 if paragraph[text] == "<" and paragraph[text+1] == "a":
-                    stock.append(text)
+                    stock.append(text-1)
                 if paragraph[text] == "a" and paragraph[text+1] == ">":
-                    coo.append(stock.pop(-1), text+1)
+                    coo.append(stock.pop(-1), text+2)
         return paragraph, coo
     
     def get_phonetique(self):
         paragraph, coo_a = self.get_paragraph_a()
         coo = []
         stock = []
-        for depart, arrivee in paragraph:
-            for text in range(len(paragraph)):
-                if paragraph[text] == "/":
-                    stock.append(text)
-                if paragraph[text] == "/":
-                    coo.append(stock.pop(-1), text+1)
+        
+        for text in range(len(paragraph)):
+            if paragraph[text] == "/":
+                stock.append(text)
+            if paragraph[text] == "/":
+                coo.append(stock.pop(-1), text+1)
+        print(coo_a, coo)
         return paragraph, coo_a, coo
 
     def pop_paragraph(self):
         paragraph, coo_a, coo_phon = self.get_phonetique()
-        paragraph = paragraph[0:]
+        text = ""
+        pass
+        #regex regarder chatgpt
