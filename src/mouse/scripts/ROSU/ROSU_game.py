@@ -38,7 +38,7 @@ def GAMELOOP(musicIndex):
     SCREEN_HEIGHT = 720
 
     # Initialize the screen
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 
     # Colors
     WHITE = (255, 255, 255)

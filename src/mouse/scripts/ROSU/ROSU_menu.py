@@ -26,7 +26,7 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
 # Initialize the screen
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("ROSU! Game")
 
 # Clock for controlling the frame rate
