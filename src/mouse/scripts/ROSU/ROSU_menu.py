@@ -9,9 +9,10 @@ class Rosu:
     @staticmethod
     #Lancement du jeu 
     def start_rosu():
-        print("test3")
+        
         try:
-            ##Initialisation des variables
+            ##Initialisation des variables :
+            
             #Création de la sauvegarde si elle n'existe pas
             if not exists("src/mouse/scripts/ROSU/savefile.json"):
                 with open("src/mouse/scripts/ROSU/savefile.json", "w") as f:
@@ -51,7 +52,7 @@ class Rosu:
             running = True
             bgImage = None
             selected = ""
-            print("test4")
+            
 
             playSong = None
             
@@ -115,7 +116,7 @@ class Rosu:
                     obj += 1
                                 
                 for event in pygame.event.get():
-                    #Si problème quitte
+                    #Si appuie sur la croix, quitter le jeu
                     if event.type == pygame.QUIT:
                         running = False
                     #Si souris cliquer, lancement de la map choisie

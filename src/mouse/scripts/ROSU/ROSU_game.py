@@ -119,7 +119,7 @@ def GAMELOOP(musicIndex):
 
         # Handle events
         for event in pygame.event.get():
-            #Quitte le circuit 
+            #Si appuie sur la croix, quitter le jeu 
             if event.type == pygame.QUIT:
                 running = False
             #Vérification des cercles clickés et ajout du score
@@ -146,6 +146,7 @@ def GAMELOOP(musicIndex):
                     pygame.mixer.stop()
                     return
 
+        #Si on fait une erreur, on nous le dit
         if renderMistake == True:
             if mistakeTick > current_tick - 200:
                 screen.blit(labelMistake, (520, 320))
