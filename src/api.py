@@ -38,9 +38,14 @@ class Api:
 
             Rosu.start_rosu()
 
+    def recuperer_phrase_aleatoire_typescript(self):
+        """Biais de communication entre le code javascript et le code python. 
+        Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'"""
+        return {"phrase": TypeScript.get_random_sentence(self)}
 
     def calculer_score_typescript(self, data):
-        """Biais de communication entre le code javascript et le code python """
+        """Biais de communication entre le code javascript et le code python.
+        Calcule le score de l'exercice 'Type Script'"""
         return TypeScript.calculer_score_typescript(self, data)
     
     def call_js_function(self, function_name, params = ""):

@@ -1,6 +1,19 @@
+from keyboard.generateur import Generateur
+
+
 class TypeScript:
     """ L'exercice nommé "Type Script" 
     """
+
+    @staticmethod
+    def get_random_sentence(self):
+        """Récupère une phrase aléatoire d'un article wikipedia aléatoire
+
+        Returns:
+            str: Une phrase aléatoire
+        """
+        generateur = Generateur()
+        return generateur.get_text()
 
     @staticmethod
     def calculer_score_typescript(self, data):
