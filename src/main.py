@@ -5,7 +5,7 @@ import socketserver
 import threading
 from api import Api
 
-DEBUG = True
+DEBUG = False
 
 def start_server():
     # Dossier contenant les fichiers du site
