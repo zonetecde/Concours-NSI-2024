@@ -45,7 +45,18 @@ class Bac:
         # Pour chaque url, on télécharge la page web
         # On récupère les mots de la page (en regardant ils sont entre quelles balises)
         # On enregistre les mots dans la base de données locale (sqlite3)
+        # On oublie pas de nettoyer les mots avant de les enregistrer dans la base de données avec la méthode clean_mot
 
+        # INSERT INTO mots (theme, mot) values ("le theme", "le mot en minusucle et sans accent")
+
+    def clean_mot(self, mot):
+        """Nettoie un mot en enlevant les accents et en le mettant en minuscule.
+        Tous les caractères qui ne sont pas des lettres uniquement (a-z) sont supprimés.
+        Exemple : "Éléphant" devient "elephant", "École 123" devient "ecole", "Marie-Antoinette" devient "marieantoinette"
+        afin de pouvoir le comparer avec les mots écrits par le joueur.
+        """
+        # Retourne le mot en minuscule, sans accents
+        pass
 
     def executer_sql(self, requete):
         """ Exécute une requête SQL sur la base de données locale.
@@ -65,6 +76,22 @@ class Bac:
 
         # Retourne les résultats
         return resultats
+    
+    def verifier_mot(self, reponses):
+        """Vérifie si les réponses données par le joueur sont correctes.
+
+        Args:
+            reponses (list): Liste des réponses données par le joueur.
+            Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
+
+        Returns:
+            list: Liste des réponses correctes et incorrectes.
+            Exemple : [True, False, True] 
+        """
+        # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné
+        # Si le mot est présent, retourne True, sinon retourne False
+        # Attention, ne pas oublier de passer le mot dans clean_mot avant de lancer la requête SQL pour vérifier s'il existe
+        pass
 
 # Exemple d'utilisation (à supprimer)
 mot = Bac()
