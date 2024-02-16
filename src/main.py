@@ -5,7 +5,7 @@ import socketserver
 import threading
 from api import Api
 
-DEBUG = True
+DEBUG = False
 
 def start_server():
     # Dossier contenant les fichiers du site
@@ -15,7 +15,7 @@ def start_server():
     PORT = 5170
     Handler = http.server.SimpleHTTPRequestHandler
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print("Serveur lancé sur le port ", PORT)
+        print("Serveur lancé sur le port", PORT)
         httpd.serve_forever()
 
 
