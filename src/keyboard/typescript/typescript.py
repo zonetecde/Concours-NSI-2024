@@ -1,18 +1,22 @@
-from keyboard.generateur import Generateur
+from keyboard.typescript.generateur import Generateur
 
 
 class TypeScript:
-    """ L'exercice nommé "Type Script" 
+    """ Classe TypeScript
+    Permet de gérer l'exercice "Type Script"
     """
 
     @staticmethod
-    def get_random_sentence(self):
+    def get_random_sentence(self, langue):
         """Récupère une phrase aléatoire d'un article wikipedia aléatoire
+
+        Args:
+            langue (str): La langue de la phrase
 
         Returns:
             str: Une phrase aléatoire
         """
-        generateur = Generateur()
+        generateur = Generateur(langue)
         return generateur.get_text()
 
     @staticmethod
@@ -37,7 +41,7 @@ class TypeScript:
         nbre_caractere_minute = nb_caracteres_corrects / (temps_mis / 60000)
         nbre_caractere_seconde = nb_caracteres_corrects / (temps_mis / 1000)
         precision = nb_caracteres_corrects / nb_caracteres
-        score = (nbre_caractere_minute * precision) / 100
+        score = (nbre_caractere_minute * precision)
 
         return {
             "tempsMisString": temps_mis_string,

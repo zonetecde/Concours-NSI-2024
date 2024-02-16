@@ -3,7 +3,13 @@ import urllib.request
 import re
 
 class Generateur:
-    MIN_LENGTH = 200 # Longueur minimale d'une phrase aléatoire
+    """Générateur de texte aléatoire
+    Cette classe permet de récupérer un article wikipedia aléatoire
+    et d'en extraire une phrase aléatoire d'une certaine longueur
+    """
+
+    MIN_LENGTH = 200 # Longueur minimale de la phrase aléatoire
+    MAX_LENGTH = 400 # Longueur maximale de la phrase aléatoire
 
     def __init__(self, langue = "fr") -> None:
         """Initialise le générateur de texte aléatoire
@@ -11,8 +17,7 @@ class Generateur:
         Args:
             langue (str, optional): La langue du texte. Defaults to "fr".
         """
-        self.langue = "fr"
-        self.wikipedia_url = "https://" + self.langue +".wikipedia.org/wiki/Special:Random"
+        self.wikipedia_url = "https://" + langue + ".wikipedia.org/wiki/Special:Random"
 
     def get_random_article(self):
         """Récupère le code HTML d'un article wikipedia aléatoire
@@ -37,6 +42,9 @@ class Generateur:
         Returns:
             str: Le texte de l'article
         """
+        # Trouve le titre de l'article (entre <title> et </title>)
+        titre = re.search(r'<title>(.*?)</title>', html).group(1)
+
         # Trouve tous les paragraphes de l'article
         paragraphes = re.findall(r'<p>(.*?)</p>', html, re.DOTALL)
 
@@ -46,7 +54,7 @@ class Generateur:
         # Les paragraphes sont concaténés pour former un seul texte
         text = " ".join(paragraphes)
 
-        return text
+        return titre, text
 
         
     def get_random_sentences(self, paragraphe: str):
@@ -68,7 +76,7 @@ class Generateur:
             text = phrases[i]
             i += 1
             
-        return text.strip()
+        return text.strip() + "."
         
     def clean_text(self, text):
         """Applique plusieurs nettoyages sur le texte afin de le rendre plus lisible
@@ -102,6 +110,9 @@ class Generateur:
 
         # Remplace les apostrophes françaises par des apostrophes anglaises
         clean_text = clean_text.replace("’", "'")  
+
+        # Enlève toutes les références (ex: [1], [2], [3])
+        clean_text = re.sub(r'\[\d+\]', '', clean_text)
  
         return clean_text.strip()
     
@@ -113,11 +124,11 @@ class Generateur:
         """
         html = self.get_random_article()
 
-        article = self.get_article(html)
+        titre, article = self.get_article(html)
 
         random_sentence = self.get_random_sentences(article)
 
-        if random_sentence == "" or len(random_sentence) < self.MIN_LENGTH:
+        if random_sentence == "" or len(random_sentence) < self.MIN_LENGTH or len(random_sentence) > self.MAX_LENGTH:
             return self.get_text()
        
-        return random_sentence
+        return random_sentence, titre

@@ -1,4 +1,4 @@
-from keyboard.typescript import TypeScript
+from keyboard.typescript.typescript import TypeScript
 from mouse.scripts.ROSU.ROSU_menu import Rosu
 
 class Api:
@@ -38,10 +38,11 @@ class Api:
 
             Rosu.start_rosu()
 
-    def recuperer_phrase_aleatoire_typescript(self):
+    def recuperer_phrase_aleatoire_typescript(self, langue: str):
         """Biais de communication entre le code javascript et le code python. 
         Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'"""
-        return {"phrase": TypeScript.get_random_sentence(self)}
+        phrase = TypeScript.get_random_sentence(self, langue)
+        return { "phrase": phrase[0], "titre": phrase[1] }
 
     def calculer_score_typescript(self, data):
         """Biais de communication entre le code javascript et le code python.

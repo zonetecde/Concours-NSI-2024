@@ -1,9 +1,12 @@
 <script>
 	/** @type {string} */
 	export let urlToGo;
+
+	/** @type {string} */
+	export let taille = 'w-16 h-16 bottom-6 left-4';
 </script>
 
-<a class="absolute bottom-6 left-4 w-16 h-16" href={urlToGo}>
+<a class={'absolute ' + taille} href={urlToGo}>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
