@@ -106,7 +106,7 @@
 					}
 
 					// Met à jour le nombre de mots tapés
-					if (letterToType === ESPACE && event.key === ' ') {
+					if (letterToType === ESPACE) {
 						nbreMotsTapes++;
 					}
 

@@ -1,4 +1,4 @@
-from keyboard.typescript.generateur import Generateur
+from keyboard.typescript.article import Article
 
 
 class TypeScript:
@@ -16,8 +16,8 @@ class TypeScript:
         Returns:
             str: Une phrase aléatoire
         """
-        generateur = Generateur(langue)
-        return generateur.get_text()
+        article = Article(langue)
+        return article.get_ramdom_sentences_from_random_article()
 
     @staticmethod
     def calculer_score_typescript(self, data):

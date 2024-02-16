@@ -8,7 +8,7 @@
 	 */
 	//@ts-ignore
 	function openPythonProject(nom) {
-		Api.api.openPythonProject(nom);
+		Api.api.ouvrir_exercice(nom);
 	}
 </script>
 

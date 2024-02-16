@@ -2,8 +2,8 @@ import html
 import urllib.request
 import re
 
-class Generateur:
-    """Générateur de texte aléatoire
+class Article:
+    """
     Cette classe permet de récupérer un article wikipedia aléatoire
     et d'en extraire une phrase aléatoire d'une certaine longueur
     """
@@ -33,7 +33,7 @@ class Generateur:
 
         return html
     
-    def get_article(self, html):
+    def get_article_text(self, html):
         """Récupère le texte de l'article wikipedia
 
         Args:
@@ -56,8 +56,7 @@ class Generateur:
 
         return titre, text
 
-        
-    def get_random_sentences(self, paragraphe: str):
+    def get_random_sentences_from_text(self, paragraphe: str):
         """Récupère une ou des phrases aléatoires d'un paragraphe
         pour avoir un texte d'une certaine longueur
 
@@ -75,8 +74,12 @@ class Generateur:
         while len(text) < self.MIN_LENGTH and i < len(phrases):
             text = phrases[i]
             i += 1
-            
-        return text.strip() + "."
+
+        # Si l'article se termine par une lettre, on ajoute un point
+        if len(text) > 0 and text[-1].isalpha():
+            text += "."
+
+        return text.strip()
         
     def clean_text(self, text):
         """Applique plusieurs nettoyages sur le texte afin de le rendre plus lisible
@@ -113,10 +116,13 @@ class Generateur:
 
         # Enlève toutes les références (ex: [1], [2], [3])
         clean_text = re.sub(r'\[\d+\]', '', clean_text)
+
+        # Enlève les doubles espaces
+        clean_text = re.sub(r'\s+', ' ', clean_text)
  
         return clean_text.strip()
     
-    def get_text(self):
+    def get_ramdom_sentences_from_random_article(self):
         """Récupère une phrase aléatoire d'un article wikipedia aléatoire
 
         Returns:
@@ -124,11 +130,12 @@ class Generateur:
         """
         html = self.get_random_article()
 
-        titre, article = self.get_article(html)
+        source, article = self.get_article_text(html)
 
-        random_sentence = self.get_random_sentences(article)
+        random_sentence = self.get_random_sentences_from_text(article)
 
         if random_sentence == "" or len(random_sentence) < self.MIN_LENGTH or len(random_sentence) > self.MAX_LENGTH:
-            return self.get_text()
-       
-        return random_sentence, titre
+            return self.get_ramdom_sentences_from_random_article()
+        
+        # Retourne la phrase aléatoire et le titre de l'article
+        return {"phrase": random_sentence, "titre": source}

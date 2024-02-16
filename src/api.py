@@ -6,13 +6,8 @@ class Api:
     Cette classe permet la communication entre le code python
     et le code javascript de la page web.
 
-    Pour appeler du code python depuis javascript : 
-    pywebview.api.nom_de_la_methode_python().then((e) => {
-        // ce que python a retourné se trouve dans la variable e 
-    });
-
-    Pour appeler du code javascript depuis python :
-    self.call_js_function(nom_de_la_fonction, parametres)
+    Les méthodes de cette classe sont appelées par le code javascript
+    et peuvent appeler des fonctions javascript.
     """
 
     def __init__(self):
@@ -26,27 +21,30 @@ class Api:
         """
         self.window = window
 
-    def openPythonProject(self, nom):
+    def ouvrir_exercice(self, nom):
         """Ouvre un exercice fait en python
 
         Args:
             nom (str): Le nom de l'exercice
         """
-        print("test")
         if nom == "Rosu!":
-            print("test2")
-
             Rosu.start_rosu()
 
     def recuperer_phrase_aleatoire_typescript(self, langue: str):
-        """Biais de communication entre le code javascript et le code python. 
-        Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'"""
-        phrase = TypeScript.get_random_sentence(self, langue)
-        return { "phrase": phrase[0], "titre": phrase[1] }
+        """Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'
+
+        Args:
+            langue (str): La langue de la phrase
+        """
+        return TypeScript.get_random_sentence(self, langue)
 
     def calculer_score_typescript(self, data):
-        """Biais de communication entre le code javascript et le code python.
-        Calcule le score de l'exercice 'Type Script'"""
+        """Calcule le score de l'exercice 'Type Script' à partir des données de l'utilisateur
+
+        Args:
+            data (dict): Les données de l'utilisateur : 
+                         le temps mis, le nombre d'erreurs et le nombre de caractères total
+        """
         return TypeScript.calculer_score_typescript(self, data)
     
     def call_js_function(self, function_name, params = ""):
