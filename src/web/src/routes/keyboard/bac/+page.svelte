@@ -5,6 +5,7 @@
 	import toast from 'svelte-french-toast';
 	import { fade } from 'svelte/transition';
 	import { PlayAudio } from '$lib/GlobalFunc';
+	import JeuBacRow, { Mot } from './JeuBacRow';
 
 	/** @type {Array<string>} */
 	let themes = [
@@ -32,11 +33,17 @@
 	/** @type {boolean} */
 	let hasExerciceStarted = false;
 
+	/** @type {number} */
+	let nombreDeRound = 3; // Le nombre de ligne de l'exercice
+
 	/** @type {Array<string>} */
 	let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 	/** @type {string} */
 	let rouletteAlphabet = ''; // La lettre de la roulette actuellement affichée
+
+	/** @type {Array<JeuBacRow>} */
+	let rows = [];
 
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);
@@ -90,31 +97,55 @@
 		}
 	}
 
-	function startRound() {
-		startRoulette();
+	async function startRound() {
+		startRoulette().then((lettre) => {
+			// Ajoute la ligne pour cette lettre
+			rows = [
+				...rows,
+				new JeuBacRow(
+					lettre,
+					selectedThemes.map((theme) => new Mot(theme))
+				)
+			];
+		});
 	}
 
+	/**
+	 * Démarre la roulette
+	 * @returns {Promise<string>}
+	 */
 	function startRoulette() {
 		let counter = 0;
 
-		let roulette = function () {
-			counter += 1;
+		return new Promise((resolve) => {
+			let roulette = function () {
+				counter += 1;
 
-			rouletteAlphabet = alphabet[Math.floor(Math.random() * alphabet.length)];
+				let newLetter = '';
 
-			PlayAudio('../audio/roulette.mp3');
+				do {
+					newLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+				} while (newLetter === rouletteAlphabet || rows.find((row) => row.lettre === newLetter)); // Tant que la lettre est la même que la précédente ou qu'elle a déjà été utilisée
 
-			if (counter < 60) {
-				// Vérifie qu'on est toujours sur la page
-				if (hasExerciceStarted) setTimeout(roulette, calculateInterval(counter)); // Ralentit la roulette
-			} else {
-				// Affiche la lettre 3 secondes avant de lancer l'exercice
-				setTimeout(() => {
-					rouletteAlphabet = '';
-				}, 3000);
-			}
-		};
-		setTimeout(roulette, counter);
+				rouletteAlphabet = newLetter;
+
+				PlayAudio('../audio/roulette.mp3');
+
+				if (counter < 50) {
+					// Vérifie qu'on est toujours sur la page
+					if (hasExerciceStarted) setTimeout(roulette, calculateInterval(counter)); // Ralentit la roulette
+				} else {
+					// Affiche la lettre 3 secondes avant de lancer l'exercice
+					setTimeout(() => {
+						rouletteAlphabet = '';
+
+						// Retourne la lettre de la roulette
+						resolve(newLetter);
+					}, 1000);
+				}
+			};
+			setTimeout(roulette, counter);
+		});
 	}
 
 	/**
@@ -124,12 +155,27 @@
 	 * @returns {number}
 	 */
 	function calculateInterval(counter) {
-		if (counter > 56) {
+		if (counter > 44) {
 			return counter * 8;
-		} else if (counter < 45) {
+		} else if (counter < 35) {
 			return counter * 3;
 		} else {
 			return counter * 5.5;
+		}
+	}
+
+	/**
+	 * Appelée lorsqu'on clique sur le bouton de validation
+	 */
+	function validateRow() {
+		// TODO: Vérifier les réponses à l'aide de l'API python
+
+		// Marque la dernière ligne du tableau comme complète
+		rows[rows.length - 1].completer = true;
+
+		// Regarde si il y a d'autres rounds à faire
+		if (rows.length < nombreDeRound) {
+			startRound();
 		}
 	}
 </script>
@@ -182,21 +228,68 @@
 		<p class="-mt-10 text-3xl mb-5 font-bold">Jeu du Bac</p>
 
 		<div
-			class="bg-[#ffffffea] shadow-xl rounded-lg border-2 border-[#1d1b1bde] h-4/5 w-full grid grid-cols-[8%_18.4%_18.4%_18.4%_18.4%_18.4%] text-center"
+			class="bg-[#ffffffea] shadow-xl rounded-lg border-2 border-[#1d1b1bde] h-4/5 w-full text-center relative"
 		>
-			<p
-				class="border-r-2 h-10 border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2"
-			>
-				Lettre
-			</p>
-
-			{#each selectedThemes as theme, i}
+			<!-- Header -->
+			<div class="flex">
 				<p
-					class="last:border-r-0 border-r-2 h-10 border-[#1d1b1b8c] border-b-2 pt-1 flex items-center justify-center"
+					class="border-r-2 w-[8%] h-10 border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2"
 				>
-					{theme}
+					Lettre
 				</p>
+
+				{#each selectedThemes as theme, i}
+					<p
+						class="last:border-r-0 w-[18.4%] border-r-2 h-10 border-[#1d1b1b8c] border-b-2 pt-1 flex items-center justify-center"
+					>
+						{theme}
+					</p>
+				{/each}
+			</div>
+
+			<!-- Rows -->
+			{#each rows as row}
+				<div class="flex" transition:fade>
+					<p
+						class="border-r-2 h-10 w-[8%] border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2"
+					>
+						{row.lettre}
+					</p>
+
+					{#each selectedThemes as theme, i}
+						{#if row.completer}
+							<p
+								class="last:border-r-0 w-[18.4%] border-r-2 h-10 border-[#1d1b1b8c] bg-[#cce6e9] border-b-2 flex pt-0.5 items-center px-2"
+							>
+								{row.cols.find((col) => col.theme === theme)?.mot}
+							</p>
+						{:else}
+							<input
+								type="text"
+								spellcheck="false"
+								bind:value={row.cols[i].mot}
+								placeholder={row.lettre}
+								class="last:border-r-0 w-[18.4%] outline-none px-2 border-r-2 h-10 border-[#1d1b1b8c] border-b-2 flex items-center justify-center"
+							/>
+						{/if}
+					{/each}
+				</div>
 			{/each}
+
+			<button
+				class="w-12 h-12 px-2 rounded-full py-2 absolute bottom-3 hover:scale-110 duration-150 right-3 shadow-xl cursor-pointer bg-green-800"
+				on:click={validateRow}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="white"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+				</svg>
+			</button>
 		</div>
 
 		{#if rouletteAlphabet}
