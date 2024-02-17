@@ -220,6 +220,16 @@
 			}
 		}, 1000);
 	}
+
+	/**
+	 * Appelé lorsque l'utilisateur quitte la page
+	 * @returns {void}
+	 */
+	function quit() {
+		// Enlève les event listeners
+		window.removeEventListener('keyup', keyUp);
+		window.removeEventListener('keydown', keyDown);
+	}
 </script>
 
 <div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
@@ -242,7 +252,7 @@
 		</div>
 
 		<div
-			class="w-[100%] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
+			class="w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
 		>
 			<div class="flex">
 				<p class="pr-2">Langue :</p>
@@ -356,7 +366,7 @@
 				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
 			>
 				<div
-					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#b9e6ec] text-black shadow-xl rounded-xl"
+					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#68a38b] text-black shadow-xl rounded-xl"
 				>
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
@@ -383,6 +393,7 @@
 						</button>
 
 						<a
+							on:click={quit}
 							class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center"
 							href="/keyboard">Retour</a
 						>
@@ -392,13 +403,5 @@
 		{/if}
 	{/if}
 
-	<Retour
-		urlToGo="/keyboard"
-		taille="w-10 h-10 bottom-3 left-3"
-		toExecuteBefore={() => {
-			// Enlève les event listeners
-			window.removeEventListener('keyup', keyUp);
-			window.removeEventListener('keydown', keyDown);
-		}}
-	/>
+	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
 </div>

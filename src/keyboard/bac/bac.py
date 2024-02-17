@@ -83,21 +83,26 @@ class Bac:
         # Retourne les résultats
         return resultats
     
-    def verifier_mot(self, reponses):
+    @staticmethod
+    def verifier_mot(self, reponses, lettre):
         """Vérifie si les réponses données par le joueur sont correctes.
 
         Args:
             reponses (list): Liste des réponses données par le joueur.
-            Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
+                             Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
+            lettre (str): La lettre
 
         Returns:
             list: Liste des réponses correctes et incorrectes.
             Exemple : [True, False, True] 
         """
-        # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné
-        # Si le mot est présent, retourne True, sinon retourne False
+        # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné et qu'il commence par la lettre donnée
+        # Si le mot est good, mettre True dans la liste, sinon False
         # Attention, ne pas oublier de passer le mot dans clean_mot avant de lancer la requête SQL pour vérifier s'il existe
-        pass
+
+        return [True, False, True, False, True]
+
+
 
 # Exemple d'utilisation (à supprimer)
 mot = Bac()

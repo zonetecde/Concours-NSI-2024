@@ -1,3 +1,4 @@
+from keyboard.bac.bac import Bac
 from keyboard.typescript.typescript import TypeScript
 from mouse.scripts.ROSU.ROSU_menu import Rosu
 
@@ -47,6 +48,19 @@ class Api:
         """
         return TypeScript.calculer_score_typescript(self, data)
     
+    def verifier_mot_bac(self, reponses, lettre):
+        """Vérifie si les réponses données par le joueur sont correctes dans l'exercice 'Bac'
+
+        Args:
+            reponses (list): Liste des réponses du joueur.
+            lettre (str): La lettre
+
+        Returns:
+            list: Liste des réponses correctes et incorrectes.
+                Exemple : [True, False, True] 
+        """
+        return Bac.verifier_mot(self, reponses, lettre)
+
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
 
