@@ -2,11 +2,14 @@
 	/** @type {string} */
 	export let urlToGo;
 
+	/** @type {() => void} */
+	export let toExecuteBefore = () => {};
+
 	/** @type {string} */
 	export let taille = 'w-16 h-16 bottom-6 left-4';
 </script>
 
-<a class={'absolute ' + taille} href={urlToGo}>
+<a class={'absolute ' + taille} on:click={toExecuteBefore} href={urlToGo}>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"

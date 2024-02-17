@@ -4,6 +4,8 @@
 	import { onMount } from 'svelte';
 	import { blur, fade } from 'svelte/transition';
 	import Api from '../../../api/Api';
+	import { PlayAudio } from '$lib/GlobalFunc';
+	import toast from 'svelte-french-toast';
 
 	/** @type {string} */
 	const ESPACE = ' ⸱ '; // Caractère de remplacement pour les espaces
@@ -75,55 +77,79 @@
 	};
 
 	onMount(() => {
-		window.addEventListener('keydown', (event) => {
-			if (hasExerciceStarted) {
-				// Une touche a été appuyée,
-				// on doit mettre à jour le status de la lettre correspondante
+		window.addEventListener('keyup', keyUp);
 
-				// Vérifie que c'est une lettre
-				if (event.key.length !== 1) return;
+		window.addEventListener('keydown', keyDown);
+	});
 
-				let currentLetter = lettersStatus.find((letter) => !letter.typed);
+	/**
+	 * Appelé lorsqu'une touche est relâchée
+	 * @param {KeyboardEvent} event
+	 */
+	function keyUp(event) {
+		if (event.key.length === 1 && event.key !== ' ') PlayAudio('../../audio/key1_release.mp3');
+		else if (event.key === 'Enter') PlayAudio('../../audio/key1_enter_release.mp3');
+		else if (event.key === 'Backspace') PlayAudio('../../audio/key1_return_release.mp3');
+		else if (event.key === ' ') PlayAudio('../../audio/key1_space_release.mp3');
+	}
 
-				if (currentLetter) {
-					currentLetter.typed = true;
+	/**
+	 * Appelé lorsqu'une touche est appuyée
+	 * @param {KeyboardEvent} event
+	 */
+	function keyDown(event) {
+		if (event.key.length === 1 && event.key !== ' ') PlayAudio('../../audio/key1_press.mp3');
+		else if (event.key === 'Enter') PlayAudio('../../audio/key1_enter_press.mp3');
+		else if (event.key === 'Backspace') PlayAudio('../../audio/key1_return_press.mp3');
+		else if (event.key === ' ') PlayAudio('../../audio/key1_space_press.mp3');
 
-					let letterToType = currentLetter.letter;
+		if (hasExerciceStarted) {
+			// Une touche a été appuyée,
+			// on doit mettre à jour le status de la lettre correspondante
 
-					// Si l'utilisateur a choisi de ne pas tenir compte des majuscules
-					if (!caseSensitive) {
-						letterToType = letterToType.toLowerCase();
-					}
+			// Vérifie que c'est une lettre
+			if (event.key.length !== 1) return;
 
-					// Si l'utilisateur a choisi de ne pas tenir compte des accents
-					if (!accentSensitive) {
-						letterToType = letterToType.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-					}
+			let currentLetter = lettersStatus.find((letter) => !letter.typed);
 
-					// Si la lettre tapée est différente de la lettre attendue
-					if ((letterToType === ESPACE ? ' ' : letterToType) !== event.key) {
-						currentLetter.mistake = true;
-					}
+			if (currentLetter) {
+				currentLetter.typed = true;
 
-					// Met à jour le nombre de mots tapés
-					if (letterToType === ESPACE) {
-						nbreMotsTapes++;
-					}
+				let letterToType = currentLetter.letter;
 
-					// Si toutes les lettres ont été tapées
-					if (lettersStatus.every((letter) => letter.typed)) {
-						handleSentencesCompleted();
-					}
+				// Si l'utilisateur a choisi de ne pas tenir compte des majuscules
+				if (!caseSensitive) {
+					letterToType = letterToType.toLowerCase();
 				}
 
-				lettersStatus = [...lettersStatus]; // Force la mise à jour du tableau
-			} else if (event.key === 'Enter') {
-				// L'utilisateur a appuyé sur ENTRÉE pour commencer l'exercice
+				// Si l'utilisateur a choisi de ne pas tenir compte des accents
+				if (!accentSensitive) {
+					letterToType = letterToType.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				}
 
-				startExercice();
+				// Si la lettre tapée est différente de la lettre attendue
+				if ((letterToType === ESPACE ? ' ' : letterToType) !== event.key) {
+					currentLetter.mistake = true;
+				}
+
+				// Met à jour le nombre de mots tapés
+				if (letterToType === ESPACE) {
+					nbreMotsTapes++;
+				}
+
+				// Si toutes les lettres ont été tapées
+				if (lettersStatus.every((letter) => letter.typed)) {
+					handleSentencesCompleted();
+				}
 			}
-		});
-	});
+
+			lettersStatus = [...lettersStatus]; // Force la mise à jour du tableau
+		} else if (event.key === 'Enter') {
+			// L'utilisateur a appuyé sur ENTRÉE pour commencer l'exercice
+
+			startExercice();
+		}
+	}
 
 	/**
 	 * Appelé lorsque l'utilisateur a terminé de taper les phrases
@@ -366,5 +392,13 @@
 		{/if}
 	{/if}
 
-	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" />
+	<Retour
+		urlToGo="/keyboard"
+		taille="w-10 h-10 bottom-3 left-3"
+		toExecuteBefore={() => {
+			// Enlève les event listeners
+			window.removeEventListener('keyup', keyUp);
+			window.removeEventListener('keydown', keyDown);
+		}}
+	/>
 </div>

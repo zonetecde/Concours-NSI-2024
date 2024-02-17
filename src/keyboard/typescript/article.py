@@ -76,7 +76,7 @@ class Article:
             i += 1
 
         # Si l'article se termine par une lettre, on ajoute un point
-        if len(text) > 0 and text[-1].isalpha():
+        if len(text) > 0 and (text[-1].isalpha() or text[-1].isdigit()):
             text += "."
 
         return text.strip()
