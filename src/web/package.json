@@ -27,6 +27,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"svelte-french-toast": "^1.2.0",
 		"svelte-routing": "^2.5.0"
 	}
 }

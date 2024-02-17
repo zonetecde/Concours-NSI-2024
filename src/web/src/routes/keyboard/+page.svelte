@@ -10,7 +10,7 @@
 		<Exercice image="/keyboard/typescript.jpg" link="/keyboard/type-script" nom="Type Script" />
 		<Exercice image="" nom="Falling words" />
 		<Exercice image="" nom="Reaction" />
-		<Exercice image="" nom="Nom de l'exercice" />
+		<Exercice image="" nom="Jeu du Bac" link="/keyboard/bac" />
 		<Exercice image="" nom="Nom de l'exercice" />
 	</div>
 
