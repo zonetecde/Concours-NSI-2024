@@ -15,34 +15,40 @@ class Bac:
 
         # Pour procéder, on va télécharger les pages web de ces sites
         # par exemple, pour le site 1 :
-        urls = [("https://liste-mots.com/dico-du-petit-bac/liste-des-animaux-de-a-a-z/", "Animaux"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-fruits-et-legumes/", "Fruits et légumes"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-pays-du-monde/", "Pays"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-legumes-a-a-z/", "Légumes"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-fruits-a-a-z/", "Fruits"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-capitales-du-monde-a-a-z/", "Capitales"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-animaux-de-a-a-z/liste-des-races-de-chiens-de-a-a-z/", "Races de chiens"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-fleurs-a-a-z/", "Fleurs"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-de-prenoms-de-garcon-et-de-fille-a-a-z/prenoms-de-fille/", "Prénoms de fille"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-de-prenoms-de-garcon-et-de-fille-a-a-z/liste-de-prenoms-de-garcon/", "Prénoms de garçon"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-de-films/", "Films"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-series-tv-de-a-a-z/", "Séries TV"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-fromages/", "Fromages"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-couleurs-de-a-a-z/", "Couleurs"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-dacteurs-et-dactrices/", "Acteurs et actrices"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-pokemon-a-a-z/", "Pokémon"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-de-vetements/", "Vêtements"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-de-moyens-de-transport/", "Moyens de transport"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-metiers-de-a-a-z/", "Métiers"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-de-tout-les-sports-a-a-z/", "Sports"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-outils/", "Outils"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-des-qualites-et-defauts-a-a-z/", "Qualités et défauts"),
-                ("https://liste-mots.com/dico-du-petit-bac/parties-du-corps-humain/", "Parties du corps humain"),
-                ("https://liste-mots.com/dico-du-petit-bac/liste-dobjets/", "Objets"),
-                ("https://liste-mots.com/liste-des-marques/", "Marques"),
-                ("https://liste-mots.com/marques-de-voitures/", "Marques de voitures")]
-        
-        # Pour chaque url, on télécharge la page web
+
+        # Dictionnaire des thèmes et de leurs pages sur le site 1	
+        # Par exemple, pour le thème "Animaux", la page est "liste-des-animaux-de-a-a-z" et l'url est "https://liste-mots.com/dico-du-petit-bac/liste-des-animaux-de-a-a-z/"
+        noms_pages = {
+            "Animaux": "liste-des-animaux-de-a-a-z",
+            "Fruits et légumes": "liste-des-fruits-et-legumes",
+            "Pays": "liste-des-pays-du-monde",
+            "Légumes": "liste-des-legumes-a-a-z",
+            "Fruits": "liste-des-fruits-a-a-z",
+            "Capitales": "liste-des-capitales-du-monde",
+            "Races de chiens": "liste-des-animaux-de-a-a-z/liste-des-races-de-chiens-de-a-a-z",
+            "Fleurs": "liste-des-fleurs-a-a-z",
+            "Prénoms de fille": "liste-de-prenoms-de-garcon-et-de-fille-a-a-z/prenoms-de-fille",
+            "Prénoms de garçon": "liste-de-prenoms-de-garcon-et-de-fille-a-a-z/liste-de-prenoms-de-garcon",
+            "Films": "liste-de-films",
+            "Séries TV": "liste-des-series-tv-de-a-a-z",
+            "Fromages": "liste-des-fromages",
+            "Couleurs": "liste-des-couleurs-de-a-a-z",
+            "Acteurs et actrices": "liste-dacteurs-et-dactrices",
+            "Pokémon": "liste-des-pokemon-a-a-z",
+            "Vêtements": "liste-de-vetements",
+            "Moyens de transport": "liste-de-moyens-de-transport",
+            "Métiers": "liste-des-metiers-de-a-a-z",
+            "Sports": "liste-de-tout-les-sports-a-a-z",
+            "Outils": "liste-des-outils",
+            "Qualités et défauts": "liste-des-qualites-et-defauts-a-a-z",
+            "Parties du corps humain": "parties-du-corps-humain",
+            "Objets": "liste-dobjets",
+            "Marques": "liste-des-marques",
+            "Marques de voitures": "marques-de-voitures"
+        }
+
+      
+        # Pour chaque page, on télécharge la page web en HTML
         # On récupère les mots de la page (en regardant ils sont entre quelles balises)
         # On enregistre les mots dans la base de données locale (sqlite3)
         # On oublie pas de nettoyer les mots avant de les enregistrer dans la base de données avec la méthode clean_mot
