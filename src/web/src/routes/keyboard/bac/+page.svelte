@@ -53,12 +53,7 @@
 	let rouletteAlphabet = ''; // La lettre de la roulette actuellement affichée
 
 	/** @type {Array<JeuBacRow>} */
-	let rows = [
-		new JeuBacRow(
-			'A',
-			selectedThemes.map((theme) => new Mot(theme))
-		)
-	]; // Les lignes du tableau
+	let rows = []; // Les lignes du tableau
 
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);

@@ -5,10 +5,10 @@ import socketserver
 import threading
 from api import Api
 
-DEBUG = False
+DEBUG = True
 
 def start_server():
-    # Dossier contenant les fichiers du site
+    # Se place dans le dossier contenant les fichiers du site
     os.chdir(os.path.dirname(os.path.abspath(__file__)) + "/web/build")
     
     # Lancement du serveur pour le site sur le port 5170

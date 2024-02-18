@@ -26,9 +26,9 @@ class Article:
             str: Le code HTML de l'article
         """
         fp = urllib.request.urlopen(self.wikipedia_url)
-        mybytes = fp.read()
+        bytes = fp.read()
 
-        html = mybytes.decode("utf8")
+        html = bytes.decode("utf8")
         fp.close()
 
         return html

@@ -366,7 +366,7 @@
 				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
 			>
 				<div
-					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#68a38b] text-black shadow-xl rounded-xl"
+					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#be97bb] text-black shadow-xl rounded-xl"
 				>
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
