@@ -237,7 +237,7 @@
 		<h1 class="font-bold text-3xl -mt-12 mb-8">Type Script</h1>
 
 		<Exercice
-			image="/keyboard/typescript.jpg"
+			image="/keyboard/typescript2.jpg"
 			link="/keyboard/type-script"
 			nom="Type Script"
 			handleClick={startExercice}
@@ -275,11 +275,11 @@
 				/>Majuscules</label
 			>
 
-			<label for="minuscules" class="text-lg"
+			<label for="accents" class="text-lg"
 				><input
 					type="checkbox"
 					class="ml-4 mr-0.5"
-					id="minuscules"
+					id="accents"
 					bind:checked={accentSensitive}
 				/>Accents</label
 			>

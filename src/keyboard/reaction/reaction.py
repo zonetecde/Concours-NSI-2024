@@ -1,12 +1,13 @@
 import random
-
+from time import sleep
 
 class Reaction:
     """Classe permettant de gérer l'exercice "Réaction"
     """
+    reactions = []
 
     @staticmethod
-    def recuperer_reactions(autoriser_accent, autoriser_maj, autoriser_speciaux):
+    def init_reactions(autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
         """Renvoie une liste contenant les différents
         caractères à écrire le plus vite possible ainsi que leur temps d'apparition en ms    
 
@@ -14,6 +15,7 @@ class Reaction:
             autoriser_accent (boolean): Est-ce que les suites de caractères peuvent contenir des accents ?
             autoriser_maj (boolean): Est-ce que les suites de caractères peuvent contenir des majuscules ?
             autoriser_speciaux (boolean): Est-ce que les suites de caractères peuvent contenir des caractères spéciaux ?
+            nombre (int): Le nombre de réactions à générer
 
         Returns: 
             list: Liste de tuples contenant le temps d'apparition et la suite de caractères à écrire
@@ -22,7 +24,7 @@ class Reaction:
         """
         # [*str] transforme str en une liste de chaine de caractère
         alphabet_maj = [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
-        accents = [*("éèàùçêë" * 2)] # x2 pour qu'ils y soient plus souvent
+        accents = [*("éèàùçê" * 2)] # x2 pour qu'ils y soient plus souvent
         speciaux = [*(".,;:!?$%&()-_@" * 2)] # x2 pour qu'ils y soient plus souvent
 
         caracteres_possible = [*"abcdefghijklmnopqrstuvwxyz"]
@@ -36,7 +38,7 @@ class Reaction:
 
         liste = []
 
-        for i in range(10):
+        for i in range(nombre):
             # entre 400ms et 6 secondes
             temps_aleatoire = random.randint(400, 6000)
 
@@ -51,7 +53,21 @@ class Reaction:
             # ajoute la réaction
             liste.append((temps_aleatoire, chaine_aleatoire))
 
-        return liste
+        Reaction.reactions = liste
+    
+    @staticmethod
+    def lancer_reaction(self, index, api):
+        """Lance la réaction à l'index donné
 
-                
-print(Reaction.recuperer_reactions(True, True, True))
+        Args:
+            index (int): L'index de la réaction à lancer
+            api (Api): L'API pour communiquer avec le site
+        """
+        # Récupère la réaction à l'index donné sous forme de tuple (temps, chaine)
+        reaction = Reaction.reactions[index]
+
+        # Attend le temps donné 
+        sleep(reaction[0] / 1000) 
+
+        # Envoie la réaction à la page web
+        api.call_js_function("lancerReaction", f'"{reaction[1]}"')

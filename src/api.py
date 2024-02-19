@@ -1,4 +1,5 @@
 from keyboard.bac.bac import Bac
+from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
 from mouse.scripts.ROSU.ROSU_menu import Rosu
 
@@ -60,6 +61,25 @@ class Api:
                 Exemple : [True, False, True] 
         """
         return Bac.verifier_mot(self, reponses, lettre)
+    
+    def init_reaction(self, autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
+        """Initialise l'exercice 'Réaction'
+
+        Args:
+            autoriser_accent (boolean): Est-ce que les suites de caractères peuvent contenir des accents ?
+            autoriser_maj (boolean): Est-ce que les suites de caractères peuvent contenir des majuscules ?
+            autoriser_speciaux (boolean): Est-ce que les suites de caractères peuvent contenir des caractères spéciaux ?
+            nombre (int): Le nombre de réactions à générer
+        """
+        return Reaction.init_reactions(autoriser_accent, autoriser_maj, autoriser_speciaux, nombre)
+    
+    def lancer_reaction(self, index):
+        """Pour l'exercice "Réaction", lance la réaction à l'index donné
+
+        Args:
+            index (int): L'index de la réaction à lancer
+        """
+        return Reaction.lancer_reaction(self, index, self)
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
