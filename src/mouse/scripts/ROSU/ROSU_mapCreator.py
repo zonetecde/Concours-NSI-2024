@@ -24,7 +24,7 @@ clock = pygame.time.Clock()
 # List to store circle information (Time:ms, position, color, size, pointGroup, pointNumber)
 circlesList = []
 
-pygame.mixer.music.load("src/mouse/music/GravityFalls.mp3")
+pygame.mixer.music.load("src/mouse/music/Frog.mp3")
 
 # Main game loop
 running = True

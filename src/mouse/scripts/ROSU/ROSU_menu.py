@@ -3,6 +3,16 @@ import sys
 import math
 import json
 from os.path import exists
+import os
+
+import importlib.util
+spec = importlib.util.spec_from_file_location("ROSU_storage", os.path.dirname(os.path.abspath(__file__)) + "/ROSU_storage.py")
+ROSU_storage = importlib.util.module_from_spec(spec)
+sys.modules["ROSU_storage"] = ROSU_storage
+spec.loader.exec_module(ROSU_storage)
+
+#Récupération des maps avec leurs musiques et le background
+storage = ROSU_storage.storage
 
 class Rosu:
     #Création objet ROSU
@@ -14,32 +24,29 @@ class Rosu:
             ##Initialisation des variables :
             
             #Création de la sauvegarde si elle n'existe pas
-            if not exists("src/mouse/scripts/ROSU/savefile.json"):
-                with open("src/mouse/scripts/ROSU/savefile.json", "w") as f:
+            if not exists(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json"):
+                with open((os.path.dirname(os.path.abspath(__file__)) + "/savefile.json"), "w") as f:
                     json.dump(
                         { "Gravity Falls" : { "Best Score" : "-----", "Grade" : "None", "Accuracy" : "None"}, "Okami" : { "Best Score" : "-----", "Grade" : "None", "Accuracy" : "None"}, "Zelda -- Hidden Village" : { "Best Score" : "-----", "Grade" : "None", "Accuracy" : "None"}}
                         , f)
             #Récupération des données de la sauvegarde        
-            savefile = open("src/mouse/scripts/ROSU/savefile.json")
+            savefile = open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json")
             tempData = json.load(savefile)
             data = []
             for save in tempData:
                 data.append((save, tempData[save]))
 
-            #Récupération des maps avec leurs musiques et le background
-            storage = open("src/mouse/scripts/ROSU/data/storage.json")
-            storage = json.load(storage)
-
-
             # Initialize Pygame
             pygame.init()
 
             # Screen dimensions
-            SCREEN_WIDTH = 1280
-            SCREEN_HEIGHT = 720
+            infoObject = pygame.display.Info()
+            desktopSize = pygame.display.get_desktop_sizes()
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
 
             # Initialize the screen
-            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #, pygame.FULLSCREEN
             pygame.display.set_caption("ROSU! Game")
 
             # Clock for controlling the frame rate
@@ -125,9 +132,19 @@ class Rosu:
                         mouseY = pygame.mouse.get_pos()[1]
                         for j in range(len(rectZones)):
                             if mouseX > rectZones[j][1] and mouseX < rectZones[j][3] and mouseY > rectZones[j][2] and mouseY < rectZones[j][4]:
-                                import ROSU_game as game
+                                
+                                spec = importlib.util.spec_from_file_location("ROSU_game", os.path.dirname(os.path.abspath(__file__)) + "/ROSU_game.py")
+                                ROSU_game = importlib.util.module_from_spec(spec)
+                                sys.modules["ROSU_game"] = ROSU_game
+                                spec.loader.exec_module(ROSU_game)
+
+                                #Récupération des maps avec leurs musiques et le background
+                                game = ROSU_game
+                                
                                 game.GAMELOOP(j)
-                                savefile = open("src/mouse/scripts/ROSU/savefile.json")
+                                
+                                savefile = open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json")
+                                
                                 tempData = json.load(savefile)
                                 data = []
                                 for save in tempData:

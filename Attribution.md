@@ -2,19 +2,19 @@
 
 Image de la souris sur le menu principal : Vecteezy <a href="https://www.vecteezy.com/free-png/computer">Computer PNGs by Vecteezy</a>
 
-###Image osu :
-image gravity falls : https://wallpapers.com/wallpapers/majestic-view-of-gravity-falls-imoblc5hvimazpil.html
+###Image Rosu :
+images :https://unsplash.com/fr
 
-image kirby : https://wallpapers.com/wallpapers/hd-cute-face-of-kirby-pbte9nedzjuviltf.html
+Politque du site : TOUT est libre de droit. Aucune obligation de citez.
 
-image okami : https://wallpapers.com/wallpapers/japanese-art-okami-and-child-yokef1z8vwuj25rs/download
+###Musique Rosu :
+Musiques : https://www.unminus.com/?utm_source=bdmtools&utm_medium=siteweb&utm_campaign=unminus
+Politique du site : TOUT est libre de droit, prenez peut importe la raison et vous n'avez aucune obligation de citez l'artiste mais citez les artistes reste malgré tout appréciez.
 
-image zelda : https://wallpapers.com/wallpapers/zelda-majora-s-mask-cover-fwlbi5yk93pct84e/download
+Donc on le fait juste car sans eux l'exercice serait vachement moins interéssant
+Frog : https://unminus.gumroad.com/l/deadfro5h
+Waiting : https://unminus.gumroad.com/l/the-intro
+Fantasy : https://store.unminus.com/l/fantasy?price=0
 
-###Musique osu :
-musique okami : https://www.youtube.com/watch?v=u_v5Kw7vK04&ab_channel=AlixaKeyofDestiny
-
-musique castle crasher : https://www.youtube.com/watch?v=h5O9gE0crZI&ab_channel=VideoGameMusicTube
-
-###Musique autoroute :
-m1 : https://www.youtube.com/watch?v=dLchXp8FCbI&list=PLaEhyKrOpBW1VT_UlbQxGy8YMlk-tVwDX&index=6&ab_channel=F4m1LyGuy10
+###Musique Mouse road :
+m1 :
