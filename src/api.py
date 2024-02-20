@@ -1,4 +1,6 @@
-from keyboard.typescript import TypeScript
+from keyboard.bac.bac import Bac
+from keyboard.reaction.reaction import Reaction
+from keyboard.typescript.typescript import TypeScript
 from mouse.scripts.ROSU.ROSU_menu import Rosu
 
 class Api:
@@ -6,13 +8,8 @@ class Api:
     Cette classe permet la communication entre le code python
     et le code javascript de la page web.
 
-    Pour appeler du code python depuis javascript : 
-    pywebview.api.nom_de_la_methode_python().then((e) => {
-        // ce que python a retourné se trouve dans la variable e 
-    });
-
-    Pour appeler du code javascript depuis python :
-    self.call_js_function(nom_de_la_fonction, parametres)
+    Les méthodes de cette classe sont appelées par le code javascript
+    et peuvent appeler des fonctions javascript.
     """
 
     def __init__(self):
@@ -26,28 +23,64 @@ class Api:
         """
         self.window = window
 
-    def openPythonProject(self, nom):
+    def ouvrir_exercice(self, nom):
         """Ouvre un exercice fait en python
 
         Args:
             nom (str): Le nom de l'exercice
         """
-        print("test")
         if nom == "Rosu!":
-            print("test2")
-
             Rosu.start_rosu()
 
-    def recuperer_phrase_aleatoire_typescript(self):
-        """Biais de communication entre le code javascript et le code python. 
-        Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'"""
-        return {"phrase": TypeScript.get_random_sentence(self)}
+    def recuperer_phrase_aleatoire_typescript(self, langue: str):
+        """Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'
+
+        Args:
+            langue (str): La langue de la phrase
+        """
+        return TypeScript.get_random_sentence(self, langue)
 
     def calculer_score_typescript(self, data):
-        """Biais de communication entre le code javascript et le code python.
-        Calcule le score de l'exercice 'Type Script'"""
+        """Calcule le score de l'exercice 'Type Script' à partir des données de l'utilisateur
+
+        Args:
+            data (dict): Les données de l'utilisateur : 
+                         le temps mis, le nombre d'erreurs et le nombre de caractères total
+        """
         return TypeScript.calculer_score_typescript(self, data)
     
+    def verifier_mot_bac(self, reponses, lettre):
+        """Vérifie si les réponses données par le joueur sont correctes dans l'exercice 'Bac'
+
+        Args:
+            reponses (list): Liste des réponses du joueur.
+            lettre (str): La lettre
+
+        Returns:
+            list: Liste des réponses correctes et incorrectes.
+                Exemple : [True, False, True] 
+        """
+        return Bac.verifier_mot(self, reponses, lettre)
+    
+    def init_reaction(self, autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
+        """Initialise l'exercice 'Réaction'
+
+        Args:
+            autoriser_accent (boolean): Est-ce que les suites de caractères peuvent contenir des accents ?
+            autoriser_maj (boolean): Est-ce que les suites de caractères peuvent contenir des majuscules ?
+            autoriser_speciaux (boolean): Est-ce que les suites de caractères peuvent contenir des caractères spéciaux ?
+            nombre (int): Le nombre de réactions à générer
+        """
+        return Reaction.init_reactions(autoriser_accent, autoriser_maj, autoriser_speciaux, nombre)
+    
+    def lancer_reaction(self, index):
+        """Pour l'exercice "Réaction", lance la réaction à l'index donné
+
+        Args:
+            index (int): L'index de la réaction à lancer
+        """
+        return Reaction.lancer_reaction(self, index, self)
+
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
 

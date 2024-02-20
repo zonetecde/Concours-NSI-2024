@@ -8,14 +8,14 @@ from api import Api
 DEBUG = False
 
 def start_server():
-    # Dossier contenant les fichiers du site
+    # Se place dans le dossier contenant les fichiers du site
     os.chdir(os.path.dirname(os.path.abspath(__file__)) + "/web/build")
     
     # Lancement du serveur pour le site sur le port 5170
     PORT = 5170
     Handler = http.server.SimpleHTTPRequestHandler
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print("Serveur lancé sur le port ", PORT)
+        print("Serveur lancé sur le port", PORT)
         httpd.serve_forever()
 
 
