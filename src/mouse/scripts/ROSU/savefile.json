@@ -1,10 +1,1 @@
-{
-  "Gravity Falls": { "Best Score": 203.0, "Grade": "F", "Accuracy": "5.882%" },
-  "I've been waiting": {
-    "Best Score": "-----",
-    "Grade": "None",
-    "Accuracy": "None"
-  },
-  "Frog": { "Best Score": "-----", "Grade": "None", "Accuracy": "None" },
-  "Fantasy": { "Best Score": "-----", "Grade": "None", "Accuracy": "None" }
-}
+{"Gravity Falls": {"Best Score": 203.0, "Grade": "F", "Accuracy": "5.882%"}, "I've been waiting": {"Best Score": 100.5, "Grade": "SSS", "Accuracy": "100.0%"}, "Frog": {"Best Score": 8120.5, "Grade": "SSS", "Accuracy": "100.0%"}, "Fantasy": {"Best Score": 6939.5, "Grade": "A+", "Accuracy": "93.06%"}, "Zelda -- Hidden Village": {"Best Score": "-----", "Grade": "None", "Accuracy": "None"}}
