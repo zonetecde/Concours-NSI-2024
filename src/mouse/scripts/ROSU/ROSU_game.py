@@ -4,12 +4,19 @@ def GAMELOOP(musicIndex):
     import sys
     import math
     import json
-    storage = open("src/mouse/scripts/ROSU/data/storage.json")
-    storage = json.load(storage)
-    
+    import os
+        
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("ROSU_storage", os.path.dirname(os.path.abspath(__file__)) + "/ROSU_storage.py")
+    ROSU_storage = importlib.util.module_from_spec(spec)
+    sys.modules["ROSU_storage"] = ROSU_storage
+    spec.loader.exec_module(ROSU_storage)
+
+    #Récupération des maps avec leurs musiques et le background
+    storage = ROSU_storage.storage
     
     #Récupération sauvegarde si elle existe
-    savefile = open("src/mouse/scripts/ROSU/savefile.json")
+    savefile = open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json")
     rawData = json.load(savefile)
     data = []
     for save in rawData:
@@ -39,11 +46,13 @@ def GAMELOOP(musicIndex):
     circlesListIngame = circlesList
 
     # Screen dimensions
-    SCREEN_WIDTH = 1280
-    SCREEN_HEIGHT = 720
+    infoObject = pygame.display.Info()
+    desktopSize = pygame.display.get_desktop_sizes()
+    SCREEN_WIDTH = desktopSize[0][0]
+    SCREEN_HEIGHT = desktopSize[0][1]
 
     # Initialize the screen
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #, pygame.FULLSCREEN
 
     # Colors
     WHITE = (255, 255, 255)
@@ -239,8 +248,8 @@ def GAMELOOP(musicIndex):
                 
                 #Update du fichier json pour la sauvegarde 
                 rawData.update({songName : {"Best Score" : bestScore, "Grade" : bestGrade, "Accuracy" : bestAccuracy}})
-                open("src/mouse/scripts/ROSU/savefile.json", "w").close()
-                with open("src/mouse/scripts/ROSU/savefile.json", "w") as savefile:
+                open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json", "w").close()
+                with open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json", "w") as savefile:
                     json.dump(rawData, savefile)
                 saved = True
 
