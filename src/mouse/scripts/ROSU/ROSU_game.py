@@ -1,262 +1,273 @@
-def GAMELOOP(musicIndex):
-    #Imports utilisés
-    import pygame
-    import sys
-    import math
-    import json
-    import os
-        
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("ROSU_storage", os.path.dirname(os.path.abspath(__file__)) + "/ROSU_storage.py")
-    ROSU_storage = importlib.util.module_from_spec(spec)
-    sys.modules["ROSU_storage"] = ROSU_storage
-    spec.loader.exec_module(ROSU_storage)
+import pygame
+import sys
+import math
+import json
+import os
+    
+# Permet de ce placer dans le dossier contenant les scripts ROSU
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/ROSU")
 
-    #Récupération des maps avec leurs musiques et le background
-    storage = ROSU_storage.storage
-    
-    #Récupération sauvegarde si elle existe
-    savefile = open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json")
-    rawData = json.load(savefile)
-    data = []
-    for save in rawData:
-        data.append((save, rawData[save]))
-    
-    #Initialisation  des variables
-    obj = 0
-    bestScore = 0
-    bestGrade = "F"
-    bestAccuracy = "0%"
-    #Récupération des éléments de la sauvegarde
-    for item in data:
-        if str(item[0]) == str(storage[musicIndex][0]):
-            songName = str(item[0])
-            saveDict = data[obj][1]
-            bestScore = saveDict["Best Score"]
-            bestGrade = saveDict["Grade"]
-            bestAccuracy = saveDict["Accuracy"]
+from ROSU_storage import Niveau, niveaux
+from Sauvegarde import Sauvegarde
+
+class Engine:
+    try:
+
+        savefile_path = os.path.dirname(os.path.abspath(__file__)) + "/savefile.json"
+
+        def start_level(self, niveau: Niveau):
+            """ Méthode permettant de lancer un niveau de l'exercice ROSU!
+            """
             
-        obj += 1
-    #Si fichier nouveau, on adapte les variables    
-    if bestScore == "-----": bestScore = 0
-    if bestGrade == "None": bestGrade = "F"
-    if bestAccuracy == "None": bestAccuracy = "0%"
+            # Récupération des données de la sauvegarde        
+            savefile = open(self.savefile_path)
+            sauvegardes = json.load(savefile)
 
-    circlesList, backgroundImage, audio = storage[musicIndex][4].copy(), storage[musicIndex][2], storage[musicIndex][1]
-    circlesListIngame = circlesList
 
-    # Screen dimensions
-    infoObject = pygame.display.Info()
-    desktopSize = pygame.display.get_desktop_sizes()
-    SCREEN_WIDTH = desktopSize[0][0]
-    SCREEN_HEIGHT = desktopSize[0][1]
+            #Initialisation  des variables
+            bestScore = 0
+            bestGrade = "F"
+            bestAccuracy = "0%"
 
-    # Initialize the screen
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #, pygame.FULLSCREEN
+            #Récupération des éléments de la sauvegarde
+            for sauvegarde in sauvegardes:
+                if sauvegarde["nom_niveau"] == niveau.nom:
+                    bestScore = sauvegarde["meilleur_score"]
+                    bestGrade = sauvegarde["note"]
+                    bestAccuracy = sauvegarde["precision"]
+                    
+            #Si fichier nouveau, on adapte les variables    
+            if bestScore == "-----": bestScore = 0
+            if bestGrade == "None": bestGrade = "F"
+            if bestAccuracy == "None": bestAccuracy = "0%"
 
-    # Colors
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
+            circlesList, backgroundImage, audio = niveau.data.copy(), niveau.image_fond, niveau.musique
+            circlesListIngame = circlesList
 
-    pygame.display.set_caption("ROSU! Game")
+            # Screen dimensions
+            desktopSize = pygame.display.get_desktop_sizes()
 
-    #Fond charger
-    bg = pygame.image.load(backgroundImage)
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
 
-    #Musique charger
-    pygame.mixer.init()
-    pygame.mixer.music.load(audio)
+            # Initialize the screen
+            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #, pygame.FULLSCREEN
 
-    pointFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
+            # Colors
+            WHITE = (255, 255, 255)
+            BLACK = (0, 0, 0)
 
-    # Main game loop
-    ## Initialisation Variables
-    #Celles qui permettent de savoir si le jeu la musique  tourne
-    running = True
-    renderMistake = False
-    playing = False
+            pygame.display.set_caption("ROSU! Game")
 
-    #Lancement de la clock et récupéaration du "premier" tick
-    clock = pygame.time.Clock()
-    startingTick = pygame.time.get_ticks()
+            #Fond charger
+            bg = pygame.image.load(backgroundImage)
 
-    #Variable du score
-    totalNotes = len(circlesListIngame)
-    playerMiss = 0
-    score = 0
-    saved = False 
-    multiplicator = 1
+            #Musique charger
+            pygame.mixer.init()
+            pygame.mixer.music.load(audio)
 
-    #white running == True:
-    while not (185 == 175):
-        # Clear the screen
-        screen.blit(bg, (0, 0))
+            pointFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
 
-        current_tick = pygame.time.get_ticks() - startingTick
+            # Main game loop
+            ## Initialisation Variables
+            #Celles qui permettent de savoir si le jeu la musique  tourne
+            renderMistake = False
+            playing = False
 
-        mouseX = pygame.mouse.get_pos()[0]
-        mouseY = pygame.mouse.get_pos()[1]
-        circleClickList = []
+            #Lancement de la clock et récupéaration du "premier" tick
+            clock = pygame.time.Clock()
+            startingTick = pygame.time.get_ticks()
 
-        #Lancement de la musique après 5 secondes
-        if current_tick >= 5000:
-            if playing == False:
-                pygame.mixer.music.play()
-                playing = True
+            #Variable du score
+            totalNotes = len(circlesListIngame)
+            playerMiss = 0
+            score = 0
+            saved = False 
+            multiplicator = 1
 
-        #Affichage du temps pendant les 5 secondes 
-        if current_tick < 5000:
-            font = pygame.font.SysFont(
-                "monospace", 75, bold=False, italic=False)
-            color = (255, 0, 0)
-            label = font.render(str(5000 - current_tick), 1, color)
-            screen.blit(label, (520, 320))
+            #white running == True:
+            while not (185 == 175):
+                # Clear the screen
+                screen.blit(bg, (0, 0))
 
-        # Draw circles based on the list
-        for circle_info in circlesListIngame:
-            circle_tick, (x, y), color, size, pointNumber = circle_info
-            if current_tick >= circle_tick - 100 * size:
-                pygame.draw.circle(screen, color, (x, y), size, width=int(
-                    ((current_tick - circle_tick + 100 * size + 1))/(1)/100 + 1))
-                circleLabel = pointFont.render(str(pointNumber), 1, WHITE)
-                screen.blit(circleLabel, (x - 10,  y - 20))
-                if int((current_tick - circle_tick + 100 * size + 1)/(1)/100 + 1) > size + 5:
-                    circlesListIngame.remove(circle_info)
-                    playerMiss += 1
-                else:
-                    circleClickList.append(((x, y), size, circle_tick))
+                current_tick = pygame.time.get_ticks() - startingTick
 
-        # Handle events
-        for event in pygame.event.get():
-            #Si appuie sur la croix, quitter le jeu 
-            if event.type == pygame.QUIT:
-                running = False
-            #Vérification des cercles clickés et ajout du score
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if len(circleClickList) == 0:
-                    pass
-                #Si bien clické on ajoute des points + on augmente le mutiplicateur et on pense à retirer le cercle
-                elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
-                    score += 50 * multiplicator
-                    multiplicator += 0.01
-                    circlesListIngame.pop(0)
-                #Sinon remise du score à 0 et du multiplicateur à 1 + affichage du text RATÉ 
-                else:
+                mouseX = pygame.mouse.get_pos()[0]
+                mouseY = pygame.mouse.get_pos()[1]
+                circleClickList = []
+
+                #Lancement de la musique après 5 secondes
+                if current_tick >= 5000:
+                    if playing == False:
+                        pygame.mixer.music.play()
+                        playing = True
+
+                #Affichage du temps pendant les 5 secondes 
+                if current_tick < 5000:
+                    font = pygame.font.SysFont(
+                        "monospace", 75, bold=False, italic=False)
+                    color = (255, 0, 0)
+                    label = font.render(str(5000 - current_tick), 1, color)
+                    screen.blit(label, (520, 320))
+
+                # Dessine les cercles 
+                for circle_info in circlesListIngame:
+                    circle_tick, (x, y), color, size, pointNumber = circle_info
+                    if current_tick >= circle_tick - 100 * size:
+                        pygame.draw.circle(screen, color, (x, y), size, width=int(
+                            ((current_tick - circle_tick + 100 * size + 1))/(1)/100 + 1))
+                        circleLabel = pointFont.render(str(pointNumber), 1, WHITE)
+                        screen.blit(circleLabel, (x - 10,  y - 20))
+                        if int((current_tick - circle_tick + 100 * size + 1)/(1)/100 + 1) > size + 5:
+                            circlesListIngame.remove(circle_info)
+                            playerMiss += 1
+                        else:
+                            circleClickList.append(((x, y), size, circle_tick))
+
+                # Handle events
+                for event in pygame.event.get():
+                    #Si appuie sur la croix, quitter le jeu 
+                    if event.type == pygame.QUIT:
+                        running = False
+                    #Vérification des cercles clickés et ajout du score
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if len(circleClickList) == 0:
+                            pass
+                        #Si bien clické on ajoute des points + on augmente le mutiplicateur et on pense à retirer le cercle
+                        elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
+                            score += 50 * multiplicator
+                            multiplicator += 0.01
+                            circlesListIngame.pop(0)
+                        #Sinon remise du score à 0 et du multiplicateur à 1 + affichage du text RATÉ 
+                        else:
+                            font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
+                            color = (255, 0, 0)
+                            labelMistake = font.render("RATÉ", 1, color)
+                            mistakeTick = current_tick
+                            renderMistake = True
+                            playerMiss += 1
+                            multiplicator = 1
+                        #Si on appuie sur échappe on quitte le jeu
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            pygame.mixer.stop()
+                            return
+
+                #Si on fait une erreur, on nous le dit
+                if renderMistake == True:
+                    if mistakeTick > current_tick - 200:
+                        screen.blit(labelMistake, (520, 320))
+                    else:
+                        renderMistake = False
+                #Affichage du score
+                if len(circlesListIngame) == 0 and current_tick > 6000:
                     font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
                     color = (255, 0, 0)
-                    labelMistake = font.render("RATÉ", 1, color)
-                    mistakeTick = current_tick
-                    renderMistake = True
-                    playerMiss += 1
-                    multiplicator = 1
-                #Si on appuie sur échappe on quitte le jeu
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.mixer.stop()
-                    return
-
-        #Si on fait une erreur, on nous le dit
-        if renderMistake == True:
-            if mistakeTick > current_tick - 200:
-                screen.blit(labelMistake, (520, 320))
-            else:
-                renderMistake = False
-        #Affichage du score
-        if len(circlesListIngame) == 0 and current_tick > 6000:
-            font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
-            color = (255, 0, 0)
-            
-            #Text complete! et le rectangle gris derrière ce dernier
-            pygame.draw.rect(screen, (135, 135, 135),(390, 40, 480, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font.render("Complete!", 1, BLACK)
-            screen.blit(textLabel, (400, 50))
-
-            #Modification de la taille du rectagle selon le nombre d'erreurs 
-            if playerMiss > 100:
-                rectLength = 520
-            elif playerMiss > 10:
-                rectLength = 470
-            else:
-                rectLength = 420
-            
-            #Nombre d'erreurs et son rectangle
-            pygame.draw.rect(screen, (135, 135, 135),(40, 190, rectLength, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
-            screen.blit(textLabel, (50, 200))
-
-            #Accuracy et son rectangle
-            accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
-            pygame.draw.rect(screen, (135, 135, 135), (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
-            screen.blit(textLabel, (50, 300))
-            
-            #Score et son rectangle
-            pygame.draw.rect(screen, (135, 135, 135), (40, 390, 750, 100), 0, 10, 10, 10, 10, 10)
-            scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
-            screen.blit(scoreLabel, (50, 400))
-
-            #Retour possible et son rectangle
-            font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
-            pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
-            textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
-            screen.blit(textLabel, (200, 650))
-            
-            #Enregistrement du score et remplacement si il est meilleur
-            if saved == False:
-                
-                if score > bestScore:
-                    bestScore = score
-                
-                bestAccuracy = float(str(bestAccuracy)[:-1])
-                
-                if accuracy > bestAccuracy:
-                    bestAccuracy = accuracy
                     
-                gradeList = [("F", 0), ("D", 1), ("C", 2), ("B", 3), ("A", 4), ("A+", 5), ("S", ), ("SS", 7), ("SSS", 8)]
-                
-                if accuracy >= 100 and playerMiss == 0:
-                    grade = "SSS"
-                elif accuracy > 98.5:
-                    grade = "SS"
-                elif accuracy > 96:
-                    grade = "S"
-                elif accuracy > 92.5:
-                    grade = "A+"
-                elif accuracy > 88:
-                    grade = "A"
-                elif accuracy > 76:
-                    grade = "B"
-                elif accuracy > 60:
-                    grade = "C"
-                elif accuracy > 40:
-                    grade = "D"
-                else:
-                    grade = "F"
+                    #Text complete! et le rectangle gris derrière ce dernier
+                    pygame.draw.rect(screen, (135, 135, 135),(390, 40, 480, 100), 0, 10, 10, 10, 10, 10)
+                    textLabel = font.render("Complete!", 1, BLACK)
+                    screen.blit(textLabel, (400, 50))
+
+                    #Modification de la taille du rectagle selon le nombre d'erreurs 
+                    if playerMiss > 100:
+                        rectLength = 520
+                    elif playerMiss > 10:
+                        rectLength = 470
+                    else:
+                        rectLength = 420
                     
-                gradeIndex = None
-                bestGradeIndex = None
-                for gradeListIndex in range(len(gradeList)):
-                    if grade == gradeList[gradeListIndex][0]:
-                        gradeIndex = gradeList[gradeListIndex][1]
-                    if bestGrade == gradeList[gradeListIndex][0]:
-                        bestGradeIndex = gradeList[gradeListIndex][1]
+                    #Nombre d'erreurs et son rectangle
+                    pygame.draw.rect(screen, (135, 135, 135),(40, 190, rectLength, 100), 0, 10, 10, 10, 10, 10)
+                    textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
+                    screen.blit(textLabel, (50, 200))
+
+                    #Accuracy et son rectangle
+                    accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
+                    pygame.draw.rect(screen, (135, 135, 135), (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
+                    textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
+                    screen.blit(textLabel, (50, 300))
+                    
+                    #Score et son rectangle
+                    pygame.draw.rect(screen, (135, 135, 135), (40, 390, 750, 100), 0, 10, 10, 10, 10, 10)
+                    scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
+                    screen.blit(scoreLabel, (50, 400))
+
+                    #Retour possible et son rectangle
+                    font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
+                    pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
+                    textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
+                    screen.blit(textLabel, (200, 650))
+                    
+                    #Enregistrement du score et remplacement si il est meilleur
+                    if saved == False:
                         
-                if gradeIndex >= bestGradeIndex:
-                    bestGrade = grade
-                    
-                bestAccuracy = str(bestAccuracy) + "%"
-                
-                #Update du fichier json pour la sauvegarde 
-                rawData.update({songName : {"Best Score" : bestScore, "Grade" : bestGrade, "Accuracy" : bestAccuracy}})
-                open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json", "w").close()
-                with open(os.path.dirname(os.path.abspath(__file__)) + "/savefile.json", "w") as savefile:
-                    json.dump(rawData, savefile)
-                saved = True
+                        if score > bestScore:
+                            bestScore = score
+                        
+                        try:
+                            bestAccuracy = float(str(bestAccuracy)[:-1])
+                        except:
+                            bestAccuracy = 0
+                        
+                        if accuracy > bestAccuracy:
+                            bestAccuracy = accuracy
+                            
+                        gradeList = [("F", 0), ("D", 1), ("C", 2), ("B", 3), ("A", 4), ("A+", 5), ("S", ), ("SS", 7), ("SSS", 8)]
+                        
+                        if accuracy >= 100 and playerMiss == 0:
+                            grade = "SSS"
+                        elif accuracy > 98.5:
+                            grade = "SS"
+                        elif accuracy > 96:
+                            grade = "S"
+                        elif accuracy > 92.5:
+                            grade = "A+"
+                        elif accuracy > 88:
+                            grade = "A"
+                        elif accuracy > 76:
+                            grade = "B"
+                        elif accuracy > 60:
+                            grade = "C"
+                        elif accuracy > 40:
+                            grade = "D"
+                        else:
+                            grade = "F"
+                            
+                        gradeIndex = None
+                        bestGradeIndex = None
+                        for gradeListIndex in range(len(gradeList)):
+                            if grade == gradeList[gradeListIndex][0]:
+                                gradeIndex = gradeList[gradeListIndex][1]
+                            if bestGrade == gradeList[gradeListIndex][0]:
+                                bestGradeIndex = gradeList[gradeListIndex][1]
+                                
+                        if gradeIndex >= bestGradeIndex:
+                            bestGrade = grade
+                            
+                        bestAccuracy = str(bestAccuracy) + "%"
+                        
+                        # Update du fichier json pour la sauvegarde 
+                        
+                        # Suppression de l'ancienne sauvegarde
+                        sauvegardes = [sauvegarde for sauvegarde in sauvegardes if sauvegarde["nom_niveau"] != niveau.nom]
+                        
+                        # Ajout de la nouvelle sauvegarde
+                        sauvegardes.append((Sauvegarde(niveau.nom, bestScore, bestGrade, bestAccuracy).__dict__))
 
-        # Update the display
-        pygame.display.flip()
+                        with open(self.savefile_path, "w") as savefile:
+                            json_string = json.dumps(sauvegardes, indent=4)
+                            savefile.write(json_string)
 
-        # Cap the frame rate
-        clock.tick(60)
+                        saved = True
 
-    return
+                # Update the display
+                pygame.display.flip()
+
+                # Cap the frame rate
+                clock.tick(60)
+
+            return
+    except Exception as e:
+        print('game: Erreur à la ligne {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+        print(e)

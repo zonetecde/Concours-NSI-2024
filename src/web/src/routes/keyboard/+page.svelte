@@ -7,7 +7,7 @@
 	<h1 class="font-bold text-4xl -mt-12">Entrainement au clavier</h1>
 
 	<div class="flex gap-x-8 gap-y-10 items-center justify-center flex-wrap mt-10 w-[90%]">
-		<Exercice image="/keyboard/typescript2.jpg" link="/keyboard/type-script" nom="Type Script" />
+		<Exercice image="/keyboard/typescript.jpg" link="/keyboard/type-script" nom="Type Script" />
 		<Exercice image="" nom="Falling words" />
 		<Exercice image="" nom="Reaction" link="/keyboard/reaction" />
 		<Exercice image="/keyboard/bac.jpg" nom="Jeu du Bac" link="/keyboard/bac" />

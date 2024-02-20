@@ -18,7 +18,12 @@
 	<div class="flex gap-x-8 gap-y-10 items-center justify-center flex-wrap mt-10 w-[90%]">
 		<Exercice image="" nom="Mouse Road" />
 		<Exercice image="" nom="Dodge The Cube" />
-		<Exercice image="mouse/rosu.png" nom="Rosu!" handleClick={() => openPythonProject('Rosu!')} />
+		<Exercice
+			image="/mouse/rosu.png"
+			nom="Rosu!"
+			handleClick={() => openPythonProject('Rosu!')}
+			imgStyle=" object-contain "
+		/>
 		<Exercice image="" nom="Nom de l'exercice" />
 		<Exercice image="" nom="Nom de l'exercice" />
 	</div>

@@ -7,6 +7,8 @@
 	export let link = '';
 	/** @type {(() => void) | null} */
 	export let handleClick = null;
+	/** @type {string} */
+	export let imgStyle = '';
 
 	/**
 	 * Appelé lorsque l'utilisateur clique sur l'exercice
@@ -29,7 +31,7 @@
 	<img
 		src={image}
 		alt="img de l'exercice"
-		class="bg-[#3b3b3b21] object-cover w-full h-[70%] mt-2"
+		class={'bg-[#3b3b3b21] w-full h-[70%] mt-2 ' + (imgStyle || 'object-cover')}
 	/>
 
 	<p class="text-lg">{nom}</p>

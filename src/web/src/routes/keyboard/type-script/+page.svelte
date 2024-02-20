@@ -237,7 +237,7 @@
 		<h1 class="font-bold text-3xl -mt-12 mb-8">Type Script</h1>
 
 		<Exercice
-			image="/keyboard/typescript2.jpg"
+			image="/keyboard/typescript.jpg"
 			link="/keyboard/type-script"
 			nom="Type Script"
 			handleClick={startExercice}

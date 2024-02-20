@@ -7,6 +7,7 @@ def GAMELOOP(musicIndex):
     import ROSU_storage as RS
     
     savefile = open("src/mouse/scripts/ROSU/savefile.json")
+    
     rawData = json.load(savefile)
     data = []
     for save in rawData:
