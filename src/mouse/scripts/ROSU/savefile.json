@@ -6,21 +6,27 @@
         "precision": 0
     },
     {
+        "nom_niveau": "I've been waiting",
+        "meilleur_score": "-----",
+        "note": "None",
+        "precision": 0
+    },
+    {
         "nom_niveau": "Fantasy",
-        "meilleur_score": 7476.0,
-        "note": "SS",
-        "precision": "99.0%"
+        "meilleur_score": "-----",
+        "note": "None",
+        "precision": 0
     },
     {
         "nom_niveau": "Frog",
-        "meilleur_score": 5602.0,
-        "note": "C",
-        "precision": "73.94%"
+        "meilleur_score": "-----",
+        "note": "None",
+        "precision": 0
     },
     {
-        "nom_niveau": "I've been waiting",
-        "meilleur_score": 100.5,
-        "note": "SSS",
-        "precision": "100.0%"
+        "nom_niveau": "LIMBO",
+        "meilleur_score": "-----",
+        "note": "None",
+        "precision": 0
     }
 ]

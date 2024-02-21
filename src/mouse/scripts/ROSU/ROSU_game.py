@@ -51,7 +51,7 @@ class Engine:
             SCREEN_HEIGHT = desktopSize[0][1]
 
             # Initialize the screen
-            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #, pygame.FULLSCREEN
+            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 
             # Colors
             WHITE = (255, 255, 255)

@@ -24,7 +24,7 @@ clock = pygame.time.Clock()
 # List to store circle information (Time:ms, position, color, size, pointGroup, pointNumber)
 circlesList = []
 
-pygame.mixer.music.load("src/mouse/music/Frog.mp3")
+pygame.mixer.music.load("src/mouse/music/LIMBO.mp3")
 
 # Main game loop
 running = True
@@ -59,7 +59,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            circlesList.append((current_tick, (mouseX, mouseY), pointColor, 35, pointNumber))
+            circlesList.append((int(current_tick), (mouseX, mouseY), pointColor, 35, pointNumber))
             colorX += 20
             colorY += 20
             colorZ += 20

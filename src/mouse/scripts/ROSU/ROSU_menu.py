@@ -49,7 +49,7 @@ class Rosu:
             SCREEN_HEIGHT = desktopSize[0][1]
 
             # Initialize the screen
-            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # Mode plein écran
+            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
             pygame.display.set_caption("ROSU! Game")
 
             # Clock for controlling the frame rate
@@ -62,17 +62,23 @@ class Rosu:
             running = True
             bgImage = None
             nom_niveau_selectionne = ""
-                        
+            
+            #Initialisation de y, variable qui stocke la position de la liste en finction du scroll            
+            initialY = 10
+            
             # Main loop
             while running:
                 mouseX = pygame.mouse.get_pos()[0]
                 mouseY = pygame.mouse.get_pos()[1]
                 
+                screen.fill((0, 0, 0))
+                
                 # Si pas d'image le fond est mis en noir
                 if bgImage != None:
                     screen.blit(bgImage, (0, 0))
                 
-                x, y = 10, 10
+                x = 10
+                y = initialY
                 rectZones = []
                 #Création d'un rectangle pour chaque map
                 for i in range(len(niveaux)):
@@ -136,6 +142,12 @@ class Rosu:
                                 
                                 savefile = open(savefile_path)
                                 sauvegardes = json.load(savefile)
+                    #Si scroll souris alors monter/descendre les songs
+                    if event.type == pygame.MOUSEWHEEL:
+                        if initialY <= 10:
+                            initialY += event.y * 20
+                            if initialY > 10:
+                                initialY = 10
 
 
                     #Permet de quitter le jeu avec echap
