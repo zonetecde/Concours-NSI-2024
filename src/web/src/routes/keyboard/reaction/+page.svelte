@@ -3,6 +3,7 @@
 	import Retour from '$lib/Retour.svelte';
 	import { onMount } from 'svelte';
 	import Api from '../../../api/Api';
+	import { fade } from 'svelte/transition';
 
 	/** @type {boolean} */
 	let hasExerciceStarted = false; // L'exercice a commencé ?
@@ -22,9 +23,51 @@
 	/** @type {boolean} */
 	let allowSpecialCharacters = false; // Autoriser les caractères spéciaux dans les chaines de caractères ?
 
+	/** @type {string}*/
+	let reaction = ''; // La chaine de caractères à écrire
+
+	/** @type {number} */
+	let tempsDebut; // Temps auquel la réaction a été affichée (pour calculer le temps de réaction de l'utilisateur)
+
+	/** @type {string} */
+	let typedReaction = ''; // La chaine de caractères tapée par l'utilisateur
+
+	/** @type {HTMLInputElement} */
+	let reactionTextInput; // La référence à l'input de la réaction (pour le focus)
+
+	/** @type {number[]} */
+	let tempsDeReactions = []; // Les temps de réaction de l'utilisateur en millisecondes
+
+	/** @type {number} */
+	let indexReaction = 0; // Index de la réaction actuelle
+
+	/** @type {boolean} */
+	let countdown_visible = false; // Le compte à rebours est visible ? (avant le début de l'exercice)
+
+	/** @type {number} */
+	let countdown = 3; // Compte à rebours avant le début de l'exercice
+
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);
+
+		//@ts-ignore
+		window.afficherReaction = afficherReaction;
 	});
+
+	/**
+	 * Appelée depuis l'API python lorsqu'une réaction est à afficher
+	 * @param {string} reaction_a_afficher
+	 */
+	function afficherReaction(reaction_a_afficher) {
+		// Affiche la réaction à l'écran
+		reaction = reaction_a_afficher;
+		tempsDebut = Date.now();
+
+		// Met le focus sur l'input de la réaction
+		setTimeout(() => {
+			reactionTextInput.focus();
+		}, 0);
+	}
 
 	/**
 	 * Appelée lorsqu'une touche est appuyée
@@ -38,17 +81,52 @@
 	}
 
 	function startExercice() {
-		hasExerciceStarted = true;
-
 		// Initialisation de l'exercice depuis l'API
 		Api.api.init_reaction(allowUppercase, allowAccents, allowSpecialCharacters, nombreDeReactions);
 
 		// Demande à l'utilisateur de se préparer
+		hasExerciceStarted = true;
+		countdown_visible = true;
+		countdown = 3;
+		indexReaction = 0;
+
+		const countdown_interval = setInterval(() => {
+			countdown--;
+			if (countdown === 0) {
+				countdown_visible = false;
+				Api.api.lancer_reaction(indexReaction); // Lance la première réaction
+				clearInterval(countdown_interval);
+			}
+		}, 1000);
 	}
 
 	function quit() {
 		// Enlève les event listeners
 		window.removeEventListener('keydown', keyDown);
+	}
+
+	$: if (typedReaction) {
+		// Compare la chaine de caractères tapée par l'utilisateur avec la chaine de caractères attendue
+		if (typedReaction === reaction) {
+			reaction = ''; // Efface la réaction pour attendre la prochaine
+			typedReaction = ''; // Efface la chaine de caractères tapée par l'utilisateur
+
+			// Calcule le temps de réaction de l'utilisateur en millisecondes
+			const dateNow = Date.now();
+			const tempsDeReaction = dateNow - tempsDebut;
+
+			tempsDeReactions.push(tempsDeReaction);
+
+			indexReaction++;
+			if (indexReaction < nombreDeReactions) {
+				// Lance la prochaine réaction
+				Api.api.lancer_reaction(indexReaction);
+			} else {
+				// Si c'était la dernière réaction, on termine l'exercice
+				hasExerciceEnded = true;
+				Api.api.terminer_exercice_reaction();
+			}
+		}
 	}
 </script>
 
@@ -104,7 +182,28 @@
 		</div>
 
 		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
-	{:else}{/if}
+	{:else if countdown_visible}
+		<div class="flex flex-col items-center">
+			<p class="text-5xl font-bold mb-4">{countdown}</p>
+			<p class="text-xl font-bold mb-4">Préparez-vous...</p>
+		</div>
+	{:else if reaction}
+		<div out:fade class="flex flex-col items-center">
+			<p class="text-5xl font-bold mb-4 inconsolata">{reaction || 'ABC'}</p>
+			<p class="text-sm font-bold mb-4">Écrivez la chaine de caractères ci-dessus</p>
+			<input
+				type="text"
+				bind:value={typedReaction}
+				bind:this={reactionTextInput}
+				class="text-3xl inconsolata outline-none shadow-xl py-3 font-bold text-center"
+			/>
+		</div>
+	{:else if hasExerciceEnded}
+		<div class="flex flex-col items-center">
+			<p class="text-5xl font-bold mb-4">Exercice terminé !</p>
+			<p class="text-xl font-bold mb-4">Bravo !</p>
+		</div>
+	{/if}
 
 	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
 </div>

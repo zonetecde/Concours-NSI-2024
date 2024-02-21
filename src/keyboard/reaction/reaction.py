@@ -70,4 +70,4 @@ class Reaction:
         sleep(reaction[0] / 1000) 
 
         # Envoie la réaction à la page web
-        api.call_js_function("lancerReaction", f'"{reaction[1]}"')
+        api.call_js_function("afficherReaction", f'"{reaction[1]}"')
