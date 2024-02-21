@@ -93,8 +93,8 @@ class Bac:
         """
         self.connexion.close()
 
-    @staticmethod
-    def verifier_mot(self, reponses, lettre):
+    
+    def verifier_mot(self, reponses, lettre: str):
         """Vérifie si les réponses données par le joueur sont correctes.
 
         Args:
@@ -106,11 +106,20 @@ class Bac:
             list: Liste des réponses correctes et incorrectes.
             Exemple : [True, False, True] 
         """
+        lettre = lettre.lower()
+        list_rep = []
         # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné et qu'il commence par la lettre donnée
-        # Si le mot est good, mettre True dans la liste, sinon False
+        for theme, reponse in reponses:
         # Attention, ne pas oublier de passer le mot dans clean_mot avant de lancer la requête SQL pour vérifier s'il existe
-
-        return [True, False, True, False, True]
+            clean_rep = self.clean_mot(reponse)
+            if clean_rep[0] == lettre:
+                resultat = self.executer_sql("SELECT count(*) from mots where theme = clean_rep", (theme, clean_rep))
+        # Si le mot est good, mettre True dans la liste, sinon False
+                if resultat == 0:
+                    list_rep.append(False)
+                else:
+                    list_rep.append(True)
+        return list_rep
 
     def url_to_html(self, url):
         """Télécharge le contenu d'une page web et le retourne sous forme de texte.
@@ -122,6 +131,12 @@ class Bac:
         fp.close()
 
         return html
+    
+    def exist(self, themes):
+        """
+        recuperer lettre possible 
+        """
+        pass
 
 # =====================================
 # Programme principal 

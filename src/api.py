@@ -60,7 +60,7 @@ class Api:
             list: Liste des réponses correctes et incorrectes.
                 Exemple : [True, False, True] 
         """
-        return Bac.verifier_mot(self, reponses, lettre)
+        return Bac.verifier_mot(reponses, lettre)
     
     def init_reaction(self, autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
         """Initialise l'exercice 'Réaction'
