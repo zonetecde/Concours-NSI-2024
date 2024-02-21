@@ -76,22 +76,23 @@ class Rosu:
                 rectZones = []
                 #Création d'un rectangle pour chaque map
                 for i in range(len(niveaux)):
-                    pygame.draw.rect(screen, (255, 255, 255), (x, y, 600, 150), 3, 2, 2, 2, 2, 2)
+                    pygame.draw.rect(screen, (255, 255, 255), (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2), 3, 2, 2, 2, 2, 2)
                     
                     textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                     songInfos = textFont.render(str(niveaux[i].nom), 1, (255, 255, 255))
                     screen.blit(songInfos, (x + 10, y + 5))
                     
                     songInfos = textFont.render(f"Difficulté : {str(niveaux[i].difficulte)}/20", 1, (255, 255, 255))
-                    screen.blit(songInfos, (x + 10, y + 110))
+                    screen.blit(songInfos, (x + 10, y + SCREEN_HEIGHT * 0.2 - 45))
                     
                     #Si la souris est mise sur le rectangle, la map s'affiche
-                    if mouseX > x and mouseX < x + 600 and mouseY > y and mouseY < y + 150:
+                    if mouseX > x and mouseX < x + SCREEN_WIDTH/2 and mouseY > y and mouseY < y + SCREEN_HEIGHT * 0.2:
                         bgImage = pygame.image.load(niveaux[i].image_fond)
+                        bgImage = pygame.transform.scale(bgImage, (SCREEN_WIDTH, SCREEN_HEIGHT))
                         nom_niveau_selectionne = niveaux[i].nom
                         
-                    rectZones.append((i, x, y, x + 600, y + 150)) 
-                    y += 160
+                    rectZones.append((i, x, y, x + SCREEN_WIDTH/2, y + SCREEN_HEIGHT * 0.2)) 
+                    y += SCREEN_HEIGHT * 0.2 + 10
                 
                 # Récupération des best score de la map et affichage de ces derniers
                 for sauvegarde in sauvegardes:
@@ -103,19 +104,19 @@ class Rosu:
                         #Affichage des infos lié aux meilleurs score de la map
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                         nameLabel = textFont.render((sauvegarde["nom_niveau"]), 1, (255, 255, 255))
-                        screen.blit(nameLabel, (650, 10))
+                        screen.blit(nameLabel, (SCREEN_WIDTH/2 + 50, 10))
                         
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                         scoreLabel = textFont.render(("Meilleur score : " + str(bestScore)), 1, (255, 255, 255))
-                        screen.blit(scoreLabel, (650, 120))
+                        screen.blit(scoreLabel, (SCREEN_WIDTH/2 + 50, 120))
                         
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                         scoreLabel = textFont.render(("Précision : " + str(accuracy)), 1, (255, 255, 255))
-                        screen.blit(scoreLabel, (650, 180))
+                        screen.blit(scoreLabel, (SCREEN_WIDTH/2 + 50, 180))
                         
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                         scoreLabel = textFont.render(("Note : " + str(grade)), 1, (255, 255, 255))
-                        screen.blit(scoreLabel, (650, 240))
+                        screen.blit(scoreLabel, (SCREEN_WIDTH/2 + 50, 240))
                                                         
                 for event in pygame.event.get():
                     #Si appuie sur la croix, quitter le jeu
@@ -133,6 +134,8 @@ class Rosu:
                                 game_engine = Engine()
                                 game_engine.start_level(niveaux[rect_index])
                                 
+                                savefile = open(savefile_path)
+                                sauvegardes = json.load(savefile)
 
 
                     #Permet de quitter le jeu avec echap

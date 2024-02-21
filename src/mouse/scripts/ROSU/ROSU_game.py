@@ -61,6 +61,7 @@ class Engine:
 
             #Fond charger
             bg = pygame.image.load(backgroundImage)
+            bg = pygame.transform.scale(bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
             #Musique charger
             pygame.mixer.init()
@@ -108,21 +109,20 @@ class Engine:
                         "monospace", 75, bold=False, italic=False)
                     color = (255, 0, 0)
                     label = font.render(str(5000 - current_tick), 1, color)
-                    screen.blit(label, (520, 320))
+                    screen.blit(label, (SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.45))
 
                 # Dessine les cercles 
                 for circle_info in circlesListIngame:
                     circle_tick, (x, y), color, size, pointNumber = circle_info
-                    if current_tick >= circle_tick - 100 * size:
-                        pygame.draw.circle(screen, color, (x, y), size, width=int(
-                            ((current_tick - circle_tick + 100 * size + 1))/(1)/100 + 1))
+                    if current_tick >= circle_tick - 100 * (size * (SCREEN_HEIGHT/720)):
+                        pygame.draw.circle(screen, color, (x * (SCREEN_WIDTH/1280), y * (SCREEN_HEIGHT/720)), (size * (SCREEN_HEIGHT/720)), width=int(((current_tick - circle_tick + 100 * (size * (SCREEN_HEIGHT/720)) + 1))/(1)/100 + 1))
                         circleLabel = pointFont.render(str(pointNumber), 1, WHITE)
-                        screen.blit(circleLabel, (x - 10,  y - 20))
-                        if int((current_tick - circle_tick + 100 * size + 1)/(1)/100 + 1) > size + 5:
+                        screen.blit(circleLabel, (x * (SCREEN_WIDTH/1280) - 10, y * (SCREEN_HEIGHT/720) - 20))
+                        if int((current_tick - circle_tick + 100 * (size * (SCREEN_HEIGHT/720)) + 1)/(1)/100 + 1) > (size * (SCREEN_HEIGHT/720)) + 2:
                             circlesListIngame.remove(circle_info)
                             playerMiss += 1
                         else:
-                            circleClickList.append(((x, y), size, circle_tick))
+                            circleClickList.append(((x * (SCREEN_WIDTH / 1280), y * (SCREEN_HEIGHT / 720)), (size * (SCREEN_HEIGHT/720)), circle_tick))
 
                 # Handle events
                 for event in pygame.event.get():
@@ -156,7 +156,7 @@ class Engine:
                 #Si on fait une erreur, on nous le dit
                 if renderMistake == True:
                     if mistakeTick > current_tick - 200:
-                        screen.blit(labelMistake, (520, 320))
+                        screen.blit(labelMistake, (SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.45))
                     else:
                         renderMistake = False
                 #Affichage du score
@@ -165,9 +165,9 @@ class Engine:
                     color = (255, 0, 0)
                     
                     #Text complete! et le rectangle gris derrière ce dernier
-                    pygame.draw.rect(screen, (135, 135, 135),(390, 40, 480, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, (135, 135, 135),(SCREEN_WIDTH * 0.3125, 40, 480, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font.render("Complete!", 1, BLACK)
-                    screen.blit(textLabel, (400, 50))
+                    screen.blit(textLabel, (SCREEN_WIDTH * 0.3125, 50))
 
                     #Modification de la taille du rectagle selon le nombre d'erreurs 
                     if playerMiss > 100:
@@ -178,26 +178,24 @@ class Engine:
                         rectLength = 420
                     
                     #Nombre d'erreurs et son rectangle
-                    pygame.draw.rect(screen, (135, 135, 135),(40, 190, rectLength, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, (135, 135, 135),(40, SCREEN_HEIGHT * 0.28 - 10, rectLength, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
-                    screen.blit(textLabel, (50, 200))
+                    screen.blit(textLabel, (50, SCREEN_HEIGHT * 0.28))
 
                     #Accuracy et son rectangle
                     accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
-                    pygame.draw.rect(screen, (135, 135, 135), (40, 290, 750, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, (135, 135, 135), (40, SCREEN_HEIGHT * 0.42 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
-                    screen.blit(textLabel, (50, 300))
-                    
-                    #Score et son rectangle
-                    pygame.draw.rect(screen, (135, 135, 135), (40, 390, 750, 100), 0, 10, 10, 10, 10, 10)
+                    screen.blit(textLabel, (50, SCREEN_HEIGHT * 0.42))
+                    pygame.draw.rect(screen, (135, 135, 135), (40, SCREEN_HEIGHT * 0.55 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
                     scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
-                    screen.blit(scoreLabel, (50, 400))
+                    screen.blit(scoreLabel, (50, SCREEN_HEIGHT * 0.55))
 
                     #Retour possible et son rectangle
                     font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
-                    pygame.draw.rect(screen, (135, 135, 135),(190, 640, 860, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, (135, 135, 135),(190, SCREEN_HEIGHT * 0.90 - 10, 860, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
-                    screen.blit(textLabel, (200, 650))
+                    screen.blit(textLabel, (200, SCREEN_HEIGHT * 0.90))
                     
                     #Enregistrement du score et remplacement si il est meilleur
                     if saved == False:
