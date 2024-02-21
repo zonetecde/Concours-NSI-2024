@@ -1,1 +1,0 @@
-import{j as s}from"./scheduler.cbfa02fd.js";function d(o,{delay:t=0,duration:a=400,easing:i=s}={}){const e=+getComputedStyle(o).opacity;return{delay:t,duration:a,easing:i,css:n=>`opacity: ${n*e}`}}const u=o=>{new Audio(o).play()};export{u as P,d as f};
