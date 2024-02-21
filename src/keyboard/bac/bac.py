@@ -94,7 +94,7 @@ class Bac:
         self.connexion.close()
 
     
-    def verifier_mot(self, reponses, lettre):
+    def verifier_mot(self, reponses, lettre: str):
         """Vérifie si les réponses données par le joueur sont correctes.
 
         Args:
@@ -106,6 +106,7 @@ class Bac:
             list: Liste des réponses correctes et incorrectes.
             Exemple : [True, False, True] 
         """
+        lettre = lettre.lower()
         list_rep = []
         # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné et qu'il commence par la lettre donnée
         for theme, reponse in reponses:
