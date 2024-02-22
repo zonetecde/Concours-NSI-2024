@@ -87,10 +87,10 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function keyUp(event) {
-		if (event.key.length === 1 && event.key !== ' ') PlayAudio('../audio/key1_release.mp3');
-		else if (event.key === 'Enter') PlayAudio('../audio/key1_enter_release.mp3');
-		else if (event.key === 'Backspace') PlayAudio('../audio/key1_return_release.mp3');
-		else if (event.key === ' ') PlayAudio('../audio/key1_space_release.mp3');
+		if (event.key.length === 1 && event.key !== ' ') PlayAudio('/audio/key1_release.mp3');
+		else if (event.key === 'Enter') PlayAudio('/audio/key1_enter_release.mp3');
+		else if (event.key === 'Backspace') PlayAudio('/audio/key1_return_release.mp3');
+		else if (event.key === ' ') PlayAudio('/audio/key1_space_release.mp3');
 	}
 
 	/**
@@ -98,10 +98,10 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
-		if (event.key.length === 1 && event.key !== ' ') PlayAudio('../audio/key1_press.mp3');
-		else if (event.key === 'Enter') PlayAudio('../audio/key1_enter_press.mp3');
-		else if (event.key === 'Backspace') PlayAudio('../audio/key1_return_press.mp3');
-		else if (event.key === ' ') PlayAudio('../audio/key1_space_press.mp3');
+		if (event.key.length === 1 && event.key !== ' ') PlayAudio('/audio/key1_press.mp3');
+		else if (event.key === 'Enter') PlayAudio('/audio/key1_enter_press.mp3');
+		else if (event.key === 'Backspace') PlayAudio('/audio/key1_return_press.mp3');
+		else if (event.key === ' ') PlayAudio('/audio/key1_space_press.mp3');
 
 		if (hasExerciceStarted) {
 			// Une touche a été appuyée,

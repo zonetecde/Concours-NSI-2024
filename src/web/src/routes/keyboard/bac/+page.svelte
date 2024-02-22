@@ -155,7 +155,7 @@
 
 				rouletteAlphabet = newLetter;
 
-				PlayAudio('../audio/roulette.mp3');
+				PlayAudio('/audio/roulette.mp3');
 
 				if (counter < 50) {
 					// Vérifie qu'on est toujours sur la page
