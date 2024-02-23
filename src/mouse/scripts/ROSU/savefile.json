@@ -1,17 +1,5 @@
 [
     {
-        "nom_niveau": "Gravity Falls",
-        "meilleur_score": "-----",
-        "note": "None",
-        "precision": 0
-    },
-    {
-        "nom_niveau": "I've been waiting",
-        "meilleur_score": "-----",
-        "note": "None",
-        "precision": 0
-    },
-    {
         "nom_niveau": "Fantasy",
         "meilleur_score": "-----",
         "note": "None",
@@ -24,9 +12,9 @@
         "precision": 0
     },
     {
-        "nom_niveau": "LIMBO",
-        "meilleur_score": "-----",
-        "note": "None",
-        "precision": 0
+        "nom_niveau": "I've been waiting",
+        "meilleur_score": 100.5,
+        "note": "SSS",
+        "precision": "100.0%"
     }
 ]

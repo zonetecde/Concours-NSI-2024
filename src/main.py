@@ -5,7 +5,7 @@ import socketserver
 import threading
 from api import Api
 
-DEBUG = False
+DEBUG = True
 
 def start_server():
     # Se place dans le dossier contenant les fichiers du site
@@ -32,7 +32,7 @@ def main():
     api = Api()
 
     # Création de la fenêtre avec le site
-    website_port = DEBUG and 5174 or 5170
+    website_port = DEBUG and 5173 or 5170
     window = webview.create_window('Nom du projet', 'http://localhost:' + str(website_port), js_api=api, resizable=True, min_size=(800, 600), width=1080, height=720)
     api.set_window(window)
 

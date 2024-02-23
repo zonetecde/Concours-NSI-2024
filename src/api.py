@@ -1,7 +1,7 @@
 from keyboard.bac.bac import Bac
 from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
-from mouse.scripts.ROSU.ROSU_menu import Rosu
+from mouse.scripts.Rosu.menu import Rosu
 
 class Api:
     """Classe Api
