@@ -263,7 +263,7 @@
 			<label for="majuscules" class="text-lg">
 				<input
 					type="checkbox"
-					class="ml-4 mr-1"
+					class="ml-4 mr-1 accent-blue-800"
 					id="majuscules"
 					bind:checked={caseSensitive}
 				/>Majuscules</label
@@ -272,7 +272,7 @@
 			<label for="accents" class="text-lg"
 				><input
 					type="checkbox"
-					class="ml-4 mr-0.5"
+					class="ml-4 mr-0.5 accent-blue-800"
 					id="accents"
 					bind:checked={accentSensitive}
 				/>Accents</label

@@ -308,6 +308,7 @@
 								id={theme}
 								name={theme}
 								value={theme}
+								class="accent-blue-800 outline-none"
 								checked={selectedThemes.includes(theme)}
 								on:change={(e) => handleThemeSelected(e, theme)}
 							/>

@@ -65,7 +65,7 @@
 					<label for="majuscules" class="text-lg">
 						<input
 							type="checkbox"
-							class="mr-1"
+							class="mr-1 accent-blue-800"
 							id="majuscules"
 							bind:checked={allowUppercase}
 						/>Majuscules</label
@@ -74,7 +74,7 @@
 					<label for="accents" class="text-lg"
 						><input
 							type="checkbox"
-							class="mr-0.5"
+							class="mr-0.5 accent-blue-800"
 							id="accents"
 							bind:checked={allowAccents}
 						/>Accents</label
@@ -83,7 +83,7 @@
 					<label for="specialChars" class="text-lg"
 						><input
 							type="checkbox"
-							class=" mr-0.5"
+							class=" mr-0.5 accent-blue-800"
 							id="specialChars"
 							bind:checked={allowSpecialCharacters}
 						/>Caractères spéciaux
