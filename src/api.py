@@ -1,6 +1,12 @@
+import os
+import sys
+
 from keyboard.bac.bac import Bac
 from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
+
+# Permet de ce placer dans le dossier contenant les scripts ROSU
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/Rosu")
 from mouse.scripts.Rosu.menu import Rosu
 
 class Api:
