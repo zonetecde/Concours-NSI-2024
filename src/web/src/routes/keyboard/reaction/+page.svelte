@@ -275,9 +275,9 @@
 					<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
 					<p>
 						Votre score est de <span class="font-bold">{score}</span> points.<br /><br />
-						Temps moyen de réaction par rapport à la difficulté :{' '}
+						Temps moyen d'écriture par rapport à la difficulté :{' '}
 						<span class="font-bold">{temps_moyen_difficulte}ms</span><br /><br />
-						Temps moyen de réaction total : <span class="font-bold">{temps_moyen_total}ms</span>
+						Temps moyen d'écriture : <span class="font-bold">{temps_moyen_total}ms</span>
 					</p>
 				</div>
 				<div class="flex justify-center gap-x-8 mt-4 h-14">
