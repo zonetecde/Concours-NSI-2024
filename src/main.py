@@ -33,7 +33,7 @@ def main():
 
     # Création de la fenêtre avec le site
     website_port = DEBUG and 5173 or 5170
-    window = webview.create_window('Nom du projet', 'http://localhost:' + str(website_port), js_api=api, resizable=True, min_size=(800, 600), width=1080, height=720)
+    window = webview.create_window('Nom du projet', 'http://localhost:' + str(website_port), js_api=api, resizable=True, min_size=(850, 650), width=1080, height=720)
     api.set_window(window)
 
     webview.start()

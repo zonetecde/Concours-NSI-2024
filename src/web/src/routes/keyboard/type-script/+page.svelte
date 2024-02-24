@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { blur, fade } from 'svelte/transition';
 	import Api from '../../../api/Api';
-	import { PlayAudio } from '$lib/GlobalFunc';
+	import { PlayAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 	import toast from 'svelte-french-toast';
 
 	/** @type {string} */
@@ -87,10 +87,7 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function keyUp(event) {
-		if (event.key.length === 1 && event.key !== ' ') PlayAudio('/audio/key1_release.mp3');
-		else if (event.key === 'Enter') PlayAudio('/audio/key1_enter_release.mp3');
-		else if (event.key === 'Backspace') PlayAudio('/audio/key1_return_release.mp3');
-		else if (event.key === ' ') PlayAudio('/audio/key1_space_release.mp3');
+		keyUpAudio(event);
 	}
 
 	/**
@@ -98,10 +95,7 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
-		if (event.key.length === 1 && event.key !== ' ') PlayAudio('/audio/key1_press.mp3');
-		else if (event.key === 'Enter') PlayAudio('/audio/key1_enter_press.mp3');
-		else if (event.key === 'Backspace') PlayAudio('/audio/key1_return_press.mp3');
-		else if (event.key === ' ') PlayAudio('/audio/key1_space_press.mp3');
+		keyDownAudio(event);
 
 		if (hasExerciceStarted) {
 			// Une touche a été appuyée,
@@ -363,7 +357,7 @@
 		{#if hasExerciceEnded}
 			<div
 				transition:fade
-				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
+				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
 			>
 				<div
 					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl"

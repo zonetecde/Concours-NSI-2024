@@ -80,6 +80,15 @@ class Api:
             index (int): L'index de la réaction à lancer
         """
         return Reaction.lancer_reaction(self, index, self)
+    
+    def calculer_score_reaction(self, data):
+        """Calcule le score de l'exercice 'Réaction' à partir des données de l'utilisateur
+
+        Args:
+            data (list): Les données de l'utilisateur : 
+                         Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
+        """
+        return Reaction.calculer_score_reaction(data)
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
