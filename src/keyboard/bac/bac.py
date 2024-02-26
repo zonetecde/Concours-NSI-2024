@@ -109,9 +109,10 @@ class Bac:
         list_rep = []
         # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné et qu'il commence par la lettre donnée
         for theme, reponse in reponses:
+            print(reponse)
         # Attention, ne pas oublier de passer le mot dans clean_mot avant de lancer la requête SQL pour vérifier s'il existe
             clean_rep = self.clean_mot(reponse)
-            if clean_rep[0] == lettre:
+            if clean_rep[0].lower() == lettre.lower():
                 resultat = self.executer_sql("SELECT count(*) from mots where theme = clean_rep", (theme, clean_rep))
         # Si le mot est good, mettre True dans la liste, sinon False
                 if resultat == 0:
@@ -135,7 +136,19 @@ class Bac:
         """
         recuperer lettre possible 
         """
-        pass
+        alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+        list_lettre = []
+        for lettre in alphabet:
+            verif = True
+            for theme in themes:
+                #verifier si pour le theme il existe des mots qui commence par lettre
+                resultat = self.executer_sql("SELECT count(*) from mots where theme like 'lettre%' ", (theme, lettre))
+                if resultat == 0:
+                    verif = False
+            if verif == True:
+                list_lettre.append(lettre)
+        return list_lettre
+                    
 
 # =====================================
 # Programme principal 
