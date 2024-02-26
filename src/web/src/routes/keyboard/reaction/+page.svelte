@@ -2,7 +2,9 @@
 	import Exercice from '$lib/Exercice.svelte';
 	import Retour from '$lib/Retour.svelte';
 	import { onMount } from 'svelte';
-	import Api from '../../../api/Api';
+	import PythonApi from '../../../api/Api';
+	import { fade } from 'svelte/transition';
+	import { PlayAudio, StopAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 
 	/** @type {boolean} */
 	let hasExerciceStarted = false; // L'exercice a commencé ?
@@ -22,33 +24,163 @@
 	/** @type {boolean} */
 	let allowSpecialCharacters = false; // Autoriser les caractères spéciaux dans les chaines de caractères ?
 
+	/** @type {string}*/
+	let reaction = ''; // La chaine de caractères à écrire
+
+	/** @type {number} */
+	let tempsDebut; // Temps auquel la réaction a été affichée (pour calculer le temps de réaction de l'utilisateur)
+
+	/** @type {string} */
+	let typedReaction = ''; // La chaine de caractères tapée par l'utilisateur
+
+	/** @type {HTMLInputElement} */
+	let reactionTextInput; // La référence à l'input de la réaction (pour le focus)
+
+	/** @type {Array<Array<any>>} */
+	let tempsDeReactions = []; // Les temps de réaction de l'utilisateur en millisecondes
+
+	/** @type {number} */
+	let indexReaction = 0; // Index de la réaction actuelle
+
+	/** @type {boolean} */
+	let countdown_visible = false; // Le compte à rebours est visible ? (avant le début de l'exercice)
+
+	/** @type {number} */
+	let countdown = 3; // Compte à rebours avant le début de l'exercice
+
+	/** @type {number} */
+	let score = 0; // Le score du joueur
+
+	/** @type {number} */
+	let temps_moyen_difficulte = 0; // Le temps moyen de réaction par rapport à la difficulté
+
+	/** @type {number} */
+	let temps_moyen_total = 0; // Le temps moyen de réaction total
+
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);
+		window.addEventListener('keyup', keyUp);
+
+		//@ts-ignore
+		window.afficherReaction = afficherReaction;
 	});
 
 	/**
+	 * Appelée depuis l'API python lorsqu'une réaction est à afficher
+	 * @param {string} reaction_a_afficher
+	 */
+	function afficherReaction(reaction_a_afficher) {
+		// Arrête le tictac
+		StopAudio('/audio/tictac.mp3');
+
+		PlayAudio('/audio/ding.mp3');
+
+		// Affiche la réaction à l'écran
+		reaction = reaction_a_afficher;
+		tempsDebut = Date.now();
+
+		// Met le focus sur l'input de la réaction
+		setTimeout(() => {
+			reactionTextInput.focus();
+		}, 0);
+	}
+
+	/**
+	 * Appelée lorsqu'une touche est relâchée
+	 * @param {KeyboardEvent} event
+	 */
+	function keyUp(event) {
+		keyUpAudio(event);
+	}
+
+	/**
 	 * Appelée lorsqu'une touche est appuyée
-	 * Si la touche est ENTRÉE et que l'exercice n'a pas encore commencé, démarre l'exercice
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
+		keyDownAudio(event);
+
+		// Si la touche est ENTRÉE et que l'exercice n'a pas encore commencé, démarre l'exercice
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
 		}
 	}
 
 	function startExercice() {
-		hasExerciceStarted = true;
-
 		// Initialisation de l'exercice depuis l'API
-		Api.api.init_reaction(allowUppercase, allowAccents, allowSpecialCharacters, nombreDeReactions);
+		PythonApi.api.init_reaction(
+			allowUppercase,
+			allowAccents,
+			allowSpecialCharacters,
+			nombreDeReactions
+		);
 
 		// Demande à l'utilisateur de se préparer
+		hasExerciceStarted = true;
+		countdown_visible = true;
+		countdown = 3;
+		indexReaction = 0;
+
+		PlayAudio('/audio/countdown.mp3');
+
+		const countdown_interval = setInterval(() => {
+			countdown--;
+			if (countdown === 0) {
+				countdown_visible = false;
+				PythonApi.api.lancer_reaction(indexReaction); // Lance la première réaction
+				// Lance le tictac
+				PlayAudio('/audio/tictac.mp3');
+				clearInterval(countdown_interval);
+			}
+		}, 1000);
 	}
 
 	function quit() {
 		// Enlève les event listeners
 		window.removeEventListener('keydown', keyDown);
+		window.removeEventListener('keyup', keyUp);
+		// @ts-ignore
+		window.removeEventListener('afficherReaction', afficherReaction);
+	}
+
+	/**
+	 * Appelée lorsque l'utilisateur a tapé une chaine de caractères dans l'input de la réaction
+	 */
+	$: if (typedReaction) {
+		// Compare la chaine de caractères tapée par l'utilisateur avec la chaine de caractères attendue
+		if (typedReaction === reaction) {
+			// Calcule le temps de réaction de l'utilisateur en millisecondes
+			const dateNow = Date.now();
+			const tempsDeReaction = dateNow - tempsDebut;
+
+			tempsDeReactions.push([reaction, tempsDeReaction]);
+
+			reaction = ''; // Efface la réaction pour attendre la prochaine
+			typedReaction = ''; // Efface la chaine de caractères tapée par l'utilisateur
+
+			indexReaction++;
+			if (indexReaction < nombreDeReactions) {
+				// Lance la prochaine réaction
+				PythonApi.api.lancer_reaction(indexReaction);
+				PlayAudio('/audio/tictac.mp3');
+			} else {
+				// Si c'était la dernière réaction, on termine l'exercice
+				exerciceEnded();
+			}
+		}
+	}
+
+	/**
+	 * Appelée lorsque l'exercice est terminé
+	 */
+	async function exerciceEnded() {
+		// Envoie les temps de réaction à l'API pour récupérer les statistiques
+		const resultats = await PythonApi.api.calculer_score_reaction(tempsDeReactions);
+		score = resultats.score;
+		temps_moyen_difficulte = resultats.temps_moyen_difficulte;
+		temps_moyen_total = resultats.temps_moyen_total;
+
+		hasExerciceEnded = true;
 	}
 </script>
 
@@ -76,7 +208,7 @@
 					<label for="majuscules" class="text-lg">
 						<input
 							type="checkbox"
-							class="mr-1"
+							class="mr-1 accent-blue-800"
 							id="majuscules"
 							bind:checked={allowUppercase}
 						/>Majuscules</label
@@ -85,7 +217,7 @@
 					<label for="accents" class="text-lg"
 						><input
 							type="checkbox"
-							class="mr-0.5"
+							class="mr-0.5 accent-blue-800"
 							id="accents"
 							bind:checked={allowAccents}
 						/>Accents</label
@@ -94,17 +226,79 @@
 					<label for="specialChars" class="text-lg"
 						><input
 							type="checkbox"
-							class=" mr-0.5"
+							class=" mr-0.5 accent-blue-800"
 							id="specialChars"
 							bind:checked={allowSpecialCharacters}
 						/>Caractères spéciaux
+					</label>
+
+					<label for="nombreDeReactions" class="text-lg"
+						>Nombre de réactions :
+						<input
+							type="number"
+							class="w-12 ml-1 px-2 outline-none"
+							id="nombreDeReactions"
+							bind:value={nombreDeReactions}
+						/>
 					</label>
 				</div>
 			</div>
 		</div>
 
 		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
-	{:else}{/if}
+	{:else if countdown_visible}
+		<div class="flex flex-col items-center">
+			<p class="text-5xl font-bold mb-4">{countdown}</p>
+			<p class="text-xl font-bold mb-4">Préparez-vous...</p>
+		</div>
+	{:else if reaction}
+		<div out:fade class="flex flex-col items-center">
+			<p class="text-5xl font-bold mb-4 inconsolata">{reaction}</p>
+			<p class="text-sm font-bold mb-4">Écrivez la chaine de caractères ci-dessus</p>
+			<input
+				type="text"
+				bind:value={typedReaction}
+				bind:this={reactionTextInput}
+				class="text-3xl inconsolata outline-none shadow-xl py-3 font-bold text-center"
+			/>
+		</div>
+	{/if}
+	{#if hasExerciceEnded}
+		<div
+			transition:fade
+			class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
+		>
+			<div
+				class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl border-2"
+			>
+				<div class="text-2xl text-justify">
+					<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
+					<p>
+						Votre score est de <span class="font-bold">{score}</span> points.<br /><br />
+						Temps moyen d'écriture par rapport à la difficulté :{' '}
+						<span class="font-bold">{temps_moyen_difficulte}ms</span><br /><br />
+						Temps moyen d'écriture : <span class="font-bold">{temps_moyen_total}ms</span>
+					</p>
+				</div>
+				<div class="flex justify-center gap-x-8 mt-4 h-14">
+					<button
+						class="bg-yellow-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-yellow-500 transition-all w-2/5"
+						on:click={() => {
+							window.location.reload();
+						}}
+					>
+						Recommencer
+					</button>
+
+					<a
+						on:click={quit}
+						class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center"
+						href="/keyboard">Retour</a
+					>
+				</div>
+			</div>
+		</div>
+	{/if}
 
 	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
 </div>

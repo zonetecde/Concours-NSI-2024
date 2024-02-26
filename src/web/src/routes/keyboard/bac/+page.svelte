@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import { fade } from 'svelte/transition';
-	import { PlayAudio } from '$lib/GlobalFunc';
+	import { PlayAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 	import JeuBacRow, { Mot } from './JeuBacRow';
 	import Api from '../../../api/Api';
 
@@ -57,14 +57,25 @@
 
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);
+		window.addEventListener('keyup', keyUp);
 	});
 
 	/**
+	 * Appelée lorsqu'une touche est relâchée
+	 * @param {KeyboardEvent} event
+	 */
+	function keyUp(event) {
+		keyUpAudio(event);
+	}
+
+	/**
 	 * Appelée lorsqu'une touche est appuyée
-	 * Si la touche est ENTRÉE et que l'exercice n'a pas encore commencé, démarre l'exercice
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
+		keyDownAudio(event);
+
+		// Si la touche est ENTRÉE et que l'exercice n'a pas encore commencé, démarre l'exercice
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
 		}
@@ -155,7 +166,7 @@
 
 				rouletteAlphabet = newLetter;
 
-				PlayAudio('../audio/roulette.mp3');
+				PlayAudio('/audio/roulette.mp3');
 
 				if (counter < 50) {
 					// Vérifie qu'on est toujours sur la page
@@ -244,6 +255,8 @@
 	function quit() {
 		// Enlève les event listeners
 		window.removeEventListener('keydown', keyDown);
+		window.removeEventListener('keyup', keyUp);
+
 		// Force l'arrêt de la roulette
 		hasExerciceStarted = false;
 		chronometre = -1;
@@ -295,6 +308,7 @@
 								id={theme}
 								name={theme}
 								value={theme}
+								class="accent-blue-800 outline-none"
 								checked={selectedThemes.includes(theme)}
 								on:change={(e) => handleThemeSelected(e, theme)}
 							/>
@@ -399,10 +413,10 @@
 		{#if hasExerciceEnded}
 			<div
 				transition:fade
-				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
+				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
 			>
 				<div
-					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#68a38b] text-black shadow-xl rounded-xl"
+					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl"
 				>
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>

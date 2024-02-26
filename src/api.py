@@ -1,7 +1,13 @@
+import os
+import sys
+
 from keyboard.bac.bac import Bac
 from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
-from mouse.scripts.ROSU.ROSU_menu import Rosu
+
+# Permet de ce placer dans le dossier contenant les scripts ROSU
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/Rosu")
+from mouse.scripts.Rosu.menu import Rosu
 
 class Api:
     """Classe Api
@@ -60,7 +66,7 @@ class Api:
             list: Liste des réponses correctes et incorrectes.
                 Exemple : [True, False, True] 
         """
-        return Bac.verifier_mot(self, reponses, lettre)
+        return Bac.verifier_mot(reponses, lettre)
     
     def init_reaction(self, autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
         """Initialise l'exercice 'Réaction'
@@ -80,6 +86,15 @@ class Api:
             index (int): L'index de la réaction à lancer
         """
         return Reaction.lancer_reaction(self, index, self)
+    
+    def calculer_score_reaction(self, data):
+        """Calcule le score de l'exercice 'Réaction' à partir des données de l'utilisateur
+
+        Args:
+            data (list): Les données de l'utilisateur : 
+                         Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
+        """
+        return Reaction.calculer_score_reaction(data)
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
