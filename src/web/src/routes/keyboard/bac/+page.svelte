@@ -9,24 +9,7 @@
 	import Api from '../../../api/Api';
 
 	/** @type {Array<string>} */
-	let themes = [
-		'Animaux',
-		'Pays',
-		'Fruits',
-		'Légumes',
-		'Métiers',
-		'Sport',
-		'...',
-		'...',
-		'...',
-		'...',
-		'...',
-		'...',
-		'...',
-		'...',
-		'...',
-		'...'
-	]; // Les thèmes disponibles. TODO: Récupérer les thèmes depuis l'API python
+	let themes = []; // Les thèmes disponibles. Récupérés depuis l'API python lors du montage du composant
 
 	/** @type {Array<string>} */
 	let selectedThemes = ['Animaux', 'Pays', 'Fruits', 'Légumes', 'Métiers']; // Les thèmes sélectionnés par l'utilisateur (par défaut les 5 ci-gauche)
@@ -43,7 +26,7 @@
 	let nombreDeRound = 3; // Le nombre de ligne de l'exercice
 
 	let chronometre = 0; // Le chronometre de la round actuelle (en secondes)
-	let MAX_TEMPS = 60; // Le temps maximum pour chaque round (en secondes)
+	let max_temps = 60; // Le temps maximum pour chaque round (en secondes)
 	let chronometreTotal = 0; // Le temps total pour finir l'exercice (en secondes)
 
 	/** @type {Array<string>} */
@@ -55,9 +38,14 @@
 	/** @type {Array<JeuBacRow>} */
 	let rows = []; // Les lignes du tableau
 
-	onMount(() => {
+	onMount(async () => {
 		window.addEventListener('keydown', keyDown);
 		window.addEventListener('keyup', keyUp);
+
+		// Récupère les thèmes disponibles
+
+		const response = await Api.api.get_themes_bac();
+		themes = response;
 	});
 
 	/**
@@ -79,6 +67,10 @@
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
 		}
+		// Si la touche est ENTRÉE et que on est en train de faire un round, valide la ligne
+		else if (event.key === 'Enter' && hasExerciceStarted && !hasExerciceEnded && chronometre >= 1) {
+			validateRow();
+		}
 	}
 
 	/**
@@ -86,11 +78,15 @@
 	 * Vérifie que l'utilisateur a sélectionné 5 thèmes
 	 * Si oui, démarre l'exercice
 	 */
-	function startExercice() {
+	async function startExercice() {
 		if (selectedThemes.length < 5) {
 			toast.error('Veuillez sélectionner 5 thèmes');
 			return;
 		}
+
+		// Récupère les lettres valides pour chaque thème
+		const reponse = await Api.api.get_valid_letters_bac(selectedThemes);
+		alphabet = reponse;
 
 		chronometreTotal = 0;
 		hasExerciceStarted = true;
@@ -138,8 +134,10 @@
 				chronometre += 1;
 				chronometreTotal += 1;
 
+				if (max_temps - chronometre == 11) PlayAudio('/audio/tictac.mp3');
+
 				// Si le temps est écoulé, valide la ligne
-				if (chronometre > MAX_TEMPS) {
+				if (chronometre > max_temps) {
 					clearInterval(interval);
 					validateRow();
 				}
@@ -166,7 +164,7 @@
 
 				rouletteAlphabet = newLetter;
 
-				PlayAudio('/audio/roulette.mp3');
+				PlayAudio('/audio/pop_sound.mp3');
 
 				if (counter < 50) {
 					// Vérifie qu'on est toujours sur la page
@@ -192,13 +190,15 @@
 	 * @returns {number}
 	 */
 	function calculateInterval(counter) {
-		if (counter > 44) {
-			return counter * 8;
-		} else if (counter < 35) {
-			return counter * 3;
-		} else {
-			return counter * 5.5;
-		}
+		if (counter === 49) return 1000;
+
+		if (counter > 44) return counter * 8;
+
+		if (counter < 35) return counter * 3;
+
+		if (counter < 50) return counter * 5;
+
+		return counter * 10;
 	}
 
 	/**
@@ -275,9 +275,9 @@
 	}
 </script>
 
-<div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
+<div class="flex px-10 h-screen justify-center flex-col items-center w-screen">
 	{#if !hasExerciceStarted}
-		<h1 class="font-bold text-3xl mb-3 -mt-3">Jeu du Bac</h1>
+		<h1 class="font-bold text-3xl mb-3 mt-36 xl:mt-0">Jeu du Bac</h1>
 
 		<Exercice
 			image="/keyboard/bac.jpg"
@@ -287,41 +287,75 @@
 		/>
 
 		<div class="text-center">
-			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-			<p class="text-lg">
+			<p class="lg:mt-8 mt-3 text-xl lg:mb-4 mb-1">Règles de l'exercice :</p>
+			<p class="lg:text-lg text-base">
 				Trouvez et écrivez un mot correspondant à chaque thème choisi qui commence par la lettre
 				donnée le plus rapidement possible
 			</p>
 		</div>
 
 		<div
-			class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
+			class="lg:w-full max-w-[1000px] flex-col mt-4 p-4 justify-center items-center flex bg-[#ffffff25] rounded-xl"
 		>
 			<div class="flex flex-col w-full">
 				<p class="pr-2">Veuillez sélectionner 5 thèmes :</p>
 
-				<div class="flex overflow-x-scroll py-2">
+				<div class="flex py-2 gap-2 flex-wrap">
 					{#each themes as theme}
-						<div class="flex items-center justify-center bg-[#fcfcfcab] rounded-xl p-2 m-2 gap-x-2">
-							<input
-								type="checkbox"
-								id={theme}
-								name={theme}
-								value={theme}
-								class="accent-blue-800 outline-none"
-								checked={selectedThemes.includes(theme)}
-								on:change={(e) => handleThemeSelected(e, theme)}
-							/>
-							<label for={theme}>{theme}</label>
-						</div>
+						{#if !selectedThemes.includes(theme)}
+							<button
+								class="bg-[#fcfcfcab] shrink-0 rounded-xl lg:p-2 px-1 py-0.5"
+								on:click={(e) => handleThemeSelected(e, theme)}
+							>
+								{theme}
+							</button>
+						{/if}
+					{/each}
+				</div>
+
+				<p class="pr-2 mt-5">Thèmes sélectionnés :</p>
+				<div class="flex py-2 gap-x-2">
+					{#each selectedThemes as theme}
+						<button
+							class="bg-[#6cbb8df3] rounded-xl lg:p-2 px-1 py-0.5"
+							on:click={(e) => handleThemeSelected(e, theme)}
+						>
+							{theme}
+						</button>
 					{/each}
 				</div>
 			</div>
+
+			<div class="flex flex-row items-center w-full mt-3">
+				<p class="pr-2">Nombre de manches :</p>
+
+				<input
+					type="number"
+					min="1"
+					max="10"
+					bind:value={nombreDeRound}
+					class="bg-[#fcfcfcab] rounded-xl pb-1 pt-0.5 w-12 text-center outline-none"
+				/>
+
+				<small class="text-gray-500 ml-2 italic">*Lignes dans le tableau</small>
+			</div>
+
+			<div class="flex flex-row items-center w-full mt-3">
+				<p class="pr-2">Temps par manche :</p>
+
+				<select bind:value={max_temps} class="bg-[#fcfcfcab] rounded-xl py-1 w-40 text-center">
+					{#each [30, 45, 60, 75, 90, 120, 180] as temps}
+						<option value={temps}>{temps} secondes</option>
+					{/each}
+				</select>
+			</div>
 		</div>
 
-		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
+		<p class="lg:mt-8 mt-4 pb-4">Appuyez sur ENTRÉE pour commencer l'exercice</p>
 	{:else}
-		<p class="-mt-10 text-3xl mb-5 font-bold">Jeu du Bac</p>
+		<p class="mt-2 text-3xl mb-2 font-bold">Jeu du Bac</p>
+
+		<p class="text-xl mb-5">Manche {rows.length}/{nombreDeRound}</p>
 
 		<div
 			class="bg-[#ffffffea] shadow-xl rounded-lg border-2 border-[#1d1b1bde] h-4/5 w-full text-center relative"
@@ -377,7 +411,7 @@
 			<div class="w-full absolute bottom-0 h-3 rounded-b-md bg-slate-400">
 				<div
 					class="h-full bg-[#00000060] rounded-r-md rounded-b-md duration-1000"
-					style="width: {Math.min((chronometre / MAX_TEMPS) * 100, 100)}%"
+					style="width: {Math.min((chronometre / max_temps) * 100, 100)}%"
 				/>
 			</div>
 
@@ -416,15 +450,15 @@
 				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
 			>
 				<div
-					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl"
+					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] border-4 border-[#859aa5] text-black shadow-xl rounded-xl"
 				>
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
 						<p>
-							Vous avez trouvé <span class="font-bold">{nombreDeMotsValides}</span> mots valides<br
-							/>
+							Vous avez trouvé <span class="font-bold">{nombreDeMotsValides}</span> mots valides.<br
+							/><br />
 							Vous avez pris <span class="font-bold">{secondsToStr(chronometreTotal)}</span> pour finir
-							l'exercice
+							l'exercice.
 						</p>
 					</div>
 					<div class="flex justify-center gap-x-8 mt-4 h-14">

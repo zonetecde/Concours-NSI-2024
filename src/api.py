@@ -66,7 +66,23 @@ class Api:
             list: Liste des réponses correctes et incorrectes.
                 Exemple : [True, False, True] 
         """
-        return Bac.verifier_mot(reponses, lettre)
+        bac = Bac()
+        return bac.verifier_mot(reponses, lettre)
+    
+    def get_themes_bac(self):
+        """Récupère les thèmes pour l'exercice 'Bac' à partir de la lettre donnée
+
+        Args:
+            lettre (str): La lettre
+        """
+        bac = Bac()
+        return bac.get_themes()
+    
+    def get_valid_letters_bac(self, themes):
+        """Récupère les lettres valides (= les lettres possibles) pour l'exercice 'Bac'
+        """
+        bac = Bac()
+        return bac.get_valid_letters(themes)
     
     def init_reaction(self, autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
         """Initialise l'exercice 'Réaction'

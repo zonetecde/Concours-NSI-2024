@@ -104,22 +104,23 @@ class Bac:
 
         Returns:
             list: Liste des réponses correctes et incorrectes.
-            Exemple : [True, False, True] 
+            Exemple : [True, False, False] 
         """
-        lettre = lettre.lower()
+        lettre = lettre.upper()
         list_rep = []
-        # Exécute une requête SQL pour vérifier si le mot est présent dans la base de données pour le thème donné et qu'il commence par la lettre donnée
+
         for theme, reponse in reponses:
-            print(reponse)
-        # Attention, ne pas oublier de passer le mot dans clean_mot avant de lancer la requête SQL pour vérifier s'il existe
             clean_rep = self.clean_mot(reponse)
-            if clean_rep[0].lower() == lettre.lower():
-                resultat = self.executer_sql("SELECT count(*) from mots where theme = clean_rep", (theme, clean_rep))
-        # Si le mot est good, mettre True dans la liste, sinon False
+
+
+            if len(clean_rep) > 0 and clean_rep[0] == lettre.lower():
+                resultat = self.executer_sql(f"SELECT COUNT(*) FROM mots WHERE theme = '{theme}' AND mot_clean = '{clean_rep}' AND lettre = '{lettre}'")[0][0]
                 if resultat == 0:
                     list_rep.append(False)
                 else:
                     list_rep.append(True)
+            else:
+                list_rep.append(False)
         return list_rep
 
     def url_to_html(self, url):
@@ -133,22 +134,35 @@ class Bac:
 
         return html
     
-    def exist(self, themes):
+    def get_valid_letters(self, themes):
         """
-        recuperer lettre possible 
+        Renvoie les lettres qui ont des mots pour tout les themes
         """
-        alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-        list_lettre = []
+        alphabet = [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+        lettres_valides = []
         for lettre in alphabet:
-            verif = True
+            valide = True # On suppose que la lettre est valide jusqu'à preuve du contraire
+
             for theme in themes:
-                #verifier si pour le theme il existe des mots qui commence par lettre
-                resultat = self.executer_sql("SELECT count(*) from mots where theme like '{lettre}%'")
+                # Vérifie si il y a au moins un mot pour la lettre et le thème donné	
+                resultat = self.executer_sql(f"SELECT COUNT(*) FROM mots WHERE theme = '{theme}' AND lettre = '{lettre}'") [0][0]
+
+                # Si il n'y a pas de mot pour la lettre et le thème donné, on ne le met pas dans la liste
                 if resultat == 0:
-                    verif = False
-            if verif == True:
-                list_lettre.append(lettre)
-        return list_lettre
+                    valide = False
+                    break
+
+            if valide == True:
+                lettres_valides.append(lettre)
+
+        return lettres_valides
+    
+    def get_themes(self):
+        """
+        Récupère les themes de la base de donnée
+        """
+        themes = self.executer_sql("SELECT DISTINCT theme FROM mots")
+        return [theme[0] for theme in themes]
                     
 
 # =====================================
@@ -159,6 +173,6 @@ class Bac:
 #doctest.testmod(verbose=False)
 
 # Ajout des mots dans la base de donnée
-mot = Bac()
-print(mot.exist(["Animaux", "Qualités"])) 
+# mot = Bac()
+# print(mot.get_themes())
     
