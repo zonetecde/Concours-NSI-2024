@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import { fade } from 'svelte/transition';
-	import { PlayAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
+	import { PlayAudio, StopAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 	import JeuBacRow, { Mot } from './JeuBacRow';
 	import Api from '../../../api/Api';
 
@@ -205,6 +205,9 @@
 	 * Appelée lorsqu'on clique sur le bouton de validation
 	 */
 	async function validateRow() {
+		// Arrete l'audio du tic tac
+		StopAudio('/audio/tictac.mp3');
+
 		chronometre = -1; // Arrête le chronomètre
 
 		// Vérifie les réponses à l'aide de l'API python
