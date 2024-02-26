@@ -143,7 +143,7 @@ class Bac:
             verif = True
             for theme in themes:
                 #verifier si pour le theme il existe des mots qui commence par lettre
-                resultat = self.executer_sql("SELECT count(*) from mots where theme like 'lettre%' ", (theme, lettre))
+                resultat = self.executer_sql("SELECT count(*) from mots where theme like '{lettre}%'")
                 if resultat == 0:
                     verif = False
             if verif == True:
@@ -159,5 +159,6 @@ class Bac:
 #doctest.testmod(verbose=False)
 
 # Ajout des mots dans la base de donnée
-#mot = Bac()
-#mot.chargement()
+mot = Bac()
+print(mot.exist(["Animaux", "Qualités"])) 
+    
