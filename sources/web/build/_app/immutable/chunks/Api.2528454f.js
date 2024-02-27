@@ -1,0 +1,1 @@
+var o=Object.defineProperty;var r=(e,a,c)=>a in e?o(e,a,{enumerable:!0,configurable:!0,writable:!0,value:c}):e[a]=c;var s=(e,a,c)=>(r(e,typeof a!="symbol"?a+"":a,c),c);const t=class t{};s(t,"api",pywebview.api),s(t,"openPythonProject",async a=>{t.api.ouvrir_exercice(a)});let i=t;export{i as A};
