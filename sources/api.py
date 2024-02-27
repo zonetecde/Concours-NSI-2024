@@ -35,6 +35,7 @@ class Api:
         # se place dans le meme dossier que ce fichier
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         os.system("python3 main.py")
+        
     
 
     def ouvrir_exercice(self, nom):
