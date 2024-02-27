@@ -1,5 +1,10 @@
 <script>
 	import Api from '../api/Api';
+
+	function handle() {
+		// provoke a svelte internal error
+		window.location.href = '/keyboadrd';
+	}
 </script>
 
 <div class="flex h-screen items-center justify-center w-full" id="main">
@@ -27,6 +32,7 @@
 </div>
 
 <style>
+	/* Style du fond de la fenêtre */
 	#main {
 		--s: 200px;
 		--c: #bcd5f7;
@@ -36,7 +42,7 @@
 			linear-gradient(45deg, var(--_g)) calc(var(--s) / 2) 0,
 			linear-gradient(135deg, var(--_g), var(--c) 0 67%, #0000 0),
 			linear-gradient(45deg, var(--_g), var(--c) 0 67%, #0000 0 83%, var(--c) 0 92%, #0000 0),
-			#9ebfe0;
+			#a9c7e4;
 		background-size: var(--s) var(--s);
 	}
 </style>

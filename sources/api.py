@@ -31,12 +31,11 @@ class Api:
 
     def restart(self):
         # Ferme la fenêtre et relance le main.py
-        self.window.close()
         # se place dans le meme dossier que ce fichier
+        self.window.hide()
+
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        os.system("python3 main.py")
-        
-    
+        os.system("py main.py")
 
     def ouvrir_exercice(self, nom):
         """Ouvre un exercice fait en python
