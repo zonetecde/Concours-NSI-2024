@@ -5,6 +5,10 @@
 	import PythonApi from '../../../api/Api';
 	import { fade } from 'svelte/transition';
 	import { PlayAudio, StopAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
+	import Fetching from '$lib/Fetching.svelte';
+
+	/** @type {boolean} */
+	let isFetching = false; // L'API est en train de récupérer les données depuis Python ?
 
 	/** @type {boolean} */
 	let hasExerciceStarted = false; // L'exercice a commencé ?
@@ -70,19 +74,22 @@
 	 * @param {string} reaction_a_afficher
 	 */
 	function afficherReaction(reaction_a_afficher) {
-		// Arrête le tictac
-		StopAudio('/audio/tictac.mp3');
+		// Vérifie si l'exercice a commencé (ou que l'utilisateur n'a pas quitté la page)
+		if (hasExerciceStarted) {
+			// Arrête le tictac
+			StopAudio('/audio/tictac.mp3');
 
-		PlayAudio('/audio/ding.mp3');
+			PlayAudio('/audio/ding.mp3');
 
-		// Affiche la réaction à l'écran
-		reaction = reaction_a_afficher;
-		tempsDebut = Date.now();
+			// Affiche la réaction à l'écran
+			reaction = reaction_a_afficher;
+			tempsDebut = Date.now();
 
-		// Met le focus sur l'input de la réaction
-		setTimeout(() => {
-			reactionTextInput.focus();
-		}, 0);
+			// Met le focus sur l'input de la réaction
+			setTimeout(() => {
+				reactionTextInput.focus();
+			}, 0);
+		}
 	}
 
 	/**
@@ -106,14 +113,23 @@
 		}
 	}
 
-	function startExercice() {
+	async function startExercice() {
 		// Initialisation de l'exercice depuis l'API
-		PythonApi.api.init_reaction(
+
+		isFetching = true;
+
+		// Envoie les paramètres choisis à l'API
+		await PythonApi.api.init_reaction(
 			allowUppercase,
 			allowAccents,
 			allowSpecialCharacters,
 			nombreDeReactions
 		);
+
+		// Attend un petit peu pour montrer que l'API est en train d'intialiser l'exercice
+		await new Promise((r) => setTimeout(r, 1200));
+
+		isFetching = false;
 
 		// Demande à l'utilisateur de se préparer
 		hasExerciceStarted = true;
@@ -124,13 +140,16 @@
 		PlayAudio('/audio/countdown.mp3');
 
 		const countdown_interval = setInterval(() => {
-			countdown--;
-			if (countdown === 0) {
-				countdown_visible = false;
-				PythonApi.api.lancer_reaction(indexReaction); // Lance la première réaction
-				// Lance le tictac
-				PlayAudio('/audio/tictac.mp3');
-				clearInterval(countdown_interval);
+			// Au cas où l'utilisateur quitte l'exercice avant le début
+			if (hasExerciceStarted) {
+				countdown--;
+				if (countdown === 0) {
+					countdown_visible = false;
+					PythonApi.api.lancer_reaction(indexReaction); // Lance la première réaction
+					// Lance le tictac
+					PlayAudio('/audio/tictac.mp3');
+					clearInterval(countdown_interval);
+				}
 			}
 		}, 1000);
 	}
@@ -141,6 +160,10 @@
 		window.removeEventListener('keyup', keyUp);
 		// @ts-ignore
 		window.removeEventListener('afficherReaction', afficherReaction);
+		// Arrête le tictac
+		StopAudio('/audio/tictac.mp3');
+		StopAudio('/audio/countdown.mp3');
+		hasExerciceStarted = false;
 	}
 
 	/**
@@ -298,6 +321,10 @@
 				</div>
 			</div>
 		</div>
+	{/if}
+
+	{#if isFetching}
+		<Fetching Text1="Envois des paramètres choisi à Python..." Text2="" />
 	{/if}
 
 	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />

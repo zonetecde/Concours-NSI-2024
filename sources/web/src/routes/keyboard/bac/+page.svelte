@@ -7,6 +7,10 @@
 	import { PlayAudio, StopAudio, keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 	import JeuBacRow, { Mot } from './JeuBacRow';
 	import Api from '../../../api/Api';
+	import Fetching from '$lib/Fetching.svelte';
+
+	/** @type {boolean} */
+	let isFetching = false;
 
 	/** @type {Array<string>} */
 	let themes = []; // Les thèmes disponibles. Récupérés depuis l'API python lors du montage du composant
@@ -84,12 +88,17 @@
 			return;
 		}
 
+		isFetching = true;
+
 		// Récupère les lettres valides pour chaque thème
 		const reponse = await Api.api.get_valid_letters_bac(selectedThemes);
 		alphabet = reponse;
 
-		chronometreTotal = 0;
+		isFetching = false;
+
 		hasExerciceStarted = true;
+
+		chronometreTotal = 0;
 
 		startRound();
 	}
@@ -320,9 +329,24 @@
 				<div class="flex py-2 gap-x-2">
 					{#each selectedThemes as theme}
 						<button
-							class="bg-[#6cbb8df3] rounded-xl lg:p-2 px-1 py-0.5"
+							class="bg-[#6cbb8df3] rounded-xl lg:p-2 px-1 py-0.5 group relative"
 							on:click={(e) => handleThemeSelected(e, theme)}
 						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="white"
+								class="w-6 h-6 absolute -top-2 -right-2 bg-red-900 rounded-full hidden group-hover:block"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+								/>
+							</svg>
+
 							{theme}
 						</button>
 					{/each}
@@ -419,7 +443,7 @@
 			</div>
 
 			<button
-				class="w-12 h-12 px-2 rounded-full py-2 absolute bottom-3 hover:scale-110 duration-150 right-3 shadow-xl cursor-pointer bg-green-800"
+				class="w-12 h-12 px-2 rounded-full py-2 absolute bottom-5 hover:scale-110 duration-150 right-3 shadow-xl cursor-pointer bg-green-800"
 				on:click={validateRow}
 			>
 				<svg
@@ -483,6 +507,10 @@
 				</div>
 			</div>
 		{/if}
+	{/if}
+
+	{#if isFetching}
+		<Fetching Text1="Récupèration des lettres possibles depuis l'API python..." Text2="" />
 	{/if}
 
 	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
