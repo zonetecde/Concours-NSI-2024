@@ -1,5 +1,6 @@
 <script>
 	import Exercice from '$lib/Exercice.svelte';
+	import { keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 	import Retour from '$lib/Retour.svelte';
 	import { onMount } from 'svelte';
 
@@ -20,7 +21,16 @@
 
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);
+		window.addEventListener('keyup', keyUp);
 	});
+
+	/**
+	 * Appelée lorsqu'une touche est relâchée
+	 * @param {KeyboardEvent} event
+	 */
+	function keyUp(event) {
+		keyUpAudio(event);
+	}
 
 	/**
 	 * Appelée lorsqu'une touche est appuyée
@@ -28,6 +38,8 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
+		keyDownAudio(event);
+
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
 		}
@@ -38,6 +50,7 @@
 	function quit() {
 		// Enlève les event listeners
 		window.removeEventListener('keydown', keyDown);
+		window.removeEventListener('keyup', keyUp);
 	}
 </script>
 

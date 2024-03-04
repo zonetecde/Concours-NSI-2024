@@ -4,6 +4,7 @@ import sys
 from keyboard.bac.bac import Bac
 from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
+from keyboard.stenographie.stenographie import Stenographie
 
 # Permet de ce placer dans le dossier contenant les scripts ROSU
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/Rosu")
@@ -119,6 +120,12 @@ class Api:
                          Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
         """
         return Reaction.calculer_score_reaction(data)
+
+    def recuperer_phrase_aleatoire_voxforge(self):
+        """Récupère une phrase aléatoire de voxforge.org
+        """
+        ste = Stenographie()
+        return ste.get_audios_with_texts()
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web

@@ -4,8 +4,7 @@ import http.server
 import socketserver
 import threading
 from api import Api
-
-DEBUG = False
+from config import DEBUG
 
 def start_server():
     # Se place dans le dossier contenant les fichiers du site

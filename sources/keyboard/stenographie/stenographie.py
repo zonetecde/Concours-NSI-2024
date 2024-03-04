@@ -7,6 +7,11 @@ import requests
 import sys
 import tarfile
 
+# Permet de ce placer dans le dossier sources
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+from config import DEBUG
+
 class Stenographie:
     def get_audios_with_texts(self):
         """Récupère des audios et leur retranscription depuis voxforge.org
@@ -50,9 +55,24 @@ class Stenographie:
             for line in file:
                 # Le chemin d'accès vers l'audio est entre le début et le premier espace
                 data = line.split(" ", maxsplit=1)
-                audio_path = os.path.join(os.path.dirname(folder_path), data[0])
+                audio_path = os.path.join(os.path.dirname(folder_path), data[0]).replace("/", "\\").replace("mfc", "wav") + ".wav"
                 text = data[1].capitalize().replace("\n", "")
-                audios.append((text, audio_path))
+
+                # Vérifie que le fichier audio existe
+                if os.path.isfile(audio_path):
+                    # Déplace le fichier audio dans le dossier static/audios pour pouvoir l'utiliser dans le site
+                    if not DEBUG:
+                        to_dir =  os.path.dirname(os.path.dirname(os.path.dirname(__file__))).replace("\\", "/") + "/web/build/audio/stenographie/"
+                    else:
+                        to_dir =  os.path.dirname(os.path.dirname(os.path.dirname(__file__))).replace("\\", "/") + "/web/static/audio/stenographie/"
+
+                    os.rename(audio_path, to_dir + os.path.basename(audio_path))     
+
+                    audios.append((text, f"/audio/stenographie/{os.path.basename(audio_path)}"))
+
+        # Supprime le dossier temporaire
+        os.remove(filepath)
+        #os.remove(folder_path) # Ne fonctionne pas, car privilèges insuffisants
 
         # renvoie la liste de tuple (format : [(texte, chemin_audio), (texte, chemin_audio), ...])
         return audios
