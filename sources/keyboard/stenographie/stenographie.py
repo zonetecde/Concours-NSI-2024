@@ -1,11 +1,14 @@
+from difflib import SequenceMatcher
 import os
 import random
 import re
+import shutil
 import urllib.request
 
 import requests
 import sys
 import tarfile
+import unicodedata
 
 # Permet de ce placer dans le dossier sources
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -19,6 +22,7 @@ class Stenographie:
         Returns:
             list de tuple: Liste de tuple contenant le texte et le chemin d'accès vers l'audio.
         """
+        self.delete_old_audios()
         
         # De la page https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=1 
         # à https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=76 (inclus)
@@ -51,6 +55,8 @@ class Stenographie:
         audios = []
         text_file = os.path.join(folder_path, "etc/PROMPTS")
 
+        to_dir = self.get_static_folder_path()
+
         with open(text_file, "r", encoding="UTF-8") as file:
             for line in file:
                 # Le chemin d'accès vers l'audio est entre le début et le premier espace
@@ -60,23 +66,50 @@ class Stenographie:
 
                 # Vérifie que le fichier audio existe
                 if os.path.isfile(audio_path):
-                    # Déplace le fichier audio dans le dossier static/audios pour pouvoir l'utiliser dans le site
-                    if not DEBUG:
-                        to_dir =  os.path.dirname(os.path.dirname(os.path.dirname(__file__))).replace("\\", "/") + "/web/build/audio/stenographie/"
-                    else:
-                        to_dir =  os.path.dirname(os.path.dirname(os.path.dirname(__file__))).replace("\\", "/") + "/web/static/audio/stenographie/"
+                    # Déplace le fichier audio dans le dossier static/audios/stenographie pour pouvoir l'utiliser dans le site
+                    # Lui ajoute un nom aléatoire pour éviter les doublons
+                    random_name = ""
+                    while os.path.isfile(to_dir + random_name) or random_name == "":
+                        random_name = str(random.randint(0, 999_999)) + ".wav"
 
-                    os.rename(audio_path, to_dir + os.path.basename(audio_path))     
+                    os.rename(audio_path, to_dir + random_name)
 
-                    audios.append((text, f"/audio/stenographie/{os.path.basename(audio_path)}"))
+                    text = text.strip()
 
-        # Supprime le dossier temporaire
+                    audios.append((text, f"/audio/stenographie/{random_name}"))
+
+        # Supprime le dossier tgz temporaire
         os.remove(filepath)
-        #os.remove(folder_path) # Ne fonctionne pas, car privilèges insuffisants
+        # Supprime le dossier d'extraction temporaire
+        shutil.rmtree(folder_path) 
 
         # renvoie la liste de tuple (format : [(texte, chemin_audio), (texte, chemin_audio), ...])
         return audios
     
+    def delete_old_audios(self):
+        """Supprime les anciens fichiers audios
+        """
+        # Supprime les ancien fichiers audios
+        dir = self.get_static_folder_path()
+
+        # Si le dossier n'existe pas, le crée
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        
+        for file in os.listdir(dir):
+            try:
+                os.remove(dir + file)
+            except PermissionError:
+                pass
+
+    def get_static_folder_path(self):
+        """Renvoie le chemin d'accès vers le dossier static du site
+        """
+        if not DEBUG:
+            return os.path.dirname(os.path.dirname(os.path.dirname(__file__))).replace("\\", "/") + "/web/build/audio/stenographie/"
+        else:
+            return os.path.dirname(os.path.dirname(os.path.dirname(__file__))).replace("\\", "/") + "/web/static/audio/stenographie/"
+
     def get_html(self, url):
         """Télécharge le contenu d'une page web et le retourne sous forme de texte.
         """
@@ -159,6 +192,85 @@ class Stenographie:
             folder_name = item.name
 
         return os.path.join(where, os.path.dirname(os.path.dirname(folder_name))) 
+    
+    def verifier_phrase(self, phrase_original, phrase_tapee, majs, orthographe, ponctuations):
+        """Vérifie si la réponse donnée par l'utilisateur est correcte
+
+        Args:
+            phrase_original (str): La phrase originale
+            phrase_tapee (str): La phrase tapée par l'utilisateur
+            majs (bool): True si les majuscules sont prises en compte, False sinon
+            orthographe (bool): True si l'orthographe est prise en compte, False sinon
+            ponctuations (bool): True si les ponctuations sont prises en compte, False sinon
+
+        Returns:
+            bool: True si la réponse est correcte, False sinon
+        """
+        if not majs:
+            phrase_original = phrase_original.lower()
+            phrase_tapee = phrase_tapee.lower()
+
+        if not orthographe:
+            # Enlève les accents
+            phrase_original = self.enlever_accent(phrase_original)
+            phrase_tapee = self.enlever_accent(phrase_tapee)
+
+            # Enlève les `s` à la fin des mots 
+            phrase_original = re.sub(r'\bs\b', '', phrase_original)
+            phrase_tapee = re.sub(r'\bs\b', '', phrase_tapee)
+
+            # Corrige les fautes de terminaisons
+            phrase_original = self.enlever_terminaisons(phrase_original)
+            phrase_tapee = self.enlever_terminaisons(phrase_tapee)
+        
+        if not ponctuations:
+            phrase_original = re.sub(r'[^\w\s]', '', phrase_original)
+            phrase_tapee = re.sub(r'[^\w\s]', '', phrase_tapee)
+
+        # Enlève les espaces
+        phrase_original = phrase_original.strip().replace(" ", "-")
+        phrase_tapee = phrase_tapee.strip().replace(" ", "-")
+
+        # Vérifie si les deux phrases sont les mêmes et calcul un pourcentage de ressemblance
+        return phrase_original == phrase_tapee, self.similarity(phrase_original, phrase_tapee)
+    
+    def similarity(self, a, b):
+        """Calcul le pourcentage de ressemblance entre deux phrases
+
+        Args:
+            a (str): La première phrase
+            b (str): La deuxième phrase
+
+        Returns:
+            float: Le pourcentage de ressemblance
+        """
+        return round(SequenceMatcher(None, a, b).ratio() * 100, 2)
+
+    def enlever_accent(self, phrase):
+        """Enlève les accents d'une phrase
+
+        Args:
+            phrase (str): La phrase
+
+        Returns:
+            str: La phrase sans accents
+        """
+        return ''.join(c for c in unicodedata.normalize('NFD', phrase)
+                  if unicodedata.category(c) != 'Mn')
+
+    def enlever_terminaisons(self, phrase):
+        """Met toutes les terminaisons `ées`, `és`, `ée`, `er`, `ai`, `aient`, `ais`, `ait` en `er`
+        et met toutes les termisaisons `is`, `it`, `ie`, `ient` en `i`
+
+        Args:
+            phrase (str): La phrase
+
+        Returns:
+            str: La phrase modifiée
+        """
+        phrase = re.sub(r'\b(?:ées|és|ée|ai|aient|ais|ait)\b', 'er', phrase)
+        phrase = re.sub(r'\b(?:is|it|ie|ient)\b', 'i', phrase)
+        return phrase
 
 # stenographie = Stenographie()
 # print(stenographie.get_audios_with_texts())

@@ -15,12 +15,18 @@
 	 */
 	let audios = [];
 
+	/** @type {HTMLAudioElement} */
+	let audioPlayer;
+
 	/** @type {[string, string] | undefined} */
-	//let currentAudio = []; // L'audio actuellement joué avec sa retranscription
-	let currentAudio = ['test', '/audio/stenographie/fr-sb-74.wav']; // L'audio actuellement joué avec sa retranscription
+	let currentAudio = undefined; // L'audio actuellement joué avec sa retranscription
+	//let currentAudio = ['test', '/audio/stenographie/fr-sb-74.wav']; // debug
 
 	/** @type {string} */
 	let tapedSentence = ''; // La phrase tapée par l'utilisateur
+
+	/** @type {number | null} */
+	let similitude = null; // Le pourcentage de similitude entre la phrase tapée et la phrase de l'audio
 
 	/** @type {boolean} */
 	let hasExerciceStarted = false; // L'exercice a commencé ?
@@ -29,10 +35,10 @@
 	let hasExerciceEnded = false; // L'exercice est terminé ?
 
 	/** @type {boolean} */
-	let checkMaj = true; // Autoriser les majuscules dans les chaines de caractères ?
+	let checkMaj = false; // Autoriser les majuscules dans les chaines de caractères ?
 
 	/** @type {boolean} */
-	let checkAccents = true; // Autoriser les accents dans les chaines de caractères ?
+	let checkOrthographe = true; // Autoriser les accents dans les chaines de caractères ?
 
 	/** @type {boolean} */
 	let checkPonctuations = false; // Autoriser les caractères spéciaux dans les chaines de caractères ?
@@ -58,8 +64,12 @@
 	function keyDown(event) {
 		keyDownAudio(event);
 
-		if (event.key === 'Enter' && !hasExerciceStarted) {
-			startExercice();
+		if (event.key === 'Enter') {
+			if (!hasExerciceStarted) {
+				startExercice();
+			} else if (!isFetching) {
+				handleSubmissionButtonClicked();
+			}
 		}
 	}
 
@@ -79,12 +89,24 @@
 	 */
 	function playNextAudio() {
 		if (audios.length === 0) {
-			hasExerciceEnded = true;
+			// Récupère de nouvelles phrases
+			startExercice();
 			return;
 		}
 
+		similitude = null; // Cache la réponse précédente
+		tapedSentence = ''; // Réinitialise la phrase tapée
+
 		currentAudio = audios.pop();
-		// L'audio sera joué dans le render automatiquement (autoplay = true)
+
+		console.log('Playing audio:', currentAudio);
+
+		setTimeout(() => {
+			if (audioPlayer && currentAudio) {
+				audioPlayer.src = currentAudio[1];
+				audioPlayer.play();
+			}
+		}, 100);
 	}
 
 	function quit() {
@@ -97,29 +119,21 @@
 	 * Appelée lorsqu'on clique sur le bouton de soumission
 	 * Vérifie si la phrase est correcte en fonction des options choisies
 	 */
-	function handleSubmissionButtonClicked() {
-		const input = document.querySelector('input');
-		const phrase = tapedSentence;
+	async function handleSubmissionButtonClicked() {
+		if (currentAudio && hasExerciceStarted && !isFetching) {
+			const phrase = tapedSentence;
 
-		// Vérifie si la phrase est correcte
-		let correct = true;
-		if (!checkMaj) {
-			correct = correct && !/[A-Z]/.test(phrase);
-		}
-		if (!checkAccents) {
-			correct = correct && !/[À-ÿ]/.test(phrase);
-		}
-		if (!checkPonctuations) {
-			correct = correct && !/[.,\/#!$%\^&\*;:{}=\-_`~()]/.test(phrase);
-		}
+			// Vérifie si la phrase est correcte
+			// Le résultat est sous la forme [Vrai/Faux, pourcentage de ressemblance]
+			const data = await Api.api.verifier_phrase_stenographie(
+				currentAudio[0],
+				phrase,
+				checkMaj,
+				checkOrthographe,
+				checkPonctuations
+			);
 
-		if (correct) {
-			// Joue l'audio suivant
-			playNextAudio();
-		} else {
-			// Joue un son d'erreur
-			const audio = new Audio('/audio/ding.mp3');
-			audio.play();
+			similitude = data[1];
 		}
 	}
 </script>
@@ -128,7 +142,7 @@
 	{#if !hasExerciceStarted}
 		<h1 class="font-bold text-3xl mb-6 -mt-3">Réaction!</h1>
 
-		<Exercice image="/keyboard/reaction.jpg" nom="Réaction" handleClick={startExercice} />
+		<Exercice image="/keyboard/stenographie.jpg" nom="Réaction" handleClick={startExercice} />
 
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
@@ -145,42 +159,24 @@
 				<p class="pr-2">Options :</p>
 
 				<div class="flex gap-x-8">
-					<label for="majuscules" class="text-lg">
-						<input
-							type="checkbox"
-							class="mr-1 accent-blue-800"
-							id="majuscules"
-							bind:checked={checkMaj}
-						/>Majuscules</label
-					>
-
 					<label for="accents" class="text-lg"
 						><input
 							type="checkbox"
 							class="mr-0.5 accent-blue-800"
 							id="accents"
-							bind:checked={checkAccents}
-						/>Accents</label
+							bind:checked={checkOrthographe}
+						/>Vérifier l'orthographe et la conjugaison des verbes</label
 					>
-
-					<label for="specialChars" class="text-lg"
-						><input
-							type="checkbox"
-							class=" mr-0.5 accent-blue-800"
-							id="specialChars"
-							bind:checked={checkPonctuations}
-						/>Ponctuations
-					</label>
 				</div>
 			</div>
 		</div>
 
 		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
-	{:else if currentAudio}
+	{:else}
 		<div class="w-full h-full flex items-center justify-center flex-col">
 			<!-- Media player -->
-			<audio controls autoplay class="w-1/3">
-				<source src={currentAudio[1]} type="audio/wav" />
+			<audio controls class="w-1/3" bind:this={audioPlayer}>
+				<source type="audio/wav" />
 			</audio>
 
 			<small class="mt-5"
@@ -196,14 +192,54 @@
 				type="text"
 				class="mt-10 p-2 border-2 outline-none border-[#656c81] rounded-md w-2/3 shadow-xl focus:scale-105 duration-110"
 				autofocus
+				spellcheck="false"
+				on:blur={() => {
+					const input = document.querySelector('input');
+					if (input) input.focus();
+				}}
+				disabled={similitude !== null || isFetching}
 			/>
 
-			<button
-				class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md"
-				on:click={handleSubmissionButtonClicked}
-			>
-				Soumettre
-			</button>
+			{#if similitude !== null && currentAudio}
+				<p class="text-2xl text-green-950 font-bold mt-3 w-2/3 text-center">
+					<span class="text-lg underline underline-offset-2">Réponse :</span><br />{currentAudio[0]}
+				</p>
+				<p class="mt-5 text-lg">
+					Taux de réussite : <span class="font-bold">{similitude}%</span>
+				</p>
+
+				<div class="flex gap-x-4">
+					<button
+						class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md"
+						on:click={playNextAudio}
+					>
+						Phrase suivante
+					</button>
+					<button
+						class="mt-8 py-3 px-8 bg-[#e45656] border-2 border-[#813a3a] text-white rounded-md"
+						on:click={() => {
+							// Simule un clic sur le <a> qui a pour id `retour`
+							const a = document.getElementById('retour');
+							a?.click();
+						}}
+					>
+						S'arrêter
+					</button>
+					<button
+						class="mt-8 py-3 px-8 bg-[#b9e456] border-2 border-[#80813a] rounded-md text-black"
+						on:click={startExercice}
+					>
+						Changer l'orateur/oratrice
+					</button>
+				</div>
+			{:else}
+				<button
+					class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md"
+					on:click={handleSubmissionButtonClicked}
+				>
+					Soumettre
+				</button>
+			{/if}
 		</div>
 	{/if}
 

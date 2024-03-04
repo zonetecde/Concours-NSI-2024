@@ -11,7 +11,7 @@
 		<Exercice image="" nom="Falling words" />
 		<Exercice image="/keyboard/reaction.jpg" nom="Reaction" link="/keyboard/reaction" />
 		<Exercice image="/keyboard/bac.jpg" nom="Jeu du Bac" link="/keyboard/bac" />
-		<Exercice image="" nom="Sténographie" link="/keyboard/stenographie" />
+		<Exercice image="/keyboard/stenographie.jpg" nom="Sténographie" link="/keyboard/stenographie" />
 	</div>
 
 	<Retour urlToGo="/" />

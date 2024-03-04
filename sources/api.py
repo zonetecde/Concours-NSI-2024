@@ -126,6 +126,19 @@ class Api:
         """
         ste = Stenographie()
         return ste.get_audios_with_texts()
+    
+    def verifier_phrase_stenographie(self, phrase_original, phrase_tapee, majs, orthographe, ponctuations):
+        """Vérifie si la phrase donnée par le joueur est correcte
+
+        Args:
+            phrase_original (str): La phrase originale
+            phrase_tapee (str): La phrase donnée par le joueur
+            majs (bool): Est-ce que on compare les majuscules ?
+            orthographe (bool): Est-ce que on compare l'orthographe ?
+            ponctuations (bool): Est-ce que on compare les ponctuations ?
+        """
+        ste = Stenographie()
+        return ste.verifier_phrase(phrase_original, phrase_tapee, majs, orthographe, ponctuations)
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
