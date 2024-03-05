@@ -23,6 +23,11 @@ class Stenographie:
             list de tuple: Liste de tuple contenant le texte et le chemin d'accès vers l'audio.
         """
         try:
+            # Crée le dossier `audios` s'il n'existe pas
+            dir = os.path.dirname(os.path.abspath(__file__)) + "/audios/"
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+
             self.delete_old_audios()
             
             # De la page https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=1 
