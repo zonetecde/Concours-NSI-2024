@@ -24,11 +24,13 @@ clock = pygame.time.Clock()
 
 screen.fill((0, 0, 0))
 
-x = 90
-y = 190
+x = 50
+y = 150
 bg = None
 running = True
 
+ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
+font = pygame.font.Font('src/mouse/fonts/VCR_OSD_MONO.ttf', 50)
 # Main loop
 while running:
     
@@ -37,16 +39,27 @@ while running:
 
     ## Création niveau 
 
+    
+
     #Arrière plan
     screen.blit(screen, (0, 0))
 
     # Création début et fin
-    deb = (100, 200)
-    fin = (400, 200)
+    deb = (100-10, 225-10, 10, 10)
+    fin = (650-10, 225-10, 10, 10)
     # Création bord et mur
-    pygame.draw.rect(screen, (255, 0, 0), (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2))
-    # Boucle qui vérifie que l'on est bien dans le niveau 
+    pygame.draw.rect(screen, (255, 0, 0), ractangle)
+    #Création carré debut et fin 
+    pygame.draw.rect(screen, (35, 150, 245), deb)
+    pygame.draw.rect(screen, (35, 150, 245), fin)
+    # Met le cursor sur le départ
+    pygame.mouse.set_pos([95, 645])
+    # Boucle qui vérifie que l'on est bien dans le niveau
+    
 
+    if mouseX > ractangle[0] and mouseX < ractangle[0] + ractangle[2] and mouseY > ractangle[1] and mouseY < ractangle[1] + ractangle[3]:
+        
+        pygame.mouse.set_pos([95, 645])
 
 
 
