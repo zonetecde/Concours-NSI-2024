@@ -9,6 +9,9 @@
 	/** @type {boolean} */
 	let isFetching = false;
 
+	/** @type {string} */
+	let langue = 'fr'; // La langue de l'audio
+
 	/**
 	 * Les audios des phrases ainsi que les phrases au format [(texte, audio file path), ...]
 	 * @type {Array<[string, string]>}
@@ -78,7 +81,7 @@
 		hasExerciceStarted = true;
 
 		isFetching = true;
-		audios = await Api.api.recuperer_phrase_aleatoire_voxforge();
+		audios = await Api.api.recuperer_phrase_aleatoire_voxforge(langue);
 		isFetching = false;
 
 		playNextAudio();
@@ -140,9 +143,9 @@
 
 <div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
 	{#if !hasExerciceStarted}
-		<h1 class="font-bold text-3xl mb-6 -mt-3">Réaction!</h1>
+		<h1 class="font-bold text-3xl mb-6 -mt-3">Sténographie</h1>
 
-		<Exercice image="/keyboard/stenographie.jpg" nom="Réaction" handleClick={startExercice} />
+		<Exercice image="/keyboard/stenographie.jpg" nom="Sténographie" handleClick={startExercice} />
 
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
@@ -158,7 +161,7 @@
 			<div class="flex flex-col w-full">
 				<p class="pr-2">Options :</p>
 
-				<div class="flex gap-x-8">
+				<div class="flex gap-x-8 items-center">
 					<label for="accents" class="text-lg"
 						><input
 							type="checkbox"
@@ -167,6 +170,27 @@
 							bind:checked={checkOrthographe}
 						/>Vérifier l'orthographe et la conjugaison des verbes</label
 					>
+
+					<label class="text-lg"
+						>Langue de l'audio :
+						<select
+							class="p-2 border-2 outline-none border-[#656c81] rounded-md w-[200px]"
+							bind:value={langue}
+						>
+							<option value="fr">Français</option>
+							<option value="en">Anglais</option>
+							<option value="sq">Albanian</option>
+							<option value="nl">Dutch</option>
+							<option value="de">Allemand</option>
+							<option value="he">Hébreu</option>
+							<option value="el">Grec</option>
+							<option value="it">Italien</option>
+							<option value="pt">Portugais</option>
+							<option value="ru">Russe</option>
+							<option value="es">Espagnol</option>
+							<option value="tr">Turc</option>
+						</select>
+					</label>
 				</div>
 			</div>
 		</div>
