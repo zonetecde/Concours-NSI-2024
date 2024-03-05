@@ -363,5 +363,5 @@
 		{/if}
 	{/if}
 
-	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
+	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3 z-50" toExecuteBefore={quit} />
 </div>
