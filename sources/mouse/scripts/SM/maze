@@ -1,0 +1,66 @@
+import pygame
+import sys
+import json
+from os.path import exists
+import os
+
+# Permet de ce placer dans le dossier contenant les scripts SM
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
+
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions
+desktopSize = pygame.display.get_desktop_sizes()
+
+SCREEN_WIDTH = desktopSize[0][0]
+SCREEN_HEIGHT = desktopSize[0][1]
+
+# Initialize the screen
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
+pygame.display.set_caption("Scary maze or not?")
+# Clock for controlling the frame rate
+clock = pygame.time.Clock()
+
+screen.fill((0, 0, 0))
+
+x = 90
+y = 190
+bg = None
+running = True
+
+# Main loop
+while running:
+    
+    mouseX = pygame.mouse.get_pos()[0]
+    mouseY = pygame.mouse.get_pos()[1]
+
+    ## Création niveau 
+
+    #Arrière plan
+    screen.blit(screen, (0, 0))
+
+    # Création début et fin
+    deb = (100, 200)
+    fin = (400, 200)
+    # Création bord et mur
+    pygame.draw.rect(screen, (255, 0, 0), (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2))
+    # Boucle qui vérifie que l'on est bien dans le niveau 
+
+
+
+
+    for event in pygame.event.get():
+        #Permet de quitter so on appuie sur la croix
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+        #Permet de quitter le jeu avec echap
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                pygame.mixer.stop()
+                running = False
+
+    # Update the display
+    pygame.display.flip()
+    #sys.exit()
