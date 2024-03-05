@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from config import DEBUG
 
 class Stenographie:
-    def get_audios_with_texts(self):
+    def get_audios_with_texts(self, langue):
         """Récupère des audios et leur retranscription depuis voxforge.org
 
         Returns:
@@ -30,11 +30,8 @@ class Stenographie:
 
             self.delete_old_audios()
             
-            # De la page https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=1 
-            # à https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=76 (inclus)
-
             # Prend une page aléatoire entre 1 et 76 au format https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=LE NUMERO DE LA PAGE
-            page_url = self.get_random_voxforge_page_url()
+            page_url = self.get_random_voxforge_page_url(langue)
 
             # Récupère le contenu de la page
             html = self.get_html(page_url)
@@ -133,12 +130,52 @@ class Stenographie:
 
         return html
     
-    def get_random_voxforge_page_url(self):
+    def get_random_voxforge_page_url(self, langue):
         """Renvoie une page aléatoire de voxforge.org
         Entre 1 et 76
         """
-        random_page = random.randint(1, 76)
-        return f'https://www.voxforge.org/home/downloads/speech/french-speech-files?pn={random_page}'
+        base_url = "https://www.voxforge.org/home/downloads/speech/"
+        
+        max_page = 1
+        if langue == "fr":
+            base_url += "french-speech-files"
+            max_page = 76
+        elif langue == "en":
+            base_url += "english"
+            max_page = 211
+        elif langue == "sq":
+            base_url += "albanian-speech-files"
+            max_page = 2
+        elif langue == "nl":
+            base_url += "dutch"
+            max_page = 27
+        elif langue == "de":
+            base_url += "german-speech-files"
+            max_page = 48
+        elif langue == "he":
+            base_url += "hebrew"
+            max_page = 1
+        elif langue == "el":
+            base_url += "greek-speech-files"
+            max_page = 5
+        elif langue == "it":
+            base_url += "italian-speech-files"
+            max_page = 36
+        elif langue == "pt":
+            base_url += "portuguese-speech-files"
+            max_page = 15
+        elif langue == "ru":
+            base_url += "russian"
+            max_page = 21
+        elif langue == "es":
+            base_url += "spanish"
+            max_page = 75
+        elif langue == "tr":
+            base_url += "turkish-speech-files"
+            max_page = 6
+
+        random_page = random.randint(1, max_page)
+        return f'{base_url}?pn={random_page}'
 
     def get_links_in_voxforge_page(self, html):
         """Récupère les liens dans une page de voxforge.org

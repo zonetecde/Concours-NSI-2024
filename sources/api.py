@@ -121,11 +121,17 @@ class Api:
         """
         return Reaction.calculer_score_reaction(data)
 
-    def recuperer_phrase_aleatoire_voxforge(self):
+    def recuperer_phrase_aleatoire_voxforge(self, langue):
         """Récupère une phrase aléatoire de voxforge.org
+
+        Args:
+            langue (str): La langue de la phrase
+
+        Returns:    
+            list: Les phrases avec leurs audios
         """
         ste = Stenographie()
-        return ste.get_audios_with_texts()
+        return ste.get_audios_with_texts(langue)
     
     def verifier_phrase_stenographie(self, phrase_original, phrase_tapee, majs, orthographe, ponctuations):
         """Vérifie si la phrase donnée par le joueur est correcte
