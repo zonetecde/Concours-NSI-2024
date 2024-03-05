@@ -22,69 +22,74 @@ class Stenographie:
         Returns:
             list de tuple: Liste de tuple contenant le texte et le chemin d'accès vers l'audio.
         """
-        self.delete_old_audios()
-        
-        # De la page https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=1 
-        # à https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=76 (inclus)
+        try:
+            self.delete_old_audios()
+            
+            # De la page https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=1 
+            # à https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=76 (inclus)
 
-        # Prend une page aléatoire entre 1 et 76 au format https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=LE NUMERO DE LA PAGE
-        page_url = self.get_random_voxforge_page_url()
+            # Prend une page aléatoire entre 1 et 76 au format https://www.voxforge.org/home/downloads/speech/french-speech-files?pn=LE NUMERO DE LA PAGE
+            page_url = self.get_random_voxforge_page_url()
 
-        # Récupère le contenu de la page
-        html = self.get_html(page_url)
+            # Récupère le contenu de la page
+            html = self.get_html(page_url)
 
-        # Récupère un lien aléatoire parmis tout ceux de la page (voir sur le site comment sont organisés les liens)
-        # ex de lien obtenu : https://www.voxforge.org/home/downloads/speech/french-speech-files/benob-20090314-dth2#MprUm_W0agc6Eqk3TBv-nQ
-        links = self.get_links_in_voxforge_page(html)
+            # Récupère un lien aléatoire parmis tout ceux de la page (voir sur le site comment sont organisés les liens)
+            # ex de lien obtenu : https://www.voxforge.org/home/downloads/speech/french-speech-files/benob-20090314-dth2#MprUm_W0agc6Eqk3TBv-nQ
+            links = self.get_links_in_voxforge_page(html)
 
-        random_link = random.choice(links) # lien aléatoire
+            random_link = random.choice(links) # lien aléatoire
 
-        # De ce lien, récupère le fichier .tgz 
-        tgz_download_link = self.get_tgz_download_link(random_link)
+            # De ce lien, récupère le fichier .tgz 
+            tgz_download_link = self.get_tgz_download_link(random_link)
 
-        # Télécharge le fichier .tgz dans le dossier audio 
-        filepath = self.download_tgz(tgz_download_link)
+            # Télécharge le fichier .tgz dans le dossier audio 
+            filepath = self.download_tgz(tgz_download_link)
 
-        # décompresse le fichier .tgz
-        # dans le fichier tgz se trouve un autre fichier .tar, il faut aussi le décompresser
-        folder_path = self.extract_tgz(filepath, os.path.dirname(filepath))
+            # décompresse le fichier .tgz
+            # dans le fichier tgz se trouve un autre fichier .tar, il faut aussi le décompresser
+            folder_path = self.extract_tgz(filepath, os.path.dirname(filepath))
 
-        # dans le fichier tar se trouve un dossier contenant les audios et un fichier texte avec la retranscription de l'audio
-        # les fichiers audios se trouvent dans le dossier wav et les retrancriptions dans le dossier etc/PROMPTS
-        # Récupère le texte et le chemin d'accès vers l'audio et les met dans une liste de tuple
-        audios = []
-        text_file = os.path.join(folder_path, "etc/PROMPTS")
+            # dans le fichier tar se trouve un dossier contenant les audios et un fichier texte avec la retranscription de l'audio
+            # les fichiers audios se trouvent dans le dossier wav et les retrancriptions dans le dossier etc/PROMPTS
+            # Récupère le texte et le chemin d'accès vers l'audio et les met dans une liste de tuple
+            audios = []
+            text_file = os.path.join(folder_path, "etc/PROMPTS")
 
-        to_dir = self.get_static_folder_path()
+            to_dir = self.get_static_folder_path()
 
-        with open(text_file, "r", encoding="UTF-8") as file:
-            for line in file:
-                # Le chemin d'accès vers l'audio est entre le début et le premier espace
-                data = line.split(" ", maxsplit=1)
-                audio_path = os.path.join(os.path.dirname(folder_path), data[0]).replace("/", "\\").replace("mfc", "wav") + ".wav"
-                text = data[1].capitalize().replace("\n", "")
+            with open(text_file, "r", encoding="UTF-8") as file:
+                for line in file:
+                    # Le chemin d'accès vers l'audio est entre le début et le premier espace
+                    data = line.split(" ", maxsplit=1)
+                    audio_path = os.path.join(os.path.dirname(folder_path), data[0]).replace("/", "\\").replace("mfc", "wav") + ".wav"
+                    text = data[1].capitalize().replace("\n", "")
 
-                # Vérifie que le fichier audio existe
-                if os.path.isfile(audio_path):
-                    # Déplace le fichier audio dans le dossier static/audios/stenographie pour pouvoir l'utiliser dans le site
-                    # Lui ajoute un nom aléatoire pour éviter les doublons
-                    random_name = ""
-                    while os.path.isfile(to_dir + random_name) or random_name == "":
-                        random_name = str(random.randint(0, 999_999)) + ".wav"
+                    # Vérifie que le fichier audio existe
+                    if os.path.isfile(audio_path):
+                        # Déplace le fichier audio dans le dossier static/audios/stenographie pour pouvoir l'utiliser dans le site
+                        # Lui ajoute un nom aléatoire pour éviter les doublons
+                        random_name = ""
+                        while os.path.isfile(to_dir + random_name) or random_name == "":
+                            random_name = str(random.randint(0, 999_999)) + ".wav"
 
-                    os.rename(audio_path, to_dir + random_name)
+                        os.rename(audio_path, to_dir + random_name)
 
-                    text = text.strip()
+                        text = text.strip()
 
-                    audios.append((text, f"/audio/stenographie/{random_name}"))
+                        audios.append((text, f"/audio/stenographie/{random_name}"))
 
-        # Supprime le dossier tgz temporaire
-        os.remove(filepath)
-        # Supprime le dossier d'extraction temporaire
-        shutil.rmtree(folder_path) 
+            # Supprime le dossier tgz temporaire
+            os.remove(filepath)
+            # Supprime le dossier d'extraction temporaire
+            shutil.rmtree(folder_path) 
 
-        # renvoie la liste de tuple (format : [(texte, chemin_audio), (texte, chemin_audio), ...])
-        return audios
+            # renvoie la liste de tuple (format : [(texte, chemin_audio), (texte, chemin_audio), ...])
+            return audios
+        except Exception as e:
+            print('stenographie: Erreur à la ligne {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+            print(e)
+            return []
     
     def delete_old_audios(self):
         """Supprime les anciens fichiers audios
