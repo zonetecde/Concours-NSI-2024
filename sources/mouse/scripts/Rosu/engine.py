@@ -13,10 +13,12 @@ from sauvegarde import Sauvegarde
 class Engine:
     try:
         savefile_path = os.path.dirname(os.path.abspath(__file__)) + "/savefile.json"
+        parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 
         def start_level(self, niveau: Niveau):
             """ Méthode permettant de lancer un niveau de l'exercice ROSU!
             """
+            TEXT_BACKGROUND_COLOR = (169, 191, 250)
             
             # Récupération des données de la sauvegarde        
             savefile = open(self.savefile_path)
@@ -66,13 +68,14 @@ class Engine:
             pygame.mixer.init()
             pygame.mixer.music.load(audio)
 
-            pointFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
+            pointFont = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 50)
 
             # Main game loop
             ## Initialisation Variables
             #Celles qui permettent de savoir si le jeu la musique  tourne
             renderMistake = False
             playing = False
+            running = True
 
             #Lancement de la clock et récupéaration du "premier" tick
             clock = pygame.time.Clock()
@@ -85,8 +88,7 @@ class Engine:
             saved = False 
             multiplicator = 1
 
-            #white running == True:
-            while not (185 == 175):
+            while running == True:
                 # Clear the screen
                 screen.blit(bg, (0, 0))
 
@@ -102,21 +104,30 @@ class Engine:
                         pygame.mixer.music.play()
                         playing = True
 
-                #Affichage du temps pendant les 5 secondes 
-                if current_tick < 5000:
-                    font = pygame.font.SysFont(
-                        "monospace", 75, bold=False, italic=False)
-                    color = (255, 0, 0)
-                    label = font.render(str(5000 - current_tick), 1, color)
-                    screen.blit(label, (SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.45))
-
                 # Dessine les cercles 
+                i  = 0
                 for circle_info in circlesListIngame:
                     circle_tick, (x, y), color, size, pointNumber = circle_info
+                    # Le cercle doit il être cliqué ? 
+                    is_to_be_clicked = i == 0
+                    i += 1
+                    
                     if current_tick >= circle_tick - 100 * (size * (SCREEN_HEIGHT/720)):
-                        pygame.draw.circle(screen, color, (x * (SCREEN_WIDTH/1280), y * (SCREEN_HEIGHT/720)), (size * (SCREEN_HEIGHT/720)), width=int(((current_tick - circle_tick + 100 * (size * (SCREEN_HEIGHT/720)) + 1))/(1)/100 + 1))
+                        # Dessine le cercle
+                        if not is_to_be_clicked:
+                            pygame.draw.circle(screen, color, (x * (SCREEN_WIDTH/1280), y * (SCREEN_HEIGHT/720)), (size * (SCREEN_HEIGHT/720)), width=int(((current_tick - circle_tick + 100 * (size * (SCREEN_HEIGHT/720)) + 1))/(1)/100 + 1))       
+                        else:
+                            # le dessine avec un contours rouge
+                            pygame.draw.circle(screen, (255, 0, 0), (x * (SCREEN_WIDTH / 1280), y * (SCREEN_HEIGHT / 720)),
+                                (size * (SCREEN_HEIGHT / 720) + 5), width=5)
+
+                            pygame.draw.circle(screen, color, (x * (SCREEN_WIDTH/1280), y * (SCREEN_HEIGHT/720)), (size * (SCREEN_HEIGHT/720)), width=int(((current_tick - circle_tick + 100 * (size * (SCREEN_HEIGHT/720)) + 1))/(1)/100 + 1))      
+
+                        # Ecris le numéro du cercle
                         circleLabel = pointFont.render(str(pointNumber), 1, WHITE)
-                        screen.blit(circleLabel, (x * (SCREEN_WIDTH/1280) - 10, y * (SCREEN_HEIGHT/720) - 20))
+                        screen.blit(circleLabel, (x * (SCREEN_WIDTH/1280) - (12 if pointNumber != 1 else 10), y * (SCREEN_HEIGHT/720) - 29))
+
+                        # Si le cercle est raté, on le retire
                         if int((current_tick - circle_tick + 100 * (size * (SCREEN_HEIGHT/720)) + 1)/(1)/100 + 1) > (size * (SCREEN_HEIGHT/720)) + 2:
                             circlesListIngame.remove(circle_info)
                             playerMiss += 1
@@ -130,22 +141,24 @@ class Engine:
                         running = False
                     #Vérification des cercles clickés et ajout du score
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        if len(circleClickList) == 0:
-                            pass
-                        #Si bien clické on ajoute des points + on augmente le mutiplicateur et on pense à retirer le cercle
-                        elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
-                            score += 50 * multiplicator
-                            multiplicator += 0.01
-                            circlesListIngame.pop(0)
-                        #Sinon remise du score à 0 et du multiplicateur à 1 + affichage du text RATÉ 
-                        else:
-                            font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
-                            color = (255, 0, 0)
-                            labelMistake = font.render("RATÉ", 1, color)
-                            mistakeTick = current_tick
-                            renderMistake = True
-                            playerMiss += 1
-                            multiplicator = 1
+                        # Vérifie que la partie a commencé
+                        if current_tick > 5000:
+                            if len(circleClickList) == 0:
+                                pass
+                            #Si bien clické on ajoute des points + on augmente le mutiplicateur et on pense à retirer le cercle
+                            elif math.sqrt((mouseX - circleClickList[0][0][0]) ** 2 + (mouseY - circleClickList[0][0][1]) ** 2) < circleClickList[0][1]:
+                                score += 50 * multiplicator
+                                multiplicator += 0.01
+                                circlesListIngame.pop(0)
+                            #Sinon remise du score à 0 et du multiplicateur à 1 + affichage du text RATÉ 
+                            else:
+                                font = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 80)
+                                color = (255, 0, 0)
+                                labelMistake = font.render("RATÉ", 1, color)
+                                mistakeTick = current_tick
+                                renderMistake = True
+                                playerMiss += 1
+                                multiplicator = 1
                         #Si on appuie sur échappe on quitte le jeu
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
@@ -158,14 +171,25 @@ class Engine:
                         screen.blit(labelMistake, (SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.45))
                     else:
                         renderMistake = False
-                #Affichage du score
+                
+                #Affichage du temps pendant les 5 secondes de départ
+                if current_tick < 5000:
+                    font = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 80)
+
+                    color = (200, 0, 0)
+
+                    label = font.render(str(5000 - current_tick), 1, color)
+                    screen.blit(label, (SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.45))
+
+                
+                #Affichage du score en fin de partie
                 if len(circlesListIngame) == 0 and current_tick > 6000:
-                    font = pygame.font.SysFont("monospace", 75, bold=False, italic=False)
+                    font = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 65)
                     color = (255, 0, 0)
                     
                     #Text complete! et le rectangle gris derrière ce dernier
-                    pygame.draw.rect(screen, (135, 135, 135),(SCREEN_WIDTH * 0.3125, 40, 480, 100), 0, 10, 10, 10, 10, 10)
-                    textLabel = font.render("Complete!", 1, BLACK)
+                    pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(SCREEN_WIDTH * 0.3125, 40, 480, 100), 0, 10, 10, 10, 10, 10)
+                    textLabel = font.render("Level completed!", 1, BLACK)
                     screen.blit(textLabel, (SCREEN_WIDTH * 0.3125, 50))
 
                     #Modification de la taille du rectagle selon le nombre d'erreurs 
@@ -177,22 +201,22 @@ class Engine:
                         rectLength = 420
                     
                     #Nombre d'erreurs et son rectangle
-                    pygame.draw.rect(screen, (135, 135, 135),(40, SCREEN_HEIGHT * 0.28 - 10, rectLength, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(40, SCREEN_HEIGHT * 0.28 - 10, rectLength, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
                     screen.blit(textLabel, (50, SCREEN_HEIGHT * 0.28))
 
                     #Accuracy et son rectangle
                     accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
-                    pygame.draw.rect(screen, (135, 135, 135), (40, SCREEN_HEIGHT * 0.42 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR, (40, SCREEN_HEIGHT * 0.42 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
                     screen.blit(textLabel, (50, SCREEN_HEIGHT * 0.42))
-                    pygame.draw.rect(screen, (135, 135, 135), (40, SCREEN_HEIGHT * 0.55 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
+                    pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR, (40, SCREEN_HEIGHT * 0.55 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
                     scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
                     screen.blit(scoreLabel, (50, SCREEN_HEIGHT * 0.55))
 
                     #Retour possible et son rectangle
-                    font2 = pygame.font.SysFont("monospace", 35, bold=False, italic=False)
-                    pygame.draw.rect(screen, (135, 135, 135),(190, SCREEN_HEIGHT * 0.90 - 10, 860, 100), 0, 10, 10, 10, 10, 10)
+                    font2 = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 40)
+                    pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(190, SCREEN_HEIGHT * 0.90 - 10, 860, 100), 0, 10, 10, 10, 10, 10)
                     textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
                     screen.blit(textLabel, (200, SCREEN_HEIGHT * 0.90))
                     

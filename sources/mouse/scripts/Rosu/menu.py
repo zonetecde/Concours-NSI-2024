@@ -76,6 +76,11 @@ class Rosu:
                 # Si pas d'image le fond est mis en noir
                 if bgImage != None:
                     screen.blit(bgImage, (0, 0))
+                else:
+                    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/background/rosu.png"
+                    bgImage = pygame.image.load(path).convert()
+                    bgImage = Rosu.scale_to_screen(bgImage, SCREEN_WIDTH, SCREEN_HEIGHT)
+                    
                 
                 x = 10
                 y = initialY
@@ -167,6 +172,26 @@ class Rosu:
         except Exception as e:
             print('Erreur à la ligne {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
             print(e)
+
+
+    @staticmethod
+    def scale_to_screen(image, screen_width, screen_height):
+        """Redimensionne une image pour qu'elle couvre l'écran tout en conservant son ratio."""
+        image_width, image_height = image.get_size()
+        image_ratio = image_width / image_height
+        screen_ratio = screen_width / screen_height
+
+        if screen_ratio > image_ratio:
+            # L'écran est plus large que l'image, donc on redimensionne l'image à la largeur de l'écran
+            scale_width = screen_width
+            scale_height = scale_width / image_ratio
+        else:
+            # L'écran est plus haut que l'image, donc on redimensionne l'image à la hauteur de l'écran
+            scale_height = screen_height
+            scale_width = scale_height * image_ratio
+
+        return pygame.transform.scale(image, (int(scale_width), int(scale_height)))
+
 
 
 if __name__ == "__main__":

@@ -2,3 +2,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 sources/mouse/scripts/Rosu/savefile.json
+sources/keyboard/stenographie/audios/*
+sources/web/static/audio/stenographie/*
+sources/web/build/audio/stenographie/*

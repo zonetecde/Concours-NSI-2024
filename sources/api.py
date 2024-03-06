@@ -4,6 +4,7 @@ import sys
 from keyboard.bac.bac import Bac
 from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
+from keyboard.stenographie.stenographie import Stenographie
 
 # Permet de ce placer dans le dossier contenant les scripts ROSU
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/Rosu")
@@ -31,12 +32,11 @@ class Api:
 
     def restart(self):
         # Ferme la fenêtre et relance le main.py
-        self.window.close()
         # se place dans le meme dossier que ce fichier
+        self.window.hide()
+
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        os.system("python3 main.py")
-        
-    
+        os.system("py main.py")
 
     def ouvrir_exercice(self, nom):
         """Ouvre un exercice fait en python
@@ -120,6 +120,31 @@ class Api:
                          Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
         """
         return Reaction.calculer_score_reaction(data)
+
+    def recuperer_phrase_aleatoire_voxforge(self, langue):
+        """Récupère une phrase aléatoire de voxforge.org
+
+        Args:
+            langue (str): La langue de la phrase
+
+        Returns:    
+            list: Les phrases avec leurs audios
+        """
+        ste = Stenographie()
+        return ste.get_audios_with_texts(langue)
+    
+    def verifier_phrase_stenographie(self, phrase_original, phrase_tapee, majs, orthographe, ponctuations):
+        """Vérifie si la phrase donnée par le joueur est correcte
+
+        Args:
+            phrase_original (str): La phrase originale
+            phrase_tapee (str): La phrase donnée par le joueur
+            majs (bool): Est-ce que on compare les majuscules ?
+            orthographe (bool): Est-ce que on compare l'orthographe ?
+            ponctuations (bool): Est-ce que on compare les ponctuations ?
+        """
+        ste = Stenographie()
+        return ste.verifier_phrase(phrase_original, phrase_tapee, majs, orthographe, ponctuations)
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web

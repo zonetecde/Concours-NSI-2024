@@ -1,8 +1,13 @@
 <script>
 	import Api from '../api/Api';
+
+	function handle() {
+		// provoke a svelte internal error
+		window.location.href = '/keyboadrd';
+	}
 </script>
 
-<div class="flex h-screen items-center justify-center w-full">
+<div class="flex h-screen items-center justify-center w-full" id="main">
 	<div class="w-10/12 h-5/6 flex flex-col items-center gap-y-16">
 		<h1 class="font-bold text-5xl">Keymaster</h1>
 
@@ -25,3 +30,19 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	/* Style du fond de la fenêtre */
+	#main {
+		--s: 200px;
+		--c: #9cb7dd;
+
+		--_g: #0000 8%, var(--c) 0 17%, #0000 0 58%;
+		background: linear-gradient(135deg, #0000 20.5%, var(--c) 0 29.5%, #0000 0) 0 calc(var(--s) / 4),
+			linear-gradient(45deg, var(--_g)) calc(var(--s) / 2) 0,
+			linear-gradient(135deg, var(--_g), var(--c) 0 67%, #0000 0),
+			linear-gradient(45deg, var(--_g), var(--c) 0 67%, #0000 0 83%, var(--c) 0 92%, #0000 0),
+			#9dbedd;
+		background-size: var(--s) var(--s);
+	}
+</style>

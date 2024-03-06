@@ -9,7 +9,7 @@
 	export let taille = 'w-16 h-16 bottom-6 left-4';
 </script>
 
-<a class={'absolute ' + taille} on:click={toExecuteBefore} href={urlToGo}>
+<a class={'absolute ' + taille} on:click={toExecuteBefore} href={urlToGo} id="retour">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
