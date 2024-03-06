@@ -8,7 +8,7 @@
 
 	<div class="flex gap-x-8 gap-y-10 items-center justify-center flex-wrap mt-10 w-[90%]">
 		<Exercice image="/keyboard/typescript.jpg" link="/keyboard/type-script" nom="Type Script" />
-		<Exercice image="" nom="Falling words" />
+		<Exercice image="" nom="Rythme" link="/keyboard/rythme" />
 		<Exercice image="/keyboard/reaction.jpg" nom="Reaction" link="/keyboard/reaction" />
 		<Exercice image="/keyboard/bac.jpg" nom="Jeu du Bac" link="/keyboard/bac" />
 		<Exercice image="/keyboard/stenographie.jpg" nom="Sténographie" link="/keyboard/stenographie" />
