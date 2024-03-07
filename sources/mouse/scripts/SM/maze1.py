@@ -3,6 +3,9 @@ import sys
 import json
 from os.path import exists
 import os
+import sounds
+
+sound_mana = sounds.SoundManager()
 
 # Permet de ce placer dans le dossier contenant les scripts SM
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
@@ -15,6 +18,7 @@ class Maze:
     def start_maze():
         # Initialize Pygame
         pygame.init()
+        pygame.mixer.init()
 
         # Screen dimensions
         desktopSize = pygame.display.get_desktop_sizes()
@@ -48,11 +52,21 @@ class Maze:
         # Main loop
         while running:
             
+
+
             current_tick = pygame.time.get_ticks() - starting_tick
 
             mouseX = pygame.mouse.get_pos()[0]
             mouseY = pygame.mouse.get_pos()[1]
 
+            # Dès que on réussi le niveau + lvl suivant
+            if win == True:
+                sound_mana.play('confetti')
+                win = False
+                #Lancement du niveau suivant
+
+
+            
             ## Création niveau 
 
             

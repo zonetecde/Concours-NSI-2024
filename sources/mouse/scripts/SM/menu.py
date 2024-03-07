@@ -1,5 +1,5 @@
 import pygame
-
+import sounds
 import sys
 import json
 from os.path import exists
@@ -11,8 +11,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 import maze1
 maze = maze1.Maze()
 
+
+
+
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+
+sound_mana = sounds.SoundManager()
 
 # Screen dimensions
 desktopSize = pygame.display.get_desktop_sizes()
@@ -35,13 +41,16 @@ running = True
 # Main loop
 while running:
 
+    #Permet de savoir si le jeu est lancer ou non
     if is_playing:
         maze.start_maze()
 
+    # Texte Start et sa collision 
     start = font.render(("START"), 1, (255, 255, 255))
     screen.blit(start, (SCREEN_WIDTH/2 - 80, SCREEN_HEIGHT/2))
-    start_rect = start.get_rect()
+    start_rect = pygame.Rect(SCREEN_WIDTH/2 - 80, SCREEN_HEIGHT/2, 160, 50)
 
+    # Texte Scary maze parkinson killer sans collision
     title = font.render(("SCARY MAZE PARKINSON KILLER"), 1, (255, 255, 255))
     screen.blit(title, (SCREEN_WIDTH/2 - 350, 100))
 
@@ -56,9 +65,10 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 pygame.mixer.stop()
                 running = False
-        #Si souris cliquer, lancement de la map choisie
+        #Si souris cliquer, lancement du jeu et petit son
         if event.type == pygame.MOUSEBUTTONDOWN:
             if start_rect.collidepoint(pygame.mouse.get_pos()):
+                sound_mana.play('click')
                 is_playing = True
 
 
