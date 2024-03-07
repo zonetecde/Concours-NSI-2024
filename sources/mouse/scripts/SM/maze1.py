@@ -30,9 +30,6 @@ class Maze:
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
         pygame.display.set_caption("Scary maze or not?")
 
-        # Clock for controlling the frame rate
-        clock = pygame.time.Clock()
-        starting_tick = pygame.time.get_ticks()
 
         screen.fill((0, 0, 0))
 
@@ -55,7 +52,7 @@ class Maze:
         while running:
             
 
-
+            starting_tick = 0
             current_tick = pygame.time.get_ticks() - starting_tick
 
             mouseX = pygame.mouse.get_pos()[0]
@@ -67,8 +64,33 @@ class Maze:
                     sound_mana.play('confetti')
                     win = False
                     song_played = True
+                    timer = current_tick / 1000
                     screen.blit(screen, (0, 0))
+                    time = font.render(("Time : " + str(timer)), 1, (255, 255, 255))
+                    screen.blit(time, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 - 10))
+                    
+                    
+                    wait1 = font.render(("."), 1, (255, 255, 255))
+                    wait2 = font.render((".."), 1, (255, 255, 255))
+                    wait3 = font.render(("..."), 1, (255, 255, 255))
+
+                    for i in range (0, 3):
+                        
+                        if i == 0:
+                            screen.blit(wait1, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 + 20))
+                        elif i == 1:
+                            screen.blit(wait2, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 + 20))
+                        elif i == 2:
+                            screen.blit(wait3, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 + 20))
+                            # Update the display
+                        pygame.display.flip()
+                        pygame.time.delay(1000)
+                    
+                    pygame.time.delay(1000)
+
                     #Lancement du niveau suivant
+                    niveau += 1
+                    
 
 
             
@@ -77,7 +99,10 @@ class Maze:
             #Niveau 1
             if niveau == 1:
                 ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
-                
+                starting_tick = pygame.time.get_ticks()
+                # Clock for controlling the frame rate
+                clock = pygame.time.Clock()
+                starting_tick = pygame.time.get_ticks()
                 #Arrière plan
                 screen.blit(screen, (0, 0))
 
@@ -90,7 +115,7 @@ class Maze:
                 deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
                 fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
                 # Met le cursor sur le départ
-                if current_tick == 100:
+                if current_tick == 50:
                     pygame.mouse.set_pos([95, 220])
                 # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
                 title = font.render(("Maze 1"), 1, (255, 255, 255))
@@ -102,13 +127,16 @@ class Maze:
                 
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
-                if tp_rect.collidepoint(pygame.mouse.get_pos()):
-                    pass
+                
 
             #Niveau 2
             if niveau == 2  :
                 ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
                 ractangle2 = (SCREEN_WIDTH/2 - 50 , 300 + SCREEN_HEIGHT * 0.2, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
+                
+                # Clock for controlling the frame rate
+                clock = pygame.time.Clock()
+                starting_tick = pygame.time.get_ticks()
                 #Arrière plan
                 screen.blit(screen, (0, 0))
 
@@ -126,7 +154,7 @@ class Maze:
                 tp_rect = pygame.draw.rect(screen, (230, 230, 50), tp)
                 tp2_rect = pygame.draw.rect(screen, (230, 230, 50), tp2)
                 # Met le cursor sur le départ
-                if current_tick == 100:
+                if current_tick == 50:
                     pygame.mouse.set_pos([95, 220])
                 # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
                 title = font.render(("Maze 2"), 1, (255, 255, 255))
