@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import msvcrt
 import threading
@@ -32,6 +33,7 @@ class KeyCounter:
         # Enregistre le temps actuel pour calculer combien de temps la touche est restée appuyée
         temps_actuel = datetime.datetime.now()
         time = (temps_actuel - self.timer).total_seconds()
+        self.current_key = None
 
         # Si la touche est restée appuyée plus de 0.7 secondes 
         if time > 0.7:
@@ -46,24 +48,32 @@ class KeyCounter:
             listener.join()
 
 class LevelCreator:
-    def __init__(self) -> None:
-        pass
-
-    def create_level(self, nom, difficulte, son):
-        """Crée un niveau avec les paramètres donnés
+    def __init__(self, nom, difficulte, son) -> None:
+        """ Initialise un créateur de niveau
 
         Args:
             nom (str): Le nom du niveau
             difficulte (int): La difficulté du niveau (sur 5)
             son (str): Le son du niveau (dans le dossier "audios")
         """
-        print("Création du niveau : ", nom, difficulte, son)
-        print("Appuyez sur une touche pour jouer l'audio et commencer la création du niveau")
+        self.nom = nom
+        self.difficulte = difficulte
+        self.son = son
+
+        self.timer = None
+        self.touches = []
+
+    def create_level(self):
+        """Crée un niveau avec les paramètres donnés
+        """
+        print("Création du niveau : ", self.nom, self.difficulte, self.son)
 
         # Joue l'audio
         mixer.init()
-        mixer.music.load(son)
+        mixer.music.load(AUDIO_PATH + self.son)
         mixer.music.play()
+
+        self.start_time = datetime.datetime.now()
 
     def register_key(self, key, time):
         """Enregistre une touche appuyée par l'utilisateur
@@ -72,16 +82,37 @@ class LevelCreator:
             key (str): La touche appuyée
             time (float): Le temps pendant lequel la touche a été appuyée. 0 si la touche compte une seule fois
         """
-        print("Touche appuyée : ", key, time) 
 
-        # Ici il faut sauvegarder la touche, si elle est restée appuyée ou non, et combien de temps
-        # et aussi le moment où elle a été appuyée dans le son
-        # à la fin sauvegarde le niveau dans un fichier JSON avec le nom, la difficulté, le son, et les touches appuyées
+        if type(key) != keyboard.KeyCode:
+            self.save()
+            print("Niveau sauvegardé")
+            exit()
+
+        print("Touche appuyée : ", key.char, time) 
+
+        # Ajoute la touche pressé au niveau
+        now = datetime.datetime.now()
+        temps = (now - self.start_time).total_seconds()
+        self.touches.append({'key': key.char, 'hold_time':time, 'hold': time != 0, 'time':temps})
+
+    def save(self):
+        """Sauvegarde dans un fichier les données du niveau
+        """
+        with open(LEVEL_PATH + "niveau_" + self.nom + ".json", "w", encoding="utf-8") as file:
+            level_obj = {
+                "Nom": self.nom,
+                "Audio": self.son,
+                "Difficulte": self.difficulte,
+                "Touches" : self.touches
+            }
+
+            json.dump(level_obj, file)
 
 AUDIO_PATH = os.path.dirname(__file__) + "/audios/"
+LEVEL_PATH = os.path.dirname(__file__) + "/saves/"
 
-level_creator = LevelCreator()
-level_creator.create_level("Mettre un nom", 1, AUDIO_PATH + "son1.mp3")
+level_creator = LevelCreator("Mettre un nom", 1, "son1.mp3")
+level_creator.create_level()
 
 # Lance le compteur de touches appuyées (sur un thread séparé pour pas bloquer le programme)
 counter = KeyCounter(level_creator.register_key)
