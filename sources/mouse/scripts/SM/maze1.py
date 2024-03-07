@@ -93,7 +93,7 @@ class Maze:
             screen.blit(title, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 - 70))
 
             if not rect_zone.collidepoint(pygame.mouse.get_pos()):
-                
+                sound_mana.play('OOB')
                 pygame.mouse.set_pos([95, 220])
 
 
