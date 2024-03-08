@@ -98,6 +98,15 @@ class LevelCreator:
             key (str): La touche appuyée
             time (float): Le temps pendant lequel la touche a été appuyée. 0 si la touche compte une seule fois
         """
+        try:
+            if key.name == "backspace":
+                # Supprime le dernier élément de la liste
+                if len(self.touches) > 0:
+                    deleted = self.touches.pop()
+                    print(f"Touche {deleted["key"]} supprimée")
+                return
+        except AttributeError:
+            pass
 
         if type(key) != keyboard.KeyCode:
             self.save()
@@ -114,6 +123,9 @@ class LevelCreator:
     def save(self):
         """Sauvegarde dans un fichier les données du niveau
         """
+        # Trie les touches par temps d'apparition
+        self.touches.sort(key=lambda x: x['time'])
+
         with open(LEVEL_PATH + "niveau_" + self.nom + ".json", "w", encoding="utf-8") as file:
             level_obj = {
                 "Nom": self.nom,
@@ -127,7 +139,7 @@ class LevelCreator:
 AUDIO_PATH = os.path.dirname(__file__) + "/audios/"
 LEVEL_PATH = os.path.dirname(__file__) + "/saves/"
 
-level_creator = LevelCreator("Blue Ocean", 1, "niv1.mp3", True)
+level_creator = LevelCreator("Blue Ocean", 1, "niv1.mp3", False)
 level_creator.create_level()
 
 # Lance le compteur de touches appuyées (sur un thread séparé pour pas bloquer le programme)
