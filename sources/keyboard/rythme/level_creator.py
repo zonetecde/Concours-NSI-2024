@@ -75,6 +75,9 @@ class LevelCreator:
             with open(save_file, "r", encoding="utf-8") as file:
                 level_obj = json.load(file)
                 self.touches = level_obj["Touches"]
+                self.nom = level_obj["Nom"]
+                self.son = level_obj["Audio"]
+                self.difficulte = level_obj["Difficulte"]
 
     def create_level(self):
         """Crée un niveau avec les paramètres donnés
