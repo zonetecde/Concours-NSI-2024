@@ -48,13 +48,14 @@ class KeyCounter:
             listener.join()
 
 class LevelCreator:
-    def __init__(self, nom, difficulte, son) -> None:
+    def __init__(self, nom, difficulte, son, completion) -> None:
         """ Initialise un créateur de niveau
 
         Args:
             nom (str): Le nom du niveau
             difficulte (int): La difficulté du niveau (sur 5)
             son (str): Le son du niveau (dans le dossier "audios")
+            completion (bool): Si c'est un ajout au niveau ou une création
         """
         self.nom = nom
         self.difficulte = difficulte
@@ -62,6 +63,18 @@ class LevelCreator:
 
         self.timer = None
         self.touches = []
+
+        if completion:
+            self.load()
+
+    def load(self):
+        """Charge un niveau depuis un fichier
+        """
+        save_file = LEVEL_PATH + "niveau_" + self.nom + ".json"
+        if os.path.exists(save_file):
+            with open(save_file, "r", encoding="utf-8") as file:
+                level_obj = json.load(file)
+                self.touches = level_obj["Touches"]
 
     def create_level(self):
         """Crée un niveau avec les paramètres donnés
@@ -111,7 +124,7 @@ class LevelCreator:
 AUDIO_PATH = os.path.dirname(__file__) + "/audios/"
 LEVEL_PATH = os.path.dirname(__file__) + "/saves/"
 
-level_creator = LevelCreator("Mettre un nom", 1, "son1.mp3")
+level_creator = LevelCreator("Blue Ocean", 1, "niv1.mp3", True)
 level_creator.create_level()
 
 # Lance le compteur de touches appuyées (sur un thread séparé pour pas bloquer le programme)
