@@ -1,11 +1,20 @@
 <script>
 	import Exercice from '$lib/Exercice.svelte';
-	import { keyDownAudio, keyUpAudio } from '$lib/GlobalFunc';
 	import Retour from '$lib/Retour.svelte';
 	import { onMount } from 'svelte';
+	import Api from '../../../api/Api';
+
+	/** @type {Array<import('$lib/classes/Niveau').Niveau>} */
+	let niveaux = []; // Niveaux
+
+	/** @type {import('$lib/classes/Niveau').Niveau} */
+	let selectedLevelObj;
 
 	/** @type {boolean} */
 	let hasExerciceStarted = false; // L'exercice a commencé ?
+
+	/** @type {string} */
+	let selectedLevelName = 'Blue Ocean'; // Niveau sélectionné
 
 	/** @type {boolean} */
 	let hasExerciceEnded = false; // L'exercice est terminé ?
@@ -19,18 +28,19 @@
 	/** @type {boolean} */
 	let allowSpecialCharacters = false; // Autoriser les caractères spéciaux dans les chaines de caractères ?
 
-	onMount(() => {
+	onMount(async () => {
 		window.addEventListener('keydown', keyDown);
 		window.addEventListener('keyup', keyUp);
+
+		// Récupère le niveau sélectionné depuis python
+		niveaux = await Api.api.recuperer_niveaux_rythme();
 	});
 
 	/**
 	 * Appelée lorsqu'une touche est relâchée
 	 * @param {KeyboardEvent} event
 	 */
-	function keyUp(event) {
-		keyUpAudio(event);
-	}
+	function keyUp(event) {}
 
 	/**
 	 * Appelée lorsqu'une touche est appuyée
@@ -38,14 +48,20 @@
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
-		keyDownAudio(event);
-
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
 		}
 	}
 
-	function startExercice() {}
+	function startExercice() {
+		hasExerciceStarted = true;
+
+		const niv = niveaux.find((niveau) => niveau.Nom === selectedLevelName);
+		if (niv) {
+			selectedLevelObj = niv;
+			console.log(selectedLevelObj);
+		}
+	}
 
 	function quit() {
 		// Enlève les event listeners
@@ -77,9 +93,18 @@
 				<p class="pr-2">Niveaux :</p>
 
 				<div class="flex gap-x-8">
-					<label for="niveau1"
-						><input type="radio" id="niveau1" name="niveau" value="1" checked />1</label
-					>
+					{#each niveaux as niveau}
+						<label for={niveau.Nom}
+							><input
+								type="radio"
+								bind:group={selectedLevelName}
+								id={niveau.Nom}
+								name="niveau"
+								class="mr-2"
+								value={niveau.Nom}
+							/>{niveau.Nom}</label
+						>
+					{/each}
 				</div>
 			</div>
 		</div>

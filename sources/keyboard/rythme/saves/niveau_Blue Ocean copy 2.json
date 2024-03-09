@@ -1,0 +1,16 @@
+{
+    "Nom": "Blue Ocean",
+    "Audio": "niv1.mp3",
+    "Difficulte": 1,
+    "Touches": [
+        { "key": "f", "hold_time": 0, "hold": false, "time": 1.583286 },
+        { "key": "f", "hold_time": 0, "hold": false, "time": 4.47119 },
+        { "key": "f", "hold_time": 0, "hold": false, "time": 7.479573 },
+        { "key": "f", "hold_time": 1.2, "hold": true, "time": 14.497348 },
+        { "key": "f", "hold_time": 1.2, "hold": true, "time": 17.511548 },
+        { "key": "f", "hold_time": 1.2, "hold": true, "time": 20.602117 },
+        { "key": "f", "hold_time": 1.2, "hold": true, "time": 26.552623 },
+        { "key": "f", "hold_time": 0, "hold": false, "time": 28.446772 },
+        { "key": "f", "hold_time": 0, "hold": false, "time": 31.361568 }
+    ]
+}
