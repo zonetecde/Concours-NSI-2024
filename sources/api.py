@@ -5,6 +5,7 @@ from keyboard.bac.bac import Bac
 from keyboard.reaction.reaction import Reaction
 from keyboard.typescript.typescript import TypeScript
 from keyboard.stenographie.stenographie import Stenographie
+from keyboard.rythme.rythme import Rythme
 
 # Permet de ce placer dans le dossier contenant les scripts ROSU
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/Rosu")
@@ -145,6 +146,11 @@ class Api:
         """
         ste = Stenographie()
         return ste.verifier_phrase(phrase_original, phrase_tapee, majs, orthographe, ponctuations)
+
+    def recuperer_niveaux_rythme(self):
+        """Récupère les niveaux de l'exercice 'Rythme'
+        """
+        return Rythme.recuperer_niveaux()
 
     def call_js_function(self, function_name, params = ""):
         """Appel une fonction javascript dans la page web
