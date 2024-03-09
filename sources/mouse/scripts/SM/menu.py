@@ -65,6 +65,8 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 pygame.mixer.stop()
                 running = False
+                is_playing = False
+                pygame.quit()
         #Si souris cliquer, lancement du jeu et petit son
         if event.type == pygame.MOUSEBUTTONDOWN:
             if start_rect.collidepoint(pygame.mouse.get_pos()):

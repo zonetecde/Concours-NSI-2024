@@ -15,7 +15,13 @@ class Maze:
     """
     def __init__(self):
         pass
-    def start_maze():
+    def start_chrono(self):
+        # Clock for controlling the frame rate
+        clock = pygame.time.Clock()
+        starting_tick = pygame.time.get_ticks()
+
+
+    def start_maze(self):
         # Initialize Pygame
         pygame.init()
         pygame.mixer.init()
@@ -44,7 +50,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 2
+        niveau = 1
 
         
         font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
@@ -62,12 +68,13 @@ class Maze:
             if song_played == False:
                 if win == True:
                     sound_mana.play('confetti')
+                    screen.fill((0, 0, 0))
                     win = False
                     song_played = True
                     timer = current_tick / 1000
                     screen.blit(screen, (0, 0))
-                    time = font.render(("Time : " + str(timer)), 1, (255, 255, 255))
-                    screen.blit(time, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 - 10))
+                    time = font.render(("Total Time : " + str(timer)), 1, (255, 255, 255))
+                    screen.blit(time, (SCREEN_WIDTH/2 - 120, SCREEN_HEIGHT/2 - 30))
                     
                     
                     wait1 = font.render(("."), 1, (255, 255, 255))
@@ -77,11 +84,11 @@ class Maze:
                     for i in range (0, 3):
                         
                         if i == 0:
-                            screen.blit(wait1, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 + 20))
+                            screen.blit(wait1, (SCREEN_WIDTH/2 - 105, SCREEN_HEIGHT/2 - 10))
                         elif i == 1:
-                            screen.blit(wait2, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 + 20))
+                            screen.blit(wait2, (SCREEN_WIDTH/2 - 105, SCREEN_HEIGHT/2 - 10))
                         elif i == 2:
-                            screen.blit(wait3, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 + 20))
+                            screen.blit(wait3, (SCREEN_WIDTH/2 - 105, SCREEN_HEIGHT/2 - 10))
                             # Update the display
                         pygame.display.flip()
                         pygame.time.delay(1000)
@@ -101,9 +108,10 @@ class Maze:
                 ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
                 starting_tick = pygame.time.get_ticks()
                 # Clock for controlling the frame rate
-                clock = pygame.time.Clock()
-                starting_tick = pygame.time.get_ticks()
+                self.start_chrono()
+                song_played = False
                 #Arrière plan
+                screen.fill((0, 0, 0))
                 screen.blit(screen, (0, 0))
 
                 # Création début et fin
@@ -137,7 +145,9 @@ class Maze:
                 # Clock for controlling the frame rate
                 clock = pygame.time.Clock()
                 starting_tick = pygame.time.get_ticks()
+                song_played = False
                 #Arrière plan
+                screen.fill((0, 0, 0))
                 screen.blit(screen, (0, 0))
 
                 # Création début et fin
@@ -150,7 +160,7 @@ class Maze:
                 rect_zone2 = pygame.draw.rect(screen, (255, 0, 0), ractangle2)
                 #Création carré debut et fin 
                 deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
-                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                fin_rect2 = pygame.draw.rect(screen, (35, 150, 245), fin)
                 tp_rect = pygame.draw.rect(screen, (230, 230, 50), tp)
                 tp2_rect = pygame.draw.rect(screen, (230, 230, 50), tp2)
                 # Met le cursor sur le départ
@@ -165,7 +175,7 @@ class Maze:
                         sound_mana.play('OOB')
                         pygame.mouse.set_pos([95, 220])
 
-                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                if fin_rect2.collidepoint(pygame.mouse.get_pos()):
                     win = True
                 if tp_rect.collidepoint(pygame.mouse.get_pos()):
                     sound_mana.play('tp')
@@ -181,14 +191,17 @@ class Maze:
                     if event.key == pygame.K_ESCAPE:
                         pygame.mixer.stop()
                         running = False
+                        is_playing = False
+                        pygame.quit()
                 
             
             
             # Cap the frame rate
-            clock.tick(60)
+            # clock.tick(60)
             # Update the display
             pygame.display.flip()
             #sys.exit()
 
 if __name__ == "__main__":
-    Maze.start_maze()
+    maze = Maze()
+    maze.start_maze()
