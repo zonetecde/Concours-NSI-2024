@@ -139,7 +139,7 @@ class LevelCreator:
 
         # Ajoute la touche pressé au niveau
         now = datetime.datetime.now()
-        temps = (now - self.start_time).total_seconds()
+        temps = (now - self.start_time).total_seconds() - hold_time 
         self.touches.append({'key': key.char, 'hold_time': round(hold_time, 1), 'hold': hold_time != 0, 'time':temps})
 
     def save(self):

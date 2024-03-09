@@ -10,6 +10,18 @@
 	/** @type {import('$lib/classes/Niveau').Niveau} */
 	let selectedLevelObj;
 
+	/** @type {number} */
+	let audioPosition = 0;
+
+	/** @type {Array<any>} */
+	let circlesToDraw = [];
+
+	/** @type {Array<string>} */
+	let keys = ['f', 'g', 'j', 'k'];
+
+	/** @type {HTMLAudioElement} */
+	let audio;
+
 	/** @type {boolean} */
 	let hasExerciceStarted = false; // L'exercice a commencé ?
 
@@ -34,6 +46,8 @@
 
 		// Récupère le niveau sélectionné depuis python
 		niveaux = await Api.api.recuperer_niveaux_rythme();
+
+		startExercice();
 	});
 
 	/**
@@ -51,6 +65,11 @@
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
 		}
+
+		if (event.key === 'Escape') {
+			// Arrête tout les audios TODO: delete
+			audio.pause();
+		}
 	}
 
 	function startExercice() {
@@ -59,7 +78,19 @@
 		const niv = niveaux.find((niveau) => niveau.Nom === selectedLevelName);
 		if (niv) {
 			selectedLevelObj = niv;
-			console.log(selectedLevelObj);
+
+			// Joue le son
+			audio = new Audio(`/audio/rythme/${selectedLevelObj.Audio}`);
+			audio.play();
+
+			const int = setInterval(() => {
+				audioPosition = audio.currentTime;
+			}, 10);
+
+			// quand l'autio est terminé
+			audio.onended = () => {
+				clearInterval(int);
+			};
 		}
 	}
 
@@ -67,12 +98,17 @@
 		// Enlève les event listeners
 		window.removeEventListener('keydown', keyDown);
 		window.removeEventListener('keyup', keyUp);
+		audio.pause();
+	}
+
+	$: if (audioPosition) {
+		console.log(audio.currentTime);
 	}
 </script>
 
-<div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
+<div class="flex px-10 h-screen justify-center flex-col items-center w-screen">
 	{#if !hasExerciceStarted}
-		<h1 class="font-bold text-3xl mb-6 -mt-3">Rythme</h1>
+		<h1 class="font-bold text-3xl mb-6 mt-7">Rythme</h1>
 
 		<Exercice image="/keyboard/reaction.jpg" nom="Rythme" handleClick={startExercice} />
 
@@ -110,7 +146,42 @@
 		</div>
 
 		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
-	{:else}{/if}
+	{:else}
+		<div
+			class="w-[450px] h-[600px] bg-[#84af80] outline-4 rounded-xl outline-[#206442] outline relative"
+		>
+			<!---->
+			<div class="absolute border-t-2 border-[#206442] bottom-[110px] w-full" />
+
+			<div
+				class="w-full h-full grid absolute bottom-0 divide-x-2 divide-[#206442]"
+				style={`grid-template-columns: repeat(${keys.length}, minmax(0, 1fr))`}
+			>
+				{#each keys as key}
+					<div class="w-full h-full flex justify-center items-center relative">
+						{#each selectedLevelObj.Touches as touche}
+							{#if touche.key === key}
+								<div
+									class="w-10 h-10 bg-[#206442] rounded-full absolute key"
+									style={`top: ${
+										audioPosition >= touche.time - 4 ? '79%' : '0'
+									}; transition-duration: ${touche.time - audioPosition}s`}
+								/>
+							{/if}
+						{/each}
+
+						<p class="text-3xl absolute bottom-9 font-bold">{key.toUpperCase()}</p>
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
 
 	<Retour urlToGo="/keyboard" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
 </div>
+
+<style>
+	.key {
+		transition: top 4s linear;
+	}
+</style>
