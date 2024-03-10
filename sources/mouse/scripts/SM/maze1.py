@@ -50,7 +50,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 3
+        niveau = 1
 
         
         font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
