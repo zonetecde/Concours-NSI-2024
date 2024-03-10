@@ -154,7 +154,7 @@
 			<div class="absolute border-t-2 border-[#206442] bottom-[110px] w-full" />
 
 			<div
-				class="w-full h-full grid absolute bottom-0 divide-x-2 divide-[#206442]"
+				class="overflow-hidden w-full h-full grid absolute bottom-0 divide-x-2 divide-[#206442]"
 				style={`grid-template-columns: repeat(${keys.length}, minmax(0, 1fr))`}
 			>
 				{#each keys as key}
@@ -162,10 +162,21 @@
 						{#each selectedLevelObj.Touches as touche}
 							{#if touche.key === key}
 								<div
-									class="w-10 h-10 bg-[#206442] rounded-full absolute key"
-									style={`top: ${
-										audioPosition >= touche.time - 4 ? '79%' : '0'
-									}; transition-duration: ${touche.time - audioPosition}s`}
+									class="w-10 h-10 rounded-full absolute key"
+									style={`height: ${touche.hold ? touche.hold_time * 120 : '40'}px;
+									
+									top: ${
+										audioPosition >= touche.time - 4
+											? `calc(100% + ${touche.hold_time * 120}px)`
+											: `calc(-10% - ${touche.hold_time * 120}px)`
+									}; transition-duration: ${
+										touche.time - audioPosition + 1 + (touche.hold ? touche.hold_time * 1.55 : 0)
+									}s; ${
+										Math.abs(audioPosition - touche.time) <
+										(touche.hold ? touche.hold_time * 0.5 : 0.1)
+											? 'background-color: red;'
+											: 'background-color: #4d4bd4;'
+									}`}
 								/>
 							{/if}
 						{/each}
@@ -182,6 +193,6 @@
 
 <style>
 	.key {
-		transition: top 4s linear;
+		transition: top 1s linear, background-color 0.03s linear;
 	}
 </style>
