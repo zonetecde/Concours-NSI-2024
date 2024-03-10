@@ -50,7 +50,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 1
+        niveau = 3
 
         
         font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
@@ -60,6 +60,7 @@ class Maze:
 
             starting_tick = 0
             current_tick = pygame.time.get_ticks() - starting_tick
+            
 
             mouseX = pygame.mouse.get_pos()[0]
             mouseY = pygame.mouse.get_pos()[1]
@@ -185,6 +186,43 @@ class Maze:
                     sound_mana.play('tp')
                     pygame.mouse.set_pos([645, 515])
 
+
+            #Niveau 3
+            if niveau == 3:
+                ractangle = (x + 20, y + 50, SCREEN_WIDTH - 160, 35)
+                starting_tick = pygame.time.get_ticks()
+                # Clock for controlling the frame rate
+                self.start_chrono()
+                song_played = False
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
+
+                # Création début et fin
+                deb = (100-10, 225-10, 10, 10)
+                fin = (1170-10, 225-10, 10, 10)
+                # Création bord et mur
+                rect_zone = pygame.draw.rect(screen, (255, 0, 0), ractangle)
+                #Création carré debut et fin 
+                deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
+                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                # Met le cursor sur le départ
+                if not self.start:
+                    pygame.mouse.set_pos([95, 220])
+                    self.start = True
+                # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
+                title = font.render(("Maze 3"), 1, (255, 255, 255))
+                screen.blit(title, (SCREEN_WIDTH/2 - 95, SCREEN_HEIGHT/2 - 220))
+
+                if not rect_zone.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play('OOB')
+                    pygame.mouse.set_pos([95, 220])
+                
+                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    win = True
+
+
+            #Pour gérer les évenements
             for event in pygame.event.get():
                 #Permet de quitter so on appuie sur la croix
                 if event.type == pygame.QUIT:
@@ -203,7 +241,8 @@ class Maze:
             # Cap the frame rate
             # clock.tick(60)
             # Update the display
-            pygame.display.flip()
+            if running:
+                pygame.display.flip()
             #sys.exit()
 
 if __name__ == "__main__":
