@@ -19,7 +19,9 @@ class Maze:
     """
     def __init__(self):
         self.start = False
-        self.x_mov = SCREEN_WIDTH * (250/1280)
+        self.x_mov_lvl5 = SCREEN_WIDTH * (250/1280)
+        self.y1_mov_lvl6 = SCREEN_HEIGHT * (50/720)
+        self.y2_mov_lvl6 = SCREEN_HEIGHT * (350/720)
     def start_chrono(self):
         # Clock for controlling the frame rate
         clock = pygame.time.Clock()
@@ -51,7 +53,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 4
+        niveau = 1
         
         all_timer = 0
 
@@ -201,7 +203,7 @@ class Maze:
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
                 if tp_rect.collidepoint(pygame.mouse.get_pos()):
                     sound_mana.play('tp')
-                    pygame.mouse.set_pos([tp[0], tp[1]])
+                    pygame.mouse.set_pos([tp2[0], tp2[1]])
 
 
             #Niveau 3
@@ -297,10 +299,10 @@ class Maze:
                     couleur_rect_inv = 255
 
             #Niveau 5
-            if niveau == 5:
+            elif niveau == 5:
                 carre_deb = (x, y, 200, SCREEN_HEIGHT * 0.2)
-                carre_fin = (x + 750, y, 150, SCREEN_HEIGHT * 0.2)
-                ractangle = (self.x_mov, y , 300, SCREEN_HEIGHT * 0.2)
+                carre_fin = (SCREEN_WIDTH * (800/1280), y, 150, SCREEN_HEIGHT * 0.2)
+                ractangle = (self.x_mov_lvl5, y , SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
                 
                 # Clock for controlling the frame rate
                 self.start_chrono()
@@ -336,16 +338,16 @@ class Maze:
                             sound_mana.play('OOB')
                             pygame.mouse.set_pos([deb[0], deb[1]])
                 
-                if self.x_mov >= SCREEN_WIDTH * (150/1280) and position == "left":
-                    rect_zone.move(self.x_mov, y)
-                    self.x_mov += 1
-                    if self.x_mov == SCREEN_WIDTH * (650/1280):
+                if self.x_mov_lvl5 >= SCREEN_WIDTH * (150/1280) and position == "left":
+                    rect_zone.move(self.x_mov_lvl5, y)
+                    self.x_mov_lvl5 += 1
+                    if self.x_mov_lvl5 == SCREEN_WIDTH * (650/1280):
                         position = "right"
                     pygame.display.flip()
-                elif self.x_mov <= SCREEN_WIDTH * (650/1280):
-                    rect_zone.move(self.x_mov, y)
-                    self.x_mov -= 1
-                    if self.x_mov == 150:
+                elif self.x_mov_lvl5 <= SCREEN_WIDTH * (650/1280):
+                    rect_zone.move(self.x_mov_lvl5, y)
+                    self.x_mov_lvl5 -= 1
+                    if self.x_mov_lvl5 == 150:
                         position = "left"
                     pygame.display.flip()
                 
@@ -353,6 +355,72 @@ class Maze:
                     win = True
                     end_tick = pygame.time.get_ticks()
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
+
+
+
+
+            #Niveau 6
+            elif niveau == 6:
+                carre_deb = (x, y, 200, SCREEN_HEIGHT * 0.2)
+                carre_fin = (x + 750, y, 150, SCREEN_HEIGHT * 0.2)
+                ractangle = (x + 100, y , 300, SCREEN_HEIGHT * 0.2)
+                ractangle2 = (x)
+                
+                # Clock for controlling the frame rate
+                self.start_chrono()
+                song_played = False
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
+                #Titre caché derrière
+                title = font.render(("Maze 5"), 1, (255, 255, 255))
+                screen.blit(title, (SCREEN_WIDTH * (120/256), SCREEN_HEIGHT * (24/72)))
+
+                # Création début et fin
+                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * 0.72, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                # Création bord et mur
+                rect_zone = pygame.draw.rect(screen, (255, 0, 0), ractangle)
+                rect2_zone = pygame.draw.rect(screen, (255, 0, 0), ractangle2)
+                carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_deb)
+                carre_zone2 = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
+                #Création carré debut et fin 
+                deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
+                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                # Met le cursor sur le départ
+                if not self.start:
+                    pygame.mouse.set_pos([deb[0], deb[1]])
+                    starting_tick = pygame.time.get_ticks()
+                    self.start = True
+                # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
+                
+
+                if not carre_zone.collidepoint(pygame.mouse.get_pos()):
+                    if not rect_zone.collidepoint(pygame.mouse.get_pos()):
+                        if not carre_zone2.collidepoint(pygame.mouse.get_pos()):
+                            sound_mana.play('OOB')
+                            pygame.mouse.set_pos([deb[0], deb[1]])
+                
+                if self.x_mov_lvl5 >= SCREEN_WIDTH * (150/1280) and position == "left":
+                    rect_zone.move(self.x_mov_lvl5, y)
+                    self.x_mov_lvl5 += 1
+                    if self.x_mov_lvl5 == SCREEN_WIDTH * (650/1280):
+                        position = "right"
+                    pygame.display.flip()
+                elif self.x_mov_lvl5 <= SCREEN_WIDTH * (650/1280):
+                    rect_zone.move(self.x_mov_lvl5, y)
+                    self.x_mov_lvl5 -= 1
+                    if self.x_mov_lvl5 == 150:
+                        position = "left"
+                    pygame.display.flip()
+                
+                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    win = True
+                    end_tick = pygame.time.get_ticks()
+                    total_time = str((end_tick - starting_tick)/1000)[0:4]
+
+
+
 
             #Pour gérer les évenements
             for event in pygame.event.get():
