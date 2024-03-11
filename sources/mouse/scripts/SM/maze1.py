@@ -196,7 +196,7 @@ class Maze:
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
                 if tp_rect.collidepoint(pygame.mouse.get_pos()):
                     sound_mana.play('tp')
-                    pygame.mouse.set_pos([645, 515])
+                    pygame.mouse.set_pos([tp[0], tp[1]])
 
 
             #Niveau 3
@@ -212,7 +212,7 @@ class Maze:
 
                 # Création début et fin
                 deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
-                fin = (1170-10, 225-10, 10, 10)
+                fin = (SCREEN_WIDTH * (29/32), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 # Création bord et mur
                 rect_zone = pygame.draw.rect(screen, (255, 0, 0), ractangle)
                 #Création carré debut et fin 
