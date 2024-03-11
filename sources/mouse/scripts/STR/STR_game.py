@@ -23,10 +23,12 @@ clock = pygame.time.Clock()
 
 screen.fill((0, 0, 0))
 
-bg = pygame.image.load("src/mouse/scripts/STR/INSP.jpg")
+bg = pygame.image.load("sources\mouse\scripts\STR\INSP.jpg")
 
 temperatureBarLightsOn = 0
 temperatureBarColors = [(0, 95, 0), (89, 82, 0), (95, 0, 0)]
+
+buttonsList = []
 
 running = True
 
@@ -97,17 +99,31 @@ def module_create_bounding_box(moduleName, posX, posY, sizeX, sizeY, moduleColor
     pygame.draw.circle(screen, dangerDiodeColor, (posX + 23, posY + 23), 15)
     pygame.draw.circle(screen, (50, 50, 50), (posX + 23, posY + 23), 15, 3)
 
+"""MODULE LAYOUT/EXAMPLE/BASE
+
+"""
+
+### OVERALL PARAMETERS ###
+OVERALL_difficulty = 20 # Ranges from 1 to 20
 
 ### INITIAL MODULE PARAMETERS (PPT = PRODUCTION PER TICK; TPT = TEMPERATURE PER TICK)
 module_CTG_danger_level = 0
 module_CTG_PPT = 0.2
 module_CTG_TPT = 0.4
-module_CTG_randomNumberGiven = pygame.time.get_ticks() + 5 * 1000 #pygame.time.get_ticks() + random.randint(1, 3) * 30 * 1000
+module_CTG_randomNumberGiven = pygame.time.get_ticks() + random.randint(1, 3) * 30 * 1000 * (21 - OVERALL_difficulty)
 module_CTG_lateness_MOE = 5000
 module_CTG_errored = False
+module_CTG_firstTickTrue = False
+### RANDOMISATION PARAMETER
+module_CTG_randomizationTick = None
+### ADDITIONAL PARAMETERS
+module_CTG_timesToClick = 0
+def reInit_Module_click_until_green():
+    global module_CTG_randomNumberGiven
+    module_CTG_randomNumberGiven = pygame.time.get_ticks() + random.randint(1, 3) * 30 * 1000 * (21 - OVERALL_difficulty)
 def module_click_until_green():
-    global core_temperature, core_energy_provided
-    global module_CTG_danger_level, module_CTG_lateness_MOE, module_CTG_PPT, module_CTG_randomNumberGiven, module_CTG_TPT
+    global core_temperature, core_energy_provided, enabled
+    global module_CTG_danger_level, module_CTG_lateness_MOE, module_CTG_PPT, module_CTG_randomNumberGiven, module_CTG_TPT, module_CTG_firstTickTrue, module_CTG_timesToClick
     module_create_bounding_box("Click until green", 0, SCREEN_HEIGHT * (3/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_CTG_danger_level)
     
     if module_CTG_randomNumberGiven < pygame.time.get_ticks() - module_CTG_lateness_MOE:
@@ -117,6 +133,7 @@ def module_click_until_green():
         module_CTG_danger_level = 1
         module_CTG_errored = True
     else:
+        module_CTG_danger_level = 0
         module_CTG_errored = False
         
     if module_CTG_danger_level == 1:
@@ -128,7 +145,39 @@ def module_click_until_green():
     # OPERATION METHOD
     # The light will turn red. Press it until it gets back to green.
     
-    button = pygame.draw.circle(screen, (10, 185, 10), (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50)
+    #Check if already errored, if not the initialize it
+    if module_CTG_errored == True and module_CTG_firstTickTrue == False:
+        #Init danger parameters
+        module_CTG_timesToClick = random.randint(4, 12)
+        
+        #Set init danger as DONE
+        module_CTG_firstTickTrue = True
+        
+    if module_CTG_errored == True:
+        buttonColor = (255, 0, 0)
+        if module_CTG_timesToClick == 0:
+            module_CTG_errored = False
+            module_CTG_danger_level = 0
+            reInit_Module_click_until_green()
+    else:
+        buttonColor = (10, 185, 10)
+        
+    button = pygame.draw.circle(screen, buttonColor, (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50)
+    buttonsList.append(("CTG_MainButton_Clicked", "Circle", (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50))
+### Functions for that module
+def CTG_MainButton_Clicked():
+    global module_CTG_timesToClick
+    
+    module_CTG_timesToClick -= 1
+    if module_CTG_timesToClick < 0:
+        module_CTG_timesToClick = 0
+    
+    
+"""
+### RANDOMISATION SETTINGS
+randomizer_DIFF = 20 # Ranges from 1 to 20
+def handleModulesRandomization():
+"""
 
 
 def energyBarIndications():
@@ -160,13 +209,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouseX = pygame.mouse.get_pos()[0]
             mouseY = pygame.mouse.get_pos()[1]
+            
+            for clickable in range(len(buttonsList)):
+                if buttonsList[clickable][1] == "Circle":
+                    if math.sqrt((mouseX - buttonsList[clickable][2][0]) ** 2 + (mouseY - buttonsList[clickable][2][1]) ** 2) < buttonsList[clickable][3]:
+                        function = globals()[buttonsList[clickable][0]]
+                        function()
+            
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.mixer.stop()
                 running = False
+                
     # Update the display
     pygame.display.flip()
 
@@ -176,6 +234,8 @@ while running:
         moduleFlashingLightTime = 0
     
     temperatureBarLightsOn = core_temperature // 60
+    
+    buttonsList = []
     
     # Cap the frame rate
     clock.tick(60)
