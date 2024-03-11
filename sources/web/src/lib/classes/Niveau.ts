@@ -2,6 +2,7 @@ export interface Niveau {
 	Nom: string;
 	Audio: string;
 	Difficulte: number;
+	Duree: number;
 	Touches: Touche[];
 }
 
