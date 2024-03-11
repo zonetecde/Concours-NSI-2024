@@ -3,6 +3,7 @@
 	import Retour from '$lib/Retour.svelte';
 	import { onMount } from 'svelte';
 	import Api from '../../../api/Api';
+	import { PlayAudio } from '$lib/GlobalFunc';
 
 	/** @type {Array<import('$lib/classes/Niveau').Niveau>} */
 	let niveaux = []; // Niveaux
@@ -13,11 +14,20 @@
 	/** @type {number} */
 	let audioPosition = 0;
 
-	/** @type {Array<any>} */
-	let circlesToDraw = [];
+	/** @type {number} */
+	let score = 0;
+
+	/** @type {number} */
+	let scoreMax = 0;
 
 	/** @type {Array<string>} */
-	let keys = ['f', 'g', 'j', 'k'];
+	let keys = [];
+
+	/** @type {Array<string>} */
+	let keyboardLayout = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'w', 'x', 'c', 'v', 'b', 'n'];
+
+	/** @type {Array<string>} */
+	let touchesAppuyees = []; // Les touches actuellement appuyées
 
 	/** @type {HTMLAudioElement} */
 	let audio;
@@ -30,15 +40,6 @@
 
 	/** @type {boolean} */
 	let hasExerciceEnded = false; // L'exercice est terminé ?
-
-	/** @type {boolean} */
-	let allowUppercase = true; // Autoriser les majuscules dans les chaines de caractères ?
-
-	/** @type {boolean} */
-	let allowAccents = true; // Autoriser les accents dans les chaines de caractères ?
-
-	/** @type {boolean} */
-	let allowSpecialCharacters = false; // Autoriser les caractères spéciaux dans les chaines de caractères ?
 
 	onMount(async () => {
 		window.addEventListener('keydown', keyDown);
@@ -54,7 +55,12 @@
 	 * Appelée lorsqu'une touche est relâchée
 	 * @param {KeyboardEvent} event
 	 */
-	function keyUp(event) {}
+	function keyUp(event) {
+		if (hasExerciceStarted) {
+			// Enlève la touche appuyée
+			touchesAppuyees = touchesAppuyees.filter((touche) => touche !== event.key);
+		}
+	}
 
 	/**
 	 * Appelée lorsqu'une touche est appuyée
@@ -64,11 +70,32 @@
 	function keyDown(event) {
 		if (event.key === 'Enter' && !hasExerciceStarted) {
 			startExercice();
-		}
+		} else if (hasExerciceStarted) {
+			// Vérifie si la touche appuyée est dans les touches à appuyer pour le temps actuel
+			const touche = selectedLevelObj.Touches.find((touche) => touche.key === event.key && Math.abs(audioPosition - touche.time) < 0.35 + (touche.hold ? touche.hold_time * 0.3 : 0));
 
-		if (event.key === 'Escape') {
-			// Arrête tout les audios TODO: delete
-			audio.pause();
+			if (touche) {
+				// Si la touche est déjà appuyée, on ne fait rien
+				if (touchesAppuyees.includes(event.key)) return;
+
+				// Ajoute la touche appuyée
+				touchesAppuyees.push(event.key);
+
+				if (!touche.hold) {
+					// Score +1
+					score++;
+				} else {
+					// Regarde si elle est toujours appuyée après le temps de maintien
+					setTimeout(() => {
+						if (touchesAppuyees.includes(event.key)) {
+							score++;
+						}
+					}, touche.hold_time * 0.5 * 1000 - (audioPosition - touche.time) * 1000); // Au moins la moiitié du temps de maintien
+				}
+			} else {
+				// Touche appuyée au mauvais moment
+				//PlayAudio('/audio/pop_sound.mp3');
+			}
 		}
 	}
 
@@ -77,7 +104,15 @@
 
 		const niv = niveaux.find((niveau) => niveau.Nom === selectedLevelName);
 		if (niv) {
+			scoreMax = niv.Touches.length;
 			selectedLevelObj = niv;
+
+			// Récupère les touches du clavier dans le bon ordre
+			keys = selectedLevelObj.Touches.map((touche) => touche.key);
+			// Distinct
+			keys = keys.filter((value, index, self) => self.indexOf(value) === index);
+			// Les tries dans l'ordre du clavier
+			keys.sort((a, b) => keyboardLayout.indexOf(a) - keyboardLayout.indexOf(b));
 
 			// Joue le son
 			audio = new Audio(`/audio/rythme/${selectedLevelObj.Audio}`);
@@ -87,9 +122,12 @@
 				audioPosition = audio.currentTime;
 			}, 10);
 
-			// quand l'autio est terminé
+			// quand l'audio est terminé
 			audio.onended = () => {
 				clearInterval(int);
+				setTimeout(() => {
+					hasExerciceEnded = true;
+				}, 1000);
 			};
 		}
 	}
@@ -99,10 +137,6 @@
 		window.removeEventListener('keydown', keyDown);
 		window.removeEventListener('keyup', keyUp);
 		audio.pause();
-	}
-
-	$: if (audioPosition) {
-		console.log(audio.currentTime);
 	}
 </script>
 
@@ -115,31 +149,18 @@
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
 			<p class="text-lg">
-				Des carrés tomberons du haut de l'écran, appuyez sur la touche correspondante lorsque le
-				carré touche la ligne d'arrivée. <br />Si le carré se prolonge, appuyez sur la touche
-				correspondante au moment où il commence à toucher la ligne jusqu'à ce qu'il finisse de
-				tomber entièrement.
+				Des carrés tomberons du haut de l'écran, appuyez sur la touche correspondante lorsque le carré touche la ligne d'arrivée. <br />Si le carré se prolonge, appuyez sur la touche correspondante au
+				moment où il commence à toucher la ligne jusqu'à ce qu'il finisse de tomber entièrement.
 			</p>
 		</div>
 
-		<div
-			class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
-		>
+		<div class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl">
 			<div class="flex flex-col w-full">
 				<p class="pr-2">Niveaux :</p>
 
 				<div class="flex gap-x-8">
 					{#each niveaux as niveau}
-						<label for={niveau.Nom}
-							><input
-								type="radio"
-								bind:group={selectedLevelName}
-								id={niveau.Nom}
-								name="niveau"
-								class="mr-2"
-								value={niveau.Nom}
-							/>{niveau.Nom}</label
-						>
+						<label for={niveau.Nom}><input type="radio" bind:group={selectedLevelName} id={niveau.Nom} name="niveau" class="mr-2" value={niveau.Nom} />{niveau.Nom}</label>
 					{/each}
 				</div>
 			</div>
@@ -147,16 +168,11 @@
 
 		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
 	{:else}
-		<div
-			class="w-[450px] h-[600px] bg-[#84af80] outline-4 rounded-xl outline-[#206442] outline relative"
-		>
-			<!---->
-			<div class="absolute border-t-2 border-[#206442] bottom-[110px] w-full" />
+		<div class="w-[450px] h-[600px] bg-[#84af80] outline-4 rounded-xl outline-[#206442] outline relative">
+			<!-- Barre d'appuie -->
+			<div class="absolute border-y-2 border-[#206442] bg-[#ffffff2d] bottom-[90px] h-[40px] w-full" />
 
-			<div
-				class="overflow-hidden w-full h-full grid absolute bottom-0 divide-x-2 divide-[#206442]"
-				style={`grid-template-columns: repeat(${keys.length}, minmax(0, 1fr))`}
-			>
+			<div class="overflow-hidden w-full h-full grid absolute bottom-0 divide-x-2 divide-[#206442]" style={`grid-template-columns: repeat(${keys.length}, minmax(0, 1fr))`}>
 				{#each keys as key}
 					<div class="w-full h-full flex justify-center items-center relative">
 						{#each selectedLevelObj.Touches as touche}
@@ -165,26 +181,24 @@
 									class="w-10 h-10 rounded-full absolute key"
 									style={`height: ${touche.hold ? touche.hold_time * 120 : '40'}px;
 									
-									top: ${
-										audioPosition >= touche.time - 4
-											? `calc(100% + ${touche.hold_time * 120}px)`
-											: `calc(-10% - ${touche.hold_time * 120}px)`
-									}; transition-duration: ${
+									top: ${audioPosition >= touche.time - 4 ? `calc(100% + ${touche.hold_time * 120}px)` : `calc(-10% - ${touche.hold_time * 120}px)`}; transition-duration: ${
 										touche.time - audioPosition + 1 + (touche.hold ? touche.hold_time * 1.55 : 0)
 									}s; ${
-										Math.abs(audioPosition - touche.time) <
-										(touche.hold ? touche.hold_time * 0.5 : 0.1)
-											? 'background-color: red;'
-											: 'background-color: #4d4bd4;'
+										Math.abs(audioPosition - touche.time) < (touche.hold ? touche.hold_time * 0.5 : 0.1) && touchesAppuyees.includes(key) ? 'background-color: red;' : 'background-color: #4d4bd4;'
 									}`}
 								/>
 							{/if}
 						{/each}
 
-						<p class="text-3xl absolute bottom-9 font-bold">{key.toUpperCase()}</p>
+						<p class="text-3xl absolute bottom-[90px] font-bold">{key.toUpperCase()}</p>
 					</div>
 				{/each}
 			</div>
+		</div>
+
+		<div class="absolute top-5 w-full flex justify-between items-center px-8">
+			<p class="text-2xl">Score : {score}</p>
+			<p class="text-2xl">Temps restant : {Math.round(selectedLevelObj.Duree - audioPosition)}</p>
 		</div>
 	{/if}
 
@@ -193,6 +207,6 @@
 
 <style>
 	.key {
-		transition: top 1s linear, background-color 0.03s linear;
+		transition: top 1s linear, background-color 0.03s ease;
 	}
 </style>

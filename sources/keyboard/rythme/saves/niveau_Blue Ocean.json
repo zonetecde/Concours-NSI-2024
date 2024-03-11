@@ -1,6 +1,7 @@
 {
     "Nom": "Blue Ocean",
     "Audio": "Blue Ocean.mp3",
+    "Duree": 41.5,
     "Difficulte": 1,
     "Touches": [
         { "key": "g", "hold_time": 0, "hold": false, "time": 2.959715 },

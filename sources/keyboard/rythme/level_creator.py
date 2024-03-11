@@ -153,7 +153,8 @@ class LevelCreator:
                 "Nom": self.nom,
                 "Audio": self.son,
                 "Difficulte": self.difficulte,
-                "Touches" : self.touches
+                "Touches" : self.touches,
+                "Duree": max([x['time'] for x in self.touches]) + 1
             }
 
             json.dump(level_obj, file)
