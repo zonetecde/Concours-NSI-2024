@@ -31,6 +31,7 @@ class Maze:
 
         SCREEN_WIDTH = desktopSize[0][0]
         SCREEN_HEIGHT = desktopSize[0][1]
+        
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
@@ -117,7 +118,7 @@ class Maze:
                 screen.blit(screen, (0, 0))
 
                 # Création début et fin
-                deb = (100-10, 225-10, 10, 10)
+                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 fin = (650-10, 225-10, 10, 10)
                 # Création bord et mur
                 rect_zone = pygame.draw.rect(screen, (255, 0, 0), ractangle)
