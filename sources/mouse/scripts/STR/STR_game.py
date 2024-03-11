@@ -99,9 +99,78 @@ def module_create_bounding_box(moduleName, posX, posY, sizeX, sizeY, moduleColor
     pygame.draw.circle(screen, dangerDiodeColor, (posX + 23, posY + 23), 15)
     pygame.draw.circle(screen, (50, 50, 50), (posX + 23, posY + 23), 15, 3)
 
-"""MODULE LAYOUT/EXAMPLE/BASE
 
+"""MODULE LAYOUT/EXAMPLE/BASE
+### OVERALL PARAMETERS ###
+OVERALL_difficulty = 20 # Ranges from 1 to 20
+
+### INITIAL MODULE PARAMETERS (PPT = PRODUCTION PER TICK; TPT = TEMPERATURE PER TICK)
+module_CTG_danger_level = 0
+module_CTG_PPT = 0.2
+module_CTG_TPT = 0.4
+module_CTG_randomNumberGiven = pygame.time.get_ticks() + random.randint(1, 3) * 30 * 1000 * (21 - OVERALL_difficulty)
+module_CTG_lateness_MOE = 5000
+module_CTG_errored = False
+module_CTG_firstTickTrue = False
+### RANDOMISATION PARAMETER
+module_CTG_randomizationTick = None
+### ADDITIONAL PARAMETERS
+module_CTG_timesToClick = 0
+def reInit_Module_click_until_green():
+    global module_CTG_randomNumberGiven
+    module_CTG_randomNumberGiven = pygame.time.get_ticks() + random.randint(1, 3) * 30 * 1000 * (21 - OVERALL_difficulty)
+def module_click_until_green():
+    global core_temperature, core_energy_provided, enabled
+    global module_CTG_danger_level, module_CTG_lateness_MOE, module_CTG_PPT, module_CTG_randomNumberGiven, module_CTG_TPT, module_CTG_firstTickTrue, module_CTG_timesToClick
+    module_create_bounding_box("Click until green", 0, SCREEN_HEIGHT * (3/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_CTG_danger_level)
+    
+    if module_CTG_randomNumberGiven < pygame.time.get_ticks() - module_CTG_lateness_MOE:
+        module_CTG_danger_level = 2
+        module_CTG_errored = True
+    elif module_CTG_randomNumberGiven < pygame.time.get_ticks():
+        module_CTG_danger_level = 1
+        module_CTG_errored = True
+    else:
+        module_CTG_danger_level = 0
+        module_CTG_errored = False
+        
+    if module_CTG_danger_level == 1:
+        core_temperature += module_CTG_TPT
+    elif module_CTG_danger_level == 2:
+        core_temperature += 2 * module_CTG_TPT
+    core_energy_provided += module_CTG_PPT
+    
+    # OPERATION METHOD
+    # The light will turn red. Press it until it gets back to green.
+    
+    #Check if already errored, if not the initialize it
+    if module_CTG_errored == True and module_CTG_firstTickTrue == False:
+        #Init danger parameters
+        module_CTG_timesToClick = random.randint(4, 12)
+        
+        #Set init danger as DONE
+        module_CTG_firstTickTrue = True
+        
+    if module_CTG_errored == True:
+        buttonColor = (255, 0, 0)
+        if module_CTG_timesToClick == 0:
+            module_CTG_errored = False
+            module_CTG_danger_level = 0
+            reInit_Module_click_until_green()
+    else:
+        buttonColor = (10, 185, 10)
+        
+    button = pygame.draw.circle(screen, buttonColor, (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50)
+    buttonsList.append(("CTG_MainButton_Clicked", "Circle", (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50))
+### Functions for that module
+def CTG_MainButton_Clicked():
+    global module_CTG_timesToClick
+    
+    module_CTG_timesToClick -= 1
+    if module_CTG_timesToClick < 0:
+        module_CTG_timesToClick = 0
 """
+
 
 ### OVERALL PARAMETERS ###
 OVERALL_difficulty = 20 # Ranges from 1 to 20
