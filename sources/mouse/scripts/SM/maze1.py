@@ -247,9 +247,9 @@ class Maze:
             #Niveau 4
             elif niveau == 4:
                 ractangle_inv = ((x , y + 20, SCREEN_WIDTH/2 + 100, SCREEN_HEIGHT * 0.14))
-                carre_fin = ((x + 700, y + 20, 100, SCREEN_HEIGHT * 0.14))
-                ractangle = (x , y + 20, 100, 300)
-                ractangle2 = (x, y + 220, 200, 100)
+                carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.14))
+                ractangle = (x , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
+                ractangle2 = (x, SCREEN_HEIGHT * (370/720), SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (100/720))
 
                 
                 # Clock for controlling the frame rate
