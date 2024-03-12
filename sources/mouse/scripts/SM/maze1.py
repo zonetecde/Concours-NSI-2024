@@ -20,8 +20,8 @@ class Maze:
     def __init__(self):
         self.start = False
         self.x_mov_lvl5 = SCREEN_WIDTH * (250/1280)
-        self.y1_mov_lvl6 = SCREEN_HEIGHT * (50/720)
-        self.y2_mov_lvl6 = SCREEN_HEIGHT * (350/720)
+        self.y1_mov_lvl6 = SCREEN_HEIGHT * (0/720)
+        self.y2_mov_lvl6 = SCREEN_HEIGHT * (300/720)
     def start_chrono(self):
         # Clock for controlling the frame rate
         clock = pygame.time.Clock()
@@ -53,7 +53,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 1
+        niveau = 6
         
         all_timer = 0
 
@@ -63,6 +63,11 @@ class Maze:
         #for lvl5
         position = "right"
         font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
+        
+        #for lvl6
+        position1_lvl6 = "up"
+        position2_lvl6 = "down"
+        
         # Main loop
         while running:
             
@@ -347,9 +352,12 @@ class Maze:
                 elif self.x_mov_lvl5 <= SCREEN_WIDTH * (650/1280):
                     rect_zone.move(self.x_mov_lvl5, y)
                     self.x_mov_lvl5 -= 1
-                    if self.x_mov_lvl5 == 150:
+                    if self.x_mov_lvl5 == SCREEN_WIDTH * (150/1280):
                         position = "left"
                     pygame.display.flip()
+
+
+                
                 
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
@@ -363,8 +371,8 @@ class Maze:
             elif niveau == 6:
                 carre_deb = (x, y, 200, SCREEN_HEIGHT * 0.2)
                 carre_fin = (x + 750, y, 150, SCREEN_HEIGHT * 0.2)
-                ractangle = (x + 100, y , 300, SCREEN_HEIGHT * 0.2)
-                ractangle2 = (x)
+                ractangle = (x + 200, self.y1_mov_lvl6 , 300, SCREEN_HEIGHT * 0.2)
+                ractangle2 = (x + 500, self.y2_mov_lvl6, 300, SCREEN_HEIGHT * 0.2)
                 
                 # Clock for controlling the frame rate
                 self.start_chrono()
@@ -373,7 +381,7 @@ class Maze:
                 screen.fill((0, 0, 0))
                 screen.blit(screen, (0, 0))
                 #Titre caché derrière
-                title = font.render(("Maze 5"), 1, (255, 255, 255))
+                title = font.render(("Maze 6"), 1, (255, 255, 255))
                 screen.blit(title, (SCREEN_WIDTH * (120/256), SCREEN_HEIGHT * (24/72)))
 
                 # Création début et fin
@@ -397,22 +405,41 @@ class Maze:
 
                 if not carre_zone.collidepoint(pygame.mouse.get_pos()):
                     if not rect_zone.collidepoint(pygame.mouse.get_pos()):
-                        if not carre_zone2.collidepoint(pygame.mouse.get_pos()):
-                            sound_mana.play('OOB')
-                            pygame.mouse.set_pos([deb[0], deb[1]])
+                        if not rect2_zone.collidepoint(pygame.mouse.get_pos()):
+                            if not carre_zone2.collidepoint(pygame.mouse.get_pos()):
+                                sound_mana.play('OOB')
+                                pygame.mouse.set_pos([deb[0], deb[1]])
                 
-                if self.x_mov_lvl5 >= SCREEN_WIDTH * (150/1280) and position == "left":
-                    rect_zone.move(self.x_mov_lvl5, y)
-                    self.x_mov_lvl5 += 1
-                    if self.x_mov_lvl5 == SCREEN_WIDTH * (650/1280):
-                        position = "right"
+                if self.y1_mov_lvl6 >= SCREEN_HEIGHT * (0/720) and position1_lvl6 == "up":
+                    rect_zone.move(x + 200, self.y1_mov_lvl6)
+                    self.y1_mov_lvl6 += 1
+                    if self.y1_mov_lvl6 == SCREEN_HEIGHT * (300/720):
+                        position1_lvl6 = "down"
                     pygame.display.flip()
-                elif self.x_mov_lvl5 <= SCREEN_WIDTH * (650/1280):
-                    rect_zone.move(self.x_mov_lvl5, y)
-                    self.x_mov_lvl5 -= 1
-                    if self.x_mov_lvl5 == 150:
-                        position = "left"
+                elif self.y1_mov_lvl6 <= SCREEN_HEIGHT * (300/720):
+                    rect_zone.move(x + 200, self.y1_mov_lvl6)
+                    self.y1_mov_lvl6 -= 1
+                    if self.y1_mov_lvl6 == SCREEN_HEIGHT * (0/720):
+                        position1_lvl6 = "up"
                     pygame.display.flip()
+
+                
+                if self.y2_mov_lvl6 >= SCREEN_HEIGHT * (0/720) and position2_lvl6 == "up":
+                    rect2_zone.move(x + 400, self.y2_mov_lvl6)
+                    self.y2_mov_lvl6 += 1
+                    if self.y2_mov_lvl6 == SCREEN_HEIGHT * (300/720):
+                        position2_lvl6 = "down"
+                    pygame.display.flip()
+                elif self.y2_mov_lvl6 <= SCREEN_HEIGHT * (300/720):
+                    rect2_zone.move(x + 400, self.y2_mov_lvl6)
+                    self.y2_mov_lvl6 -= 1
+                    if self.y2_mov_lvl6 == SCREEN_HEIGHT * (0/720):
+                        print(self.y2_mov_lvl6)
+                        position2_lvl6 = "up"
+                    pygame.display.flip()
+
+
+                
                 
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
