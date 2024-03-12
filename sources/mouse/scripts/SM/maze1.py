@@ -369,10 +369,10 @@ class Maze:
 
             #Niveau 6
             elif niveau == 6:
-                carre_deb = (x, y, 200, SCREEN_HEIGHT * 0.2)
-                carre_fin = (x + 750, y, 150, SCREEN_HEIGHT * 0.2)
-                ractangle = (x + 200, self.y1_mov_lvl6 , 300, SCREEN_HEIGHT * 0.2)
-                ractangle2 = (x + 500, self.y2_mov_lvl6, 300, SCREEN_HEIGHT * 0.2)
+                carre_deb = (x, y, SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * 0.2)
+                carre_fin = (SCREEN_WIDTH *(800/1280), y, SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * 0.2)
+                ractangle = (SCREEN_WIDTH * (250/1280), self.y1_mov_lvl6 , SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
+                ractangle2 = (SCREEN_WIDTH * (550/1280), self.y2_mov_lvl6, SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
                 
                 # Clock for controlling the frame rate
                 self.start_chrono()
@@ -411,13 +411,13 @@ class Maze:
                                 pygame.mouse.set_pos([deb[0], deb[1]])
                 
                 if self.y1_mov_lvl6 >= SCREEN_HEIGHT * (0/720) and position1_lvl6 == "up":
-                    rect_zone.move(x + 200, self.y1_mov_lvl6)
+                    rect_zone.move(SCREEN_WIDTH * (250/1280), self.y1_mov_lvl6)
                     self.y1_mov_lvl6 += 1
                     if self.y1_mov_lvl6 == SCREEN_HEIGHT * (300/720):
                         position1_lvl6 = "down"
                     pygame.display.flip()
                 elif self.y1_mov_lvl6 <= SCREEN_HEIGHT * (300/720):
-                    rect_zone.move(x + 200, self.y1_mov_lvl6)
+                    rect_zone.move(SCREEN_WIDTH * (250/1280), self.y1_mov_lvl6)
                     self.y1_mov_lvl6 -= 1
                     if self.y1_mov_lvl6 == SCREEN_HEIGHT * (0/720):
                         position1_lvl6 = "up"
@@ -425,13 +425,13 @@ class Maze:
 
                 
                 if self.y2_mov_lvl6 >= SCREEN_HEIGHT * (0/720) and position2_lvl6 == "up":
-                    rect2_zone.move(x + 400, self.y2_mov_lvl6)
+                    rect2_zone.move(SCREEN_WIDTH * (450/1280), self.y2_mov_lvl6)
                     self.y2_mov_lvl6 += 1
                     if self.y2_mov_lvl6 == SCREEN_HEIGHT * (300/720):
                         position2_lvl6 = "down"
                     pygame.display.flip()
                 elif self.y2_mov_lvl6 <= SCREEN_HEIGHT * (300/720):
-                    rect2_zone.move(x + 400, self.y2_mov_lvl6)
+                    rect2_zone.move(SCREEN_WIDTH * (450/1280), self.y2_mov_lvl6)
                     self.y2_mov_lvl6 -= 1
                     if self.y2_mov_lvl6 == SCREEN_HEIGHT * (0/720):
                         print(self.y2_mov_lvl6)
