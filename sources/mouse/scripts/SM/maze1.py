@@ -155,6 +155,7 @@ class Maze:
                     sound_mana.play('OOB')
                     pygame.mouse.set_pos([deb[0], deb[1]])
                 
+                #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
@@ -202,10 +203,12 @@ class Maze:
                         sound_mana.play('OOB')
                         pygame.mouse.set_pos([deb[0], deb[1]])
 
+                #Condition victory
                 if fin_rect2.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
+                #Nous téléportent si on est sur le tp
                 if tp_rect.collidepoint(pygame.mouse.get_pos()):
                     sound_mana.play('tp')
                     pygame.mouse.set_pos([tp2[0], tp2[1]])
@@ -243,6 +246,7 @@ class Maze:
                     sound_mana.play('OOB')
                     pygame.mouse.set_pos([deb[0], deb[1]])
                 
+                #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
@@ -295,11 +299,12 @@ class Maze:
                                 sound_mana.play('OOB')
                                 pygame.mouse.set_pos([deb[0], deb[1]])
                 
+                #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
-                
+                #Si on est dans le trigger le rectangle apparait
                 if trigger.collidepoint(pygame.mouse.get_pos()):
                     couleur_rect_inv = 255
 
@@ -343,6 +348,7 @@ class Maze:
                             sound_mana.play('OOB')
                             pygame.mouse.set_pos([deb[0], deb[1]])
                 
+                #Permet de faire bouger le rectangle
                 if self.x_mov_lvl5 >= SCREEN_WIDTH * (150/1280) and position == "left":
                     rect_zone.move(self.x_mov_lvl5, y)
                     self.x_mov_lvl5 += 1
@@ -356,9 +362,7 @@ class Maze:
                         position = "left"
                     pygame.display.flip()
 
-
-                
-                
+                #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
@@ -400,9 +404,7 @@ class Maze:
                     pygame.mouse.set_pos([deb[0], deb[1]])
                     starting_tick = pygame.time.get_ticks()
                     self.start = True
-                # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
-                
-
+                # Boucle qui vérifie que l'on est bien dans le niveau 
                 if not carre_zone.collidepoint(pygame.mouse.get_pos()):
                     if not rect_zone.collidepoint(pygame.mouse.get_pos()):
                         if not rect2_zone.collidepoint(pygame.mouse.get_pos()):
@@ -410,6 +412,7 @@ class Maze:
                                 sound_mana.play('OOB')
                                 pygame.mouse.set_pos([deb[0], deb[1]])
                 
+                #Permet de faire bouger le rectangle1
                 if self.y1_mov_lvl6 >= SCREEN_HEIGHT * (0/720) and position1_lvl6 == "up":
                     rect_zone.move(SCREEN_WIDTH * (250/1280), self.y1_mov_lvl6)
                     self.y1_mov_lvl6 += 1
@@ -423,7 +426,7 @@ class Maze:
                         position1_lvl6 = "up"
                     pygame.display.flip()
 
-                
+                #Permet de faire bouger le rectangle2
                 if self.y2_mov_lvl6 >= SCREEN_HEIGHT * (0/720) and position2_lvl6 == "up":
                     rect2_zone.move(SCREEN_WIDTH * (450/1280), self.y2_mov_lvl6)
                     self.y2_mov_lvl6 += 1
@@ -438,9 +441,7 @@ class Maze:
                         position2_lvl6 = "up"
                     pygame.display.flip()
 
-
-                
-                
+                #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
