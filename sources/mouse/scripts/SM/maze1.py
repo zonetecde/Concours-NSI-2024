@@ -48,6 +48,9 @@ class Maze:
 
         #Chargement bg si il y a 
         bg = None
+        
+        # Font for all of the game
+        font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
 
         #Variable running
         running = True
@@ -62,7 +65,7 @@ class Maze:
 
         #for lvl5
         position = "right"
-        font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
+        
         
         #for lvl6
         position1_lvl6 = "up"
@@ -278,7 +281,7 @@ class Maze:
                 trig = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (420/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 # Création bord et mur
                 
-                rect_zone_inv = pygame.draw.rect(screen, (couleur_rect_inv, 255, 0), ractangle_inv)
+                rect_zone_inv = pygame.draw.rect(screen, (couleur_rect_inv, 0, 0), ractangle_inv)
                 carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
                 rect_zone1 = pygame.draw.rect(screen, (255, 0, 0), ractangle)
                 rect_zone2 = pygame.draw.rect(screen, (255, 0, 0), ractangle2)
