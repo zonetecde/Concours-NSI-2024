@@ -53,7 +53,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 7
+        niveau = 8
         
         all_timer = 0
 
@@ -72,6 +72,11 @@ class Maze:
         couleur_rect_invi = 0
         
         couleur_rect_fake = 255
+
+        #for lvl8
+        couleur_fin = 0
+        couleur_rect_invicible = 0
+        song_troll = False
 
         # Main loop
         while running:
@@ -474,7 +479,7 @@ class Maze:
 
                 # Création début et fin
                 deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
-                fin = (SCREEN_WIDTH * 0.62, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * (0.62), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 trig = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (2/128), SCREEN_HEIGHT * (10/72))
                 
 
@@ -525,6 +530,106 @@ class Maze:
                     couleur_rect_invi = 255
                     couleur_rect_fake = 0
 
+
+
+            #Niveau 8
+            elif niveau == 8:
+                ractangle = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                ractangle1 = (SCREEN_WIDTH * (200/1280) , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
+                ractangle2 = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (450/1280), SCREEN_HEIGHT * 0.11)
+                ractangle3 = (SCREEN_WIDTH * (570/1280), SCREEN_HEIGHT * (80/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (400/720))
+                ractangle4 = (SCREEN_WIDTH * (570/1280), SCREEN_HEIGHT * (30/720), SCREEN_WIDTH * (550/1280), SCREEN_HEIGHT * 0.09)
+                ractangle5 = (SCREEN_WIDTH * (1100/1280), SCREEN_HEIGHT * (30/720), SCREEN_WIDTH * (70/1280), SCREEN_HEIGHT * (600/720))
+                ractangle6 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (570/720), SCREEN_WIDTH * (400/1280), SCREEN_HEIGHT * 0.08)
+                ractangle7 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (350/720), SCREEN_WIDTH * (60/1280), SCREEN_HEIGHT * (250/720))
+                ractangle8 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (350/720), SCREEN_WIDTH * (250/1280), SCREEN_HEIGHT * 0.06)
+                ractangle9 = (SCREEN_WIDTH * (930/1280), SCREEN_HEIGHT * (190/720), SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT * (160/720))
+                ractangle10 = (SCREEN_WIDTH * (800/1280), SCREEN_HEIGHT * (190/720), SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * 0.025)
+
+                carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.11))
+                     
+                rect_inv = (SCREEN_WIDTH * (305/1280), SCREEN_HEIGHT * (10/720), SCREEN_WIDTH * (45/1280), SCREEN_HEIGHT * (200/720))
+
+                
+                # Clock for controlling the frame rate
+                self.start_chrono()
+                song_played = False
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
+
+                # Création début et fin
+                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fake_fin = (SCREEN_WIDTH * 0.62, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * (325/1280), SCREEN_HEIGHT * (20/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                
+
+                
+
+                #Creation titre
+                title = font.render(("Maze 8"), 1, (255, 255, 255))
+                screen.blit(title, (SCREEN_WIDTH * (355/1280), SCREEN_HEIGHT* (165/720)))
+                
+
+                # Création bord et mur
+                rect_inv = pygame.draw.rect(screen, (couleur_rect_invicible, 0, 0), rect_inv)
+                
+                rect_zone = pygame.draw.rect(screen, (255, 0, 0), ractangle1)
+                rect_zone1 = pygame.draw.rect(screen, (255, 0, 0), ractangle)
+                rect_zone2 = pygame.draw.rect(screen, (255, 0, 0), ractangle2)
+                rect_zone3 = pygame.draw.rect(screen, (255, 0, 0), ractangle3)
+                rect_zone4 = pygame.draw.rect(screen, (255, 0, 0), ractangle4)
+                rect_zone5 = pygame.draw.rect(screen, (255, 0, 0), ractangle5)
+                rect_zone6 = pygame.draw.rect(screen, (255, 0, 0), ractangle6)
+                rect_zone7 = pygame.draw.rect(screen, (255, 0, 0), ractangle7)
+                rect_zone8 = pygame.draw.rect(screen, (255, 0, 0), ractangle8)
+                rect_zone9 = pygame.draw.rect(screen, (255, 0, 0), ractangle9)
+                rect_zone10 = pygame.draw.rect(screen, (255, 0, 0), ractangle10)
+
+                carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
+                
+                
+                
+                
+                #Création carré debut et fin 
+                deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
+                fin_rect = pygame.draw.rect(screen, (0, 0, couleur_fin), fin)
+                fake_fin_rect= pygame.draw.rect(screen, (35, 150, 245), fake_fin)
+                # Met le cursor sur le départ
+                if not self.start:
+                    pygame.mouse.set_pos([deb[0], deb[1]])
+                    starting_tick = pygame.time.get_ticks()
+                    self.start = True
+                    
+                # Boucle qui vérifie que l'on est bien dans le niveau 
+                if not rect_zone.collidepoint(pygame.mouse.get_pos()):
+                    if not rect_zone2.collidepoint(pygame.mouse.get_pos()):
+                        if not rect_zone3.collidepoint(pygame.mouse.get_pos()):
+                            if not rect_zone1.collidepoint(pygame.mouse.get_pos()):
+                                if not rect_zone4.collidepoint(pygame.mouse.get_pos()):
+                                    if not rect_zone5.collidepoint(pygame.mouse.get_pos()):
+                                        if not rect_zone6.collidepoint(pygame.mouse.get_pos()):
+                                            if not rect_zone7.collidepoint(pygame.mouse.get_pos()):
+                                                if not rect_zone8.collidepoint(pygame.mouse.get_pos()):
+                                                    if not rect_zone9.collidepoint(pygame.mouse.get_pos()):
+                                                        if not rect_zone10.collidepoint(pygame.mouse.get_pos()):
+                                                            if not rect_inv.collidepoint(pygame.mouse.get_pos()):
+                                                                if not carre_zone.collidepoint(pygame.mouse.get_pos()):
+                                                                    sound_mana.play('OOB')
+                                                                    pygame.mouse.set_pos([deb[0], deb[1]])
+                                                
+                #Condition victory
+                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    win = True
+                    end_tick = pygame.time.get_ticks()
+                    total_time = str((end_tick - starting_tick)/1000)[0:4]
+                #Si on est dans le trigger le rectangle apparait
+                if fake_fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    if song_troll == False:
+                        sound_mana.play('giggle')
+                        couleur_rect_invicible = 255
+                        couleur_fin = 255
+                        song_troll = True
 
 
             #Pour gérer les évenements
