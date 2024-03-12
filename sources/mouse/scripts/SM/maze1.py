@@ -56,12 +56,13 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 1
+        niveau = 4
         
         all_timer = 0
 
         #for lvl4
         couleur_rect_inv = 0
+        sfx = False
 
         #for lvl5
         position = "right"
@@ -313,8 +314,11 @@ class Maze:
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
                 #Si on est dans le trigger le rectangle apparait
                 if trigger.collidepoint(pygame.mouse.get_pos()):
-                    couleur_rect_inv = 255
-                    self.x_lvl4 = SCREEN_WIDTH * (100/1280)
+                    if not sfx:
+                        sound_mana.play('switch')
+                        couleur_rect_inv = 255
+                        sfx = True
+                        self.x_lvl4 = SCREEN_WIDTH * (100/1280)
 
             #Niveau 5
             elif niveau == 5:
