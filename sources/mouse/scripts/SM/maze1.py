@@ -19,13 +19,13 @@ class Maze:
     """
     def __init__(self):
         self.start = False
+        self.spawn = ()
+        self.x_lvl4 = SCREEN_WIDTH * (160/1280)
         self.x_mov_lvl5 = SCREEN_WIDTH * (250/1280)
         self.y1_mov_lvl6 = SCREEN_HEIGHT * (0/720)
         self.y2_mov_lvl6 = SCREEN_HEIGHT * (300/720)
-    def start_chrono(self):
-        # Clock for controlling the frame rate
-        clock = pygame.time.Clock()
-        starting_tick = pygame.time.get_ticks()
+        self.x_lvl8 = SCREEN_WIDTH * (355/1280)
+        
 
 
     def start_maze(self):
@@ -53,7 +53,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 8
+        niveau = 1
         
         all_timer = 0
 
@@ -137,8 +137,7 @@ class Maze:
             if niveau == 1:
                 ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -177,10 +176,7 @@ class Maze:
                 ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
                 ractangle2 = (SCREEN_WIDTH * (59/128) , SCREEN_HEIGHT * (11/18), SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
-
-                tp_used = False
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -228,8 +224,7 @@ class Maze:
             elif niveau == 3:
                 ractangle = (SCREEN_WIDTH * (70/1280), SCREEN_HEIGHT * (200/720), SCREEN_WIDTH * (7/8), SCREEN_HEIGHT * (7/144))
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -265,14 +260,13 @@ class Maze:
 
             #Niveau 4
             elif niveau == 4:
-                ractangle_inv = ((x , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (740/1280), SCREEN_HEIGHT * 0.14))
+                ractangle_inv = ((self.x_lvl4 , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (680/1280), SCREEN_HEIGHT * 0.14))
                 carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.14))
                 ractangle = (x , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
                 ractangle2 = (x, SCREEN_HEIGHT * (370/720), SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (100/720))
 
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -284,7 +278,7 @@ class Maze:
                 trig = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (420/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 # Création bord et mur
                 
-                rect_zone_inv = pygame.draw.rect(screen, (couleur_rect_inv, 0, 0), ractangle_inv)
+                rect_zone_inv = pygame.draw.rect(screen, (couleur_rect_inv, 255, 0), ractangle_inv)
                 carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
                 rect_zone1 = pygame.draw.rect(screen, (255, 0, 0), ractangle)
                 rect_zone2 = pygame.draw.rect(screen, (255, 0, 0), ractangle2)
@@ -317,6 +311,7 @@ class Maze:
                 #Si on est dans le trigger le rectangle apparait
                 if trigger.collidepoint(pygame.mouse.get_pos()):
                     couleur_rect_inv = 255
+                    self.x_lvl4 = SCREEN_WIDTH * (100/1280)
 
             #Niveau 5
             elif niveau == 5:
@@ -324,8 +319,7 @@ class Maze:
                 carre_fin = (SCREEN_WIDTH * (800/1280), y, SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * 0.2)
                 ractangle = (self.x_mov_lvl5, y , SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -388,8 +382,7 @@ class Maze:
                 ractangle = (SCREEN_WIDTH * (250/1280), self.y1_mov_lvl6 , SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
                 ractangle2 = (SCREEN_WIDTH * (550/1280), self.y2_mov_lvl6, SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -470,8 +463,7 @@ class Maze:
                 fake_rect = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (800/1280), SCREEN_HEIGHT * (100/720))
 
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -548,11 +540,10 @@ class Maze:
 
                 carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.11))
                      
-                rect_inv = (SCREEN_WIDTH * (305/1280), SCREEN_HEIGHT * (10/720), SCREEN_WIDTH * (45/1280), SCREEN_HEIGHT * (200/720))
+                rect_inv = (self.x_lvl8, SCREEN_HEIGHT * (5/720), SCREEN_WIDTH * (45/1280), SCREEN_HEIGHT * (170/720))
 
                 
-                # Clock for controlling the frame rate
-                self.start_chrono()
+                # Stop the song to be played only once
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -600,6 +591,7 @@ class Maze:
                     pygame.mouse.set_pos([deb[0], deb[1]])
                     starting_tick = pygame.time.get_ticks()
                     self.start = True
+                    self.spawn = deb
                     
                 # Boucle qui vérifie que l'on est bien dans le niveau 
                 if not rect_zone.collidepoint(pygame.mouse.get_pos()):
@@ -616,7 +608,7 @@ class Maze:
                                                             if not rect_inv.collidepoint(pygame.mouse.get_pos()):
                                                                 if not carre_zone.collidepoint(pygame.mouse.get_pos()):
                                                                     sound_mana.play('OOB')
-                                                                    pygame.mouse.set_pos([deb[0], deb[1]])
+                                                                    pygame.mouse.set_pos([self.spawn[0], self.spawn[1]])
                                                 
                 #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
@@ -630,7 +622,9 @@ class Maze:
                         couleur_rect_invicible = 255
                         couleur_fin = 255
                         song_troll = True
-
+                        self.spawn = fake_fin
+                        self.x_lvl8 = SCREEN_WIDTH * (305/1280)
+                        rect_inv.move(self.x_lvl8, SCREEN_HEIGHT * (10/720))
 
             #Pour gérer les évenements
             for event in pygame.event.get():
