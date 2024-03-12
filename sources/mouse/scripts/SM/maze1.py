@@ -53,7 +53,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 6
+        niveau = 7
         
         all_timer = 0
 
@@ -68,6 +68,11 @@ class Maze:
         position1_lvl6 = "up"
         position2_lvl6 = "down"
         
+        #for lvl7
+        couleur_rect_invi = 0
+        
+        couleur_rect_fake = 255
+
         # Main loop
         while running:
             
@@ -255,7 +260,7 @@ class Maze:
 
             #Niveau 4
             elif niveau == 4:
-                ractangle_inv = ((x , y + 20, SCREEN_WIDTH/2 + 100, SCREEN_HEIGHT * 0.14))
+                ractangle_inv = ((x , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (740/1280), SCREEN_HEIGHT * 0.14))
                 carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.14))
                 ractangle = (x , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
                 ractangle2 = (x, SCREEN_HEIGHT * (370/720), SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (100/720))
@@ -310,8 +315,8 @@ class Maze:
 
             #Niveau 5
             elif niveau == 5:
-                carre_deb = (x, y, 200, SCREEN_HEIGHT * 0.2)
-                carre_fin = (SCREEN_WIDTH * (800/1280), y, 150, SCREEN_HEIGHT * 0.2)
+                carre_deb = (x, y, SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * 0.2)
+                carre_fin = (SCREEN_WIDTH * (800/1280), y, SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * 0.2)
                 ractangle = (self.x_mov_lvl5, y , SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.2)
                 
                 # Clock for controlling the frame rate
@@ -447,6 +452,78 @@ class Maze:
                     end_tick = pygame.time.get_ticks()
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
 
+
+
+            #Niveau 7
+            elif niveau == 7:
+                ractangle_inv1 = (SCREEN_WIDTH * (250/1280) , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
+                ractangle_inv2 = (SCREEN_WIDTH * (250/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (600/1280), SCREEN_HEIGHT * 0.14)
+                ractangle_inv3 = (SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
+                carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.14))
+                
+                ractangle = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                fake_rect = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (800/1280), SCREEN_HEIGHT * (100/720))
+
+                
+                # Clock for controlling the frame rate
+                self.start_chrono()
+                song_played = False
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
+
+                # Création début et fin
+                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * 0.62, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                trig = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (2/128), SCREEN_HEIGHT * (10/72))
+                
+
+                #Création du fake chemin
+                fake_rect = pygame.draw.rect(screen, (couleur_rect_fake, 0, 0), fake_rect)
+
+                #Texte cacher sous le fake 
+                if couleur_rect_fake == 0:
+                    title = font.render(("Maze 7"), 1, (255, 255, 255))
+                    screen.blit(title, (SCREEN_WIDTH * (109/256), SCREEN_HEIGHT* (9/36)))
+                
+
+                # Création bord et mur
+                rect_zone_inv = pygame.draw.rect(screen, (couleur_rect_invi, 0, 0), ractangle_inv1)
+                rect_zone_inv2 = pygame.draw.rect(screen, (couleur_rect_invi, 0, 0), ractangle_inv2)
+                rect_zone_inv3 = pygame.draw.rect(screen, (couleur_rect_invi, 0, 0), ractangle_inv3)
+                carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
+                rect_zone1 = pygame.draw.rect(screen, (255, 0, 0), ractangle)
+                
+                
+                #Création carré debut et fin 
+                deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
+                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                trigger = pygame.draw.rect(screen, (255, 0, 0), trig)
+                # Met le cursor sur le départ
+                if not self.start:
+                    pygame.mouse.set_pos([deb[0], deb[1]])
+                    starting_tick = pygame.time.get_ticks()
+                    self.start = True
+                    
+                # Boucle qui vérifie que l'on est bien dans le niveau 
+                if not rect_zone_inv.collidepoint(pygame.mouse.get_pos()):
+                    if not rect_zone_inv2.collidepoint(pygame.mouse.get_pos()):
+                        if not rect_zone_inv3.collidepoint(pygame.mouse.get_pos()):
+                            if not rect_zone1.collidepoint(pygame.mouse.get_pos()):
+                                if not carre_zone.collidepoint(pygame.mouse.get_pos()):
+                                    sound_mana.play('OOB')
+                                    pygame.mouse.set_pos([deb[0], deb[1]])
+                
+                #Condition victory
+                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    win = True
+                    end_tick = pygame.time.get_ticks()
+                    total_time = str((end_tick - starting_tick)/1000)[0:4]
+                #Si on est dans le trigger le rectangle apparait
+                if trigger.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play('giggle')
+                    couleur_rect_invi = 255
+                    couleur_rect_fake = 0
 
 
 
