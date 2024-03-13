@@ -56,7 +56,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 4
+        niveau = 8
         
         all_timer = 0
 
@@ -529,8 +529,6 @@ class Maze:
                     couleur_rect_invi = 255
                     couleur_rect_fake = 0
 
-
-
             #Niveau 8
             elif niveau == 8:
                 ractangle = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
@@ -538,8 +536,8 @@ class Maze:
                 ractangle2 = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (450/1280), SCREEN_HEIGHT * 0.11)
                 ractangle3 = (SCREEN_WIDTH * (570/1280), SCREEN_HEIGHT * (80/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (400/720))
                 ractangle4 = (SCREEN_WIDTH * (570/1280), SCREEN_HEIGHT * (30/720), SCREEN_WIDTH * (550/1280), SCREEN_HEIGHT * 0.09)
-                ractangle5 = (SCREEN_WIDTH * (1100/1280), SCREEN_HEIGHT * (30/720), SCREEN_WIDTH * (70/1280), SCREEN_HEIGHT * (600/720))
-                ractangle6 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (570/720), SCREEN_WIDTH * (400/1280), SCREEN_HEIGHT * 0.08)
+                ractangle5 = (SCREEN_WIDTH * (1100/1280), SCREEN_HEIGHT * (30/720), SCREEN_WIDTH * (70/1280), SCREEN_HEIGHT * (590/720))
+                ractangle6 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (570/720), SCREEN_WIDTH * (40/1280), SCREEN_HEIGHT * 0.08)
                 ractangle7 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (350/720), SCREEN_WIDTH * (60/1280), SCREEN_HEIGHT * (250/720))
                 ractangle8 = (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (350/720), SCREEN_WIDTH * (250/1280), SCREEN_HEIGHT * 0.06)
                 ractangle9 = (SCREEN_WIDTH * (930/1280), SCREEN_HEIGHT * (190/720), SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT * (160/720))
