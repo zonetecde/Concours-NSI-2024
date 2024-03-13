@@ -1,21 +1,23 @@
-import pygame
-import sounds
 import sys
-import json
-from os.path import exists
 import os
 
 # Permet de ce placer dans le dossier contenant les scripts SM
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
 
+import pygame
+import sounds
+import json
+from os.path import exists
+
+
 import maze1
 maze = maze1.Maze()
 
-class Game:
+class SM:
     def __init__(self):
         pass
 
-    def start_game(self):
+    def start(self):
         # Initialize Pygame
         pygame.init()
         pygame.mixer.init()
@@ -52,8 +54,8 @@ class Game:
             screen.blit(start, (SCREEN_WIDTH * (29/64), SCREEN_HEIGHT/2))
             start_rect = pygame.Rect(SCREEN_WIDTH * (7/16), SCREEN_HEIGHT/2, SCREEN_WIDTH * (1/8), SCREEN_HEIGHT * (5/72))
 
-            # Texte Scary maze parkinson killer sans collision
-            title = font.render(("SCARY MAZE PARKINSON KILLER"), 1, (255, 255, 255))
+            # Texte Scary maze sans collision
+            title = font.render(("SCARY MAZE"), 1, (255, 255, 255))
             screen.blit(title, (SCREEN_WIDTH * (13/64), SCREEN_HEIGHT * (5/64)))
 
 
@@ -81,5 +83,5 @@ class Game:
             pygame.display.flip()
 
 if __name__ == "__main__":
-    game = Game()
-    game.start_game()
+    game = SM()
+    game.start()
