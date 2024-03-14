@@ -22,15 +22,30 @@ class Maze:
     Classe permettant de récupérer le niveau 
     """
     def __init__(self):
+        #Savoir si le niveau a commencer ou non
         self.start = False
         self.spawn = ()
+
+        #Pour lvl4
         self.x_lvl4 = SCREEN_WIDTH * (160/1280)
+
+        #Pour lvl5
         self.x_mov_lvl5 = SCREEN_WIDTH * (250/1280)
+
+        #Pour lvl6
         self.y1_mov_lvl6 = SCREEN_HEIGHT * (0/720)
         self.y2_mov_lvl6 = SCREEN_HEIGHT * (300/720)
+
+        #Pour lvl9 (ancien lvl8)
         self.x_lvl8 = SCREEN_WIDTH * (355/1280)
+
+        #Pour lvl8 (ancien lvl9)
         self.y1_lvl9 = SCREEN_HEIGHT * (70/720)
         self.y2_lvl9 = SCREEN_HEIGHT * (350/720)
+
+        #Pour lvl10
+        self.y_Sreal = SCREEN_HEIGHT * (250/720)
+        self.y_Smove = SCREEN_HEIGHT * (250/720)
 
 
     def start_maze(self):
@@ -61,8 +76,9 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 9
+        niveau = 11
         
+        #Total Timer
         all_timer = 0
 
         #for lvl4
@@ -93,6 +109,13 @@ class Maze:
         timeTick = pygame.time.get_ticks()
         waitTime = 1000 #ms
         position_lvl9 = "up"
+
+        #for lvl10
+
+        color_fake_S = 255
+
+        #for lvl11
+        texte_write = False
 
         # Main loop
         while running:
@@ -541,8 +564,8 @@ class Maze:
                     couleur_rect_invi = 255
                     couleur_rect_fake = 0
 
-            #Niveau 8
-            elif niveau == 8:
+            #Niveau 9
+            elif niveau == 9:
                 ractangle = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
                 ractangle1 = (SCREEN_WIDTH * (200/1280) , SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
                 ractangle2 = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (450/1280), SCREEN_HEIGHT * 0.11)
@@ -647,8 +670,8 @@ class Maze:
 
 
 
-            #Niveau 9
-            elif niveau == 9:
+            #Niveau 8
+            elif niveau == 8:
                 ractangle = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
                 ractangle2 = (SCREEN_WIDTH * (250/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (600/1280), SCREEN_HEIGHT * 0.14)
                 ractangle3 = (SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
@@ -745,15 +768,19 @@ class Maze:
 
                 
             # Niveau 10
-            if niveau == 10:
-                ractangle_S1 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
-                ractangle_S2 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+            elif niveau == 10:
+                ractangle_S1 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_S2 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (250/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_S3 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
 
-                ractangle_M1 = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+                ractangle_Sreal = (SCREEN_WIDTH * (0/1280), self.y_Sreal, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_Sfake = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
 
-                ractangle_P1 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+                ractangle_M1 = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
 
-                ractangle_K1 = (SCREEN_WIDTH * (990/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+                ractangle_P1 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+
+                ractangle_K1 = (SCREEN_WIDTH * (990/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
                 
                 
                 # Stop the song to be played only once
@@ -763,10 +790,15 @@ class Maze:
                 screen.blit(screen, (0, 0))
 
                 # Création début et fin
-                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                deb = (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (90/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 fin = (SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                trigS = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (130/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (20/720))
                 # Création bord et mur
+                rect_Sfake = pygame.draw.rect(screen, (color_fake_S, 0, 0), ractangle_Sfake)
+                rect_Sreal = pygame.draw.rect(screen, (255, 0, 0), ractangle_Sreal)
                 rect_S1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S1)
+                rect_S2 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S2)
+                rect_S3 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S3)
 
 
                 rect_M1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M1)
@@ -779,13 +811,14 @@ class Maze:
                 #Création carré debut et fin 
                 deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
                 fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                trigger = pygame.draw.rect(screen, (0, 150, 0), trigS)
                 # Met le cursor sur le départ
                 if not self.start:
                     pygame.mouse.set_pos([deb[0], deb[1]])
                     starting_tick = pygame.time.get_ticks()
                     self.start = True
                 # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
-                title = font.render(("Maze 1"), 1, (255, 255, 255))
+                title = font.render(("Maze 10"), 1, (255, 255, 255))
                 screen.blit(title, (SCREEN_WIDTH * (109/256), SCREEN_HEIGHT * (29/72)))
 
                 #if not rect_zone.collidepoint(pygame.mouse.get_pos()):
@@ -798,8 +831,53 @@ class Maze:
                     end_tick = pygame.time.get_ticks()
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
 
+                if trigger.collidepoint(pygame.mouse.get_pos()):
+                    color_fake_S = 0
+                    self.y_Sreal = 150
+                    sound_mana.play("giggle")
 
+            #End of the game 
+            elif niveau == 11:
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
 
+                if not texte_write:
+                    for i in range(0,5):
+
+                        if i == 0:
+                            # Texte congrats
+                            congrat = font.render(("CONGRATULATION FOR BEATING THE GAME"), 1, (255, 255, 255))
+                            screen.blit(congrat, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT* (50/720)))
+
+                        if i == 1:
+
+                            # Texte lie
+                            start = font.render(("That means you don't have Parkinson anymore"), 1, (255, 255, 255))
+                            screen.blit(start, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT* (150/720)))
+                        
+                        if i == 2:
+                            # Texte correction 
+                            font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
+                            correct = font2.render(("(well it can't vanish)"), 1, (255, 255, 255))
+                            screen.blit(correct, (SCREEN_WIDTH * (820/1280), SCREEN_HEIGHT* (190/720)))
+
+                        if i == 3:
+                            # Texte proud
+                            texte = font.render(("But at least you practised and it's a start"), 1, (255, 255, 255))
+                            screen.blit(texte, (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (250/720)))
+
+                        if i == 4:
+                            # Texte time + tryagain
+                            finaltime = font.render(("Your final time is : " + str(all_timer)), 1, (255, 255, 255))
+                            screen.blit(finaltime, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (520/720)))
+                            tryagain = font.render(("Try to do better next time ;)"), 1, (255, 255, 255))
+                            screen.blit(tryagain, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (580/720)))
+                        
+                        pygame.display.flip()
+                        pygame.time.delay(2000)
+
+                    texte_write = True
 
 
             #Pour gérer les évenements
