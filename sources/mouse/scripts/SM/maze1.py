@@ -87,12 +87,12 @@ class Maze:
         couleur_rect_invicible = 0
         song_troll = False
 
-        # for lvl8
-        trap_color = 0
 
         #for lvl9
+        trap_color = 0
         timeTick = pygame.time.get_ticks()
         waitTime = 5000 #ms
+        position_lvl9 = "up"
 
         # Main loop
         while running:
@@ -689,7 +689,7 @@ class Maze:
                 rect_zone3 = pygame.draw.rect(screen, (255, 0, 0), ractangle3)
                 carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
 
-                trap1 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap1)
+                trap1 = pygame.draw.rect(screen, (128, trap_color, trap_color), trap1)
                 trap2 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap2)
                 trap3 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap3)
                 trap4 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap4)
@@ -723,9 +723,20 @@ class Maze:
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
 
                 if timeTick > pygame.time.get_ticks() + waitTime:
-                    trap_color = 128
-                    sound_mana.play("spike")
-                    timeTick = pygame.time.get_ticks()
+                    if position_lvl9 == "up":
+                        trap_color = 128
+                        sound_mana.play("spike")
+                        self.y1_lvl9 = SCREEN_WIDTH * (170/1280)
+                        self.y2_lvl9 = SCREEN_WIDTH * (450/1280)
+                        timeTick = pygame.time.get_ticks()
+                        position_lvl9 = "down"
+                    else:
+                        trap_color = 0
+                        sound_mana.play("spike")
+                        self.y1_lvl9 = SCREEN_WIDTH * (70/1280)
+                        self.y2_lvl9 = SCREEN_WIDTH * (350/1280)
+                        timeTick = pygame.time.get_ticks()
+                        position_lvl9 = "up"
 
                 
 

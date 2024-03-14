@@ -53,11 +53,22 @@ class SM:
             start = font.render(("START"), 1, (255, 255, 255))
             screen.blit(start, (SCREEN_WIDTH * (29/64), SCREEN_HEIGHT/2))
             start_rect = pygame.Rect(SCREEN_WIDTH * (7/16), SCREEN_HEIGHT/2, SCREEN_WIDTH * (1/8), SCREEN_HEIGHT * (5/72))
+            
+            font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
+            click = font2.render(("(click)"), 1, (255, 255, 255))
+            screen.blit(click, (SCREEN_WIDTH * (29/64), SCREEN_HEIGHT * (400/720)))
+
 
             # Texte Scary maze sans collision
-            title = font.render(("SCARY MAZE"), 1, (255, 255, 255))
+            title = font.render(("SCARY MAZE PARKINSON KILLER"), 1, (255, 255, 255))
             screen.blit(title, (SCREEN_WIDTH * (13/64), SCREEN_HEIGHT * (5/64)))
 
+            #Texte explicatif du jeu
+            texte = font.render(("Fight the maze to kill the disease"), 1, (255, 255, 255))
+            screen.blit(texte, (SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * (520/720)))
+
+            texte2 = font.render(("getting over 10 LVL made to help you"), 1, (255, 255, 255))
+            screen.blit(texte2, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (570/720)))
 
             for event in pygame.event.get():
                 #Permet de quitter so on appuie sur la croix
