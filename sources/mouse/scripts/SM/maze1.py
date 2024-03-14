@@ -61,7 +61,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 9
+        niveau = 10
         
         all_timer = 0
 
@@ -739,6 +739,62 @@ class Maze:
                         position_lvl9 = "up"
 
                 
+            # Niveau 10
+            if niveau == 10:
+                ractangle_S1 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+                ractangle_S2 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+
+                ractangle_M1 = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+
+                ractangle_P1 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+
+                ractangle_K1 = (SCREEN_WIDTH * (990/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * 0.14)
+                
+                
+                # Stop the song to be played only once
+                song_played = False
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
+
+                # Création début et fin
+                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                # Création bord et mur
+                rect_S1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S1)
+
+
+                rect_M1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M1)
+
+
+                rect_P1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_P1)
+
+
+                rect_K1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_K1)
+                #Création carré debut et fin 
+                deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
+                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                # Met le cursor sur le départ
+                if not self.start:
+                    pygame.mouse.set_pos([deb[0], deb[1]])
+                    starting_tick = pygame.time.get_ticks()
+                    self.start = True
+                # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
+                title = font.render(("Maze 1"), 1, (255, 255, 255))
+                screen.blit(title, (SCREEN_WIDTH * (109/256), SCREEN_HEIGHT * (29/72)))
+
+                #if not rect_zone.collidepoint(pygame.mouse.get_pos()):
+                 #   sound_mana.play('OOB')
+                 #   pygame.mouse.set_pos([deb[0], deb[1]])
+                
+                #Condition victory
+                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    win = True
+                    end_tick = pygame.time.get_ticks()
+                    total_time = str((end_tick - starting_tick)/1000)[0:4]
+
+
+
 
 
             #Pour gérer les évenements

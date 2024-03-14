@@ -91,7 +91,8 @@ class SM:
 
             
             # Update the display
-            pygame.display.flip()
+            if not running:
+                pygame.display.flip()
 
 if __name__ == "__main__":
     game = SM()
