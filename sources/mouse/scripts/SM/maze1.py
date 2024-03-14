@@ -1,8 +1,13 @@
-import pygame
 import sys
+import os
+
+# Permet de ce placer dans le dossier contenant les scripts SM
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
+
+import pygame
 import json
 from os.path import exists
-import os
+
 import sounds
 
 sound_mana = sounds.SoundManager()
@@ -11,8 +16,7 @@ sound_mana = sounds.SoundManager()
 desktopSize = pygame.display.get_desktop_sizes()
 SCREEN_WIDTH = desktopSize[0][0]
 SCREEN_HEIGHT = desktopSize[0][1]
-# Permet de ce placer dans le dossier contenant les scripts SM
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
+
 class Maze:
     """
     Classe permettant de récupérer le niveau 
