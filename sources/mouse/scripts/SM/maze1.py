@@ -25,7 +25,8 @@ class Maze:
         self.y1_mov_lvl6 = SCREEN_HEIGHT * (0/720)
         self.y2_mov_lvl6 = SCREEN_HEIGHT * (300/720)
         self.x_lvl8 = SCREEN_WIDTH * (355/1280)
-        
+        self.y1_lvl9 = SCREEN_HEIGHT * (70/720)
+        self.y2_lvl9 = SCREEN_HEIGHT * (350/720)
 
 
     def start_maze(self):
@@ -56,7 +57,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 8
+        niveau = 9
         
         all_timer = 0
 
@@ -81,6 +82,13 @@ class Maze:
         couleur_fin = 0
         couleur_rect_invicible = 0
         song_troll = False
+
+        # for lvl8
+        trap_color = 0
+
+        #for lvl9
+        timeTick = pygame.time.get_ticks()
+        waitTime = 5000 #ms
 
         # Main loop
         while running:
@@ -630,6 +638,93 @@ class Maze:
                         self.spawn = fake_fin
                         self.x_lvl8 = SCREEN_WIDTH * (305/1280)
                         rect_inv.move(self.x_lvl8, SCREEN_HEIGHT * (10/720))
+
+
+
+
+
+            #Niveau 9
+            elif niveau == 9:
+                ractangle = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                ractangle2 = (SCREEN_WIDTH * (250/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (600/1280), SCREEN_HEIGHT * 0.14)
+                ractangle3 = (SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (300/720))
+                carre_fin = ((SCREEN_WIDTH * (750/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * 0.14))
+                rect_0 = (x, SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (800/1280), SCREEN_HEIGHT * (100/720))
+
+
+                #100 de différence avec le chemin
+                trap1 = (SCREEN_WIDTH * (350/1280), self.y1_lvl9, SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                trap2 = (SCREEN_WIDTH * (500/1280), self.y1_lvl9, SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                trap3 = (SCREEN_WIDTH * (650/1280), self.y1_lvl9, SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+
+                trap4 = (SCREEN_WIDTH * (450/1280), self.y2_lvl9, SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                trap5 = (SCREEN_WIDTH * (550/1280), self.y2_lvl9, SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                trap6 = (SCREEN_WIDTH * (650/1280), self.y2_lvl9, SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                # Stop the song to be played only once
+                song_played = False
+                #Arrière plan
+                screen.fill((0, 0, 0))
+                screen.blit(screen, (0, 0))
+
+                # Création début et fin
+                deb = (SCREEN_WIDTH * (9/128), SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * (280/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                trig = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (170/720), SCREEN_WIDTH * (2/128), SCREEN_HEIGHT * (10/72))
+                
+
+                #Texte cacher sous le fake 
+                if couleur_rect_fake == 0:
+                    title = font.render(("Maze 9"), 1, (255, 255, 255))
+                    screen.blit(title, (SCREEN_WIDTH * (109/256), SCREEN_HEIGHT* (9/36)))
+                
+
+                # Création bord et mur
+                real_rect = pygame.draw.rect(screen, (255, 0, 0), rect_0)
+                rect_zone1 = pygame.draw.rect(screen, (255, 0, 0), ractangle)
+                rect_zone2 = pygame.draw.rect(screen, (255, 0, 0), ractangle2)
+                rect_zone3 = pygame.draw.rect(screen, (255, 0, 0), ractangle3)
+                carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
+
+                trap1 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap1)
+                trap2 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap2)
+                trap3 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap3)
+                trap4 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap4)
+                trap5 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap5)
+                trap6 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap6)
+                
+                #Création carré debut et fin 
+                deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
+                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                
+                # Met le cursor sur le départ
+                if not self.start:
+                    pygame.mouse.set_pos([deb[0], deb[1]])
+                    starting_tick = pygame.time.get_ticks()
+                    self.start = True
+                    
+                # Boucle qui vérifie que l'on est bien dans le niveau 
+                
+                if not rect_zone2.collidepoint(pygame.mouse.get_pos()):
+                    if not rect_zone3.collidepoint(pygame.mouse.get_pos()):
+                        if not rect_zone1.collidepoint(pygame.mouse.get_pos()):
+                            if not carre_zone.collidepoint(pygame.mouse.get_pos()):
+                                if not real_rect.collidepoint(pygame.mouse.get_pos()):
+                                    sound_mana.play('OOB')
+                                    pygame.mouse.set_pos([deb[0], deb[1]])
+                    
+                #Condition victory
+                if fin_rect.collidepoint(pygame.mouse.get_pos()):
+                    win = True
+                    end_tick = pygame.time.get_ticks()
+                    total_time = str((end_tick - starting_tick)/1000)[0:4]
+
+                if timeTick > pygame.time.get_ticks() + waitTime:
+                    trap_color = 128
+                    sound_mana.play("spike")
+                    timeTick = pygame.time.get_ticks()
+
+                
+
 
             #Pour gérer les évenements
             for event in pygame.event.get():
