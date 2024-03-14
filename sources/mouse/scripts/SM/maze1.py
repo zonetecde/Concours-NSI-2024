@@ -61,7 +61,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 10
+        niveau = 9
         
         all_timer = 0
 
@@ -91,7 +91,7 @@ class Maze:
         #for lvl9
         trap_color = 0
         timeTick = pygame.time.get_ticks()
-        waitTime = 5000 #ms
+        waitTime = 1000 #ms
         position_lvl9 = "up"
 
         # Main loop
@@ -689,7 +689,7 @@ class Maze:
                 rect_zone3 = pygame.draw.rect(screen, (255, 0, 0), ractangle3)
                 carre_zone = pygame.draw.rect(screen, (255, 0, 0), carre_fin)
 
-                trap1 = pygame.draw.rect(screen, (128, trap_color, trap_color), trap1)
+                trap1 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap1)
                 trap2 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap2)
                 trap3 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap3)
                 trap4 = pygame.draw.rect(screen, (trap_color, trap_color, trap_color), trap4)
@@ -707,7 +707,6 @@ class Maze:
                     self.start = True
                     
                 # Boucle qui vérifie que l'on est bien dans le niveau 
-                
                 if not rect_zone2.collidepoint(pygame.mouse.get_pos()):
                     if not rect_zone3.collidepoint(pygame.mouse.get_pos()):
                         if not rect_zone1.collidepoint(pygame.mouse.get_pos()):
@@ -716,13 +715,19 @@ class Maze:
                                     sound_mana.play('OOB')
                                     pygame.mouse.set_pos([deb[0], deb[1]])
                     
+                #Vérifie si on s'est bouffé un spike
+                if trap1.collidepoint(pygame.mouse.get_pos()) or trap2.collidepoint(pygame.mouse.get_pos()) or trap3.collidepoint(pygame.mouse.get_pos()) or trap4.collidepoint(pygame.mouse.get_pos()) or trap5.collidepoint(pygame.mouse.get_pos()) or trap6.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play('OOB')
+                    pygame.mouse.set_pos([deb[0], deb[1]])
+
+
                 #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
                     end_tick = pygame.time.get_ticks()
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
 
-                if timeTick > pygame.time.get_ticks() + waitTime:
+                if timeTick + waitTime < pygame.time.get_ticks() :
                     if position_lvl9 == "up":
                         trap_color = 128
                         sound_mana.play("spike")
