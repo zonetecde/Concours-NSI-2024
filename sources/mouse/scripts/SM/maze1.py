@@ -45,7 +45,9 @@ class Maze:
 
         #Pour lvl10
         self.y_Sreal = SCREEN_HEIGHT * (250/720)
-        self.y_Smove = SCREEN_HEIGHT * (250/720)
+        self.y_Smove = SCREEN_HEIGHT * (350/720)
+        
+        self.x_Mmove = SCREEN_WIDTH * (450/1280)
 
 
     def start_maze(self):
@@ -76,7 +78,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 11
+        niveau = 10
         
         #Total Timer
         all_timer = 0
@@ -113,6 +115,8 @@ class Maze:
         #for lvl10
 
         color_fake_S = 255
+        positionS = "up"
+        positionM = "left"
 
         #for lvl11
         texte_write = False
@@ -775,8 +779,15 @@ class Maze:
 
                 ractangle_Sreal = (SCREEN_WIDTH * (0/1280), self.y_Sreal, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_Sfake = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_Smove = (SCREEN_WIDTH * (200/1280), self.y_Smove, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
 
-                ractangle_M1 = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+
+
+                ractangle_M1 = (SCREEN_WIDTH * (330/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (500/720))
+                ractangle_M2 = (SCREEN_WIDTH * (550/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (500/720))
+                ractangle_M3 = (SCREEN_WIDTH * (410/1280), SCREEN_HEIGHT * (130/720), SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_M4 = (SCREEN_WIDTH * (500/1280), SCREEN_HEIGHT * (130/720), SCREEN_WIDTH * (50/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_Mmove = (self.x_Mmove, SCREEN_HEIGHT * (230/720), SCREEN_WIDTH * (60/1280), SCREEN_HEIGHT * (100/720))
 
                 ractangle_P1 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
 
@@ -793,15 +804,22 @@ class Maze:
                 deb = (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (90/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 fin = (SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 trigS = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (130/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (20/720))
+                tp1 = (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 # Création bord et mur
                 rect_Sfake = pygame.draw.rect(screen, (color_fake_S, 0, 0), ractangle_Sfake)
                 rect_Sreal = pygame.draw.rect(screen, (255, 0, 0), ractangle_Sreal)
+                rect_Smove = pygame.draw.rect(screen, (255, 0, 0), ractangle_Smove)
                 rect_S1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S1)
                 rect_S2 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S2)
                 rect_S3 = pygame.draw.rect(screen, (255, 0, 0), ractangle_S3)
+                
 
 
+                rect_Mmove = pygame.draw.rect(screen, (255, 0, 0), ractangle_Mmove)
                 rect_M1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M1)
+                rect_M2 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M2)
+                rect_M3 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M3)
+                rect_M4 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M4)
 
 
                 rect_P1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_P1)
@@ -811,7 +829,8 @@ class Maze:
                 #Création carré debut et fin 
                 deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
                 fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
-                trigger = pygame.draw.rect(screen, (0, 150, 0), trigS)
+                trigger = pygame.draw.rect(screen, (255, 0, 0), trigS)
+                tp1 = pygame.draw.rect(screen, (160, 240, 30), tp1)
                 # Met le cursor sur le départ
                 if not self.start:
                     pygame.mouse.set_pos([deb[0], deb[1]])
@@ -824,6 +843,32 @@ class Maze:
                 #if not rect_zone.collidepoint(pygame.mouse.get_pos()):
                  #   sound_mana.play('OOB')
                  #   pygame.mouse.set_pos([deb[0], deb[1]])
+                
+                if self.y_Smove >= SCREEN_HEIGHT * (250/720) and positionS == "up":
+                    rect_Smove.move(SCREEN_WIDTH * (200/1280), self.y_Smove)
+                    self.y_Smove += 1
+                    if self.y_Smove == SCREEN_HEIGHT * (450/720):
+                        positionS = "down"
+                    pygame.display.flip()
+                elif self.y_Smove <= SCREEN_HEIGHT * (450/720):
+                    rect_Smove.move(SCREEN_WIDTH * (200/1280), self.y_Smove)
+                    self.y_Smove -= 1
+                    if self.y_Smove == SCREEN_HEIGHT * (250/720):
+                        positionS = "up"
+                    pygame.display.flip()
+
+                if self.x_Mmove >= SCREEN_WIDTH * (415/1280) and positionM == "left":
+                    rect_Smove.move(self.x_Mmove, SCREEN_HEIGHT * (230/720))
+                    self.x_Mmove += 1
+                    if self.x_Mmove == SCREEN_WIDTH * (485/1280):
+                        positionM = "right"
+                    pygame.display.flip()
+                elif self.x_Mmove <= SCREEN_WIDTH * (485/1280):
+                    rect_Smove.move(self.x_Mmove, SCREEN_HEIGHT * (230/720))
+                    self.x_Mmove -= 1
+                    if self.x_Mmove == SCREEN_WIDTH * (415/1280):
+                        positionM = "left"
+                    pygame.display.flip()
                 
                 #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
@@ -839,11 +884,13 @@ class Maze:
             #End of the game 
             elif niveau == 11:
                 #Arrière plan
-                screen.fill((0, 0, 0))
-                screen.blit(screen, (0, 0))
+                if not self.start:
+                    screen.fill((0, 0, 0))
+                    screen.blit(screen, (0, 0))
+                    self.start == True
 
                 if not texte_write:
-                    for i in range(0,5):
+                    for i in range(0,3):
 
                         if i == 0:
                             # Texte congrats
@@ -861,13 +908,16 @@ class Maze:
                             font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
                             correct = font2.render(("(well it can't vanish)"), 1, (255, 255, 255))
                             screen.blit(correct, (SCREEN_WIDTH * (820/1280), SCREEN_HEIGHT* (190/720)))
-
-                        if i == 3:
                             # Texte proud
                             texte = font.render(("But at least you practised and it's a start"), 1, (255, 255, 255))
                             screen.blit(texte, (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (250/720)))
 
-                        if i == 4:
+                        pygame.display.flip()
+                        pygame.time.delay(1000)
+
+
+                    for j in range(0,1):
+                        if j == 0:
                             # Texte time + tryagain
                             finaltime = font.render(("Your final time is : " + str(all_timer)), 1, (255, 255, 255))
                             screen.blit(finaltime, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (520/720)))
@@ -875,7 +925,7 @@ class Maze:
                             screen.blit(tryagain, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (580/720)))
                         
                         pygame.display.flip()
-                        pygame.time.delay(2000)
+                        pygame.time.delay(500)
 
                     texte_write = True
 
