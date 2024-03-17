@@ -14,7 +14,7 @@
 	let hasExerciceStarted = false; // L'exercice a commencé ?
 
 	/** @type {number} */
-	let nombreDeReactions = 6;
+	let nombreDeReactions = 6; // Le nombre de réactions à afficher
 
 	/** @type {boolean} */
 	let hasExerciceEnded = false; // L'exercice est terminé ?
@@ -113,18 +113,17 @@
 		}
 	}
 
+	/**
+	 * Démarre l'exercice
+	 * Envoie les paramètres choisis à l'API et attend que l'API initialise l'exercice
+	 */
 	async function startExercice() {
 		// Initialisation de l'exercice depuis l'API
 
 		isFetching = true;
 
 		// Envoie les paramètres choisis à l'API
-		await PythonApi.api.init_reaction(
-			allowUppercase,
-			allowAccents,
-			allowSpecialCharacters,
-			nombreDeReactions
-		);
+		await PythonApi.api.init_reaction(allowUppercase, allowAccents, allowSpecialCharacters, nombreDeReactions);
 
 		// Attend un petit peu pour montrer que l'API est en train d'intialiser l'exercice
 		await new Promise((r) => setTimeout(r, 1200));
@@ -168,6 +167,7 @@
 
 	/**
 	 * Appelée lorsque l'utilisateur a tapé une chaine de caractères dans l'input de la réaction
+	 * Compare la chaine de caractères tapée par l'utilisateur avec la chaine de caractères attendue
 	 */
 	$: if (typedReaction) {
 		// Compare la chaine de caractères tapée par l'utilisateur avec la chaine de caractères attendue
@@ -195,6 +195,7 @@
 
 	/**
 	 * Appelée lorsque l'exercice est terminé
+	 * Envoie les temps de réaction à l'API pour récupérer les statistiques
 	 */
 	async function exerciceEnded() {
 		// Envoie les temps de réaction à l'API pour récupérer les statistiques
@@ -215,54 +216,23 @@
 
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-			<p class="text-lg">
-				Des chaines de caractères aléatoire appraîtront à l'écran dans des intervalles de temps
-				aléatoire. Vous devrez écrire la chaine de caractère le plus rapidement possible.
-			</p>
+			<p class="text-lg">Des chaines de caractères aléatoire appraîtront à l'écran dans des intervalles de temps aléatoire. Vous devrez écrire la chaine de caractère le plus rapidement possible.</p>
 		</div>
 
-		<div
-			class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
-		>
+		<div class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl">
 			<div class="flex flex-col w-full">
 				<p class="pr-2">Options :</p>
 
 				<div class="flex gap-x-8">
-					<label for="majuscules" class="text-lg">
-						<input
-							type="checkbox"
-							class="mr-1 accent-blue-800"
-							id="majuscules"
-							bind:checked={allowUppercase}
-						/>Majuscules</label
-					>
+					<label for="majuscules" class="text-lg"> <input type="checkbox" class="mr-1 accent-blue-800" id="majuscules" bind:checked={allowUppercase} />Majuscules</label>
 
-					<label for="accents" class="text-lg"
-						><input
-							type="checkbox"
-							class="mr-0.5 accent-blue-800"
-							id="accents"
-							bind:checked={allowAccents}
-						/>Accents</label
-					>
+					<label for="accents" class="text-lg"><input type="checkbox" class="mr-0.5 accent-blue-800" id="accents" bind:checked={allowAccents} />Accents</label>
 
-					<label for="specialChars" class="text-lg"
-						><input
-							type="checkbox"
-							class=" mr-0.5 accent-blue-800"
-							id="specialChars"
-							bind:checked={allowSpecialCharacters}
-						/>Caractères spéciaux
-					</label>
+					<label for="specialChars" class="text-lg"><input type="checkbox" class=" mr-0.5 accent-blue-800" id="specialChars" bind:checked={allowSpecialCharacters} />Caractères spéciaux </label>
 
 					<label for="nombreDeReactions" class="text-lg"
 						>Nombre de réactions :
-						<input
-							type="number"
-							class="w-12 ml-1 px-2 outline-none"
-							id="nombreDeReactions"
-							bind:value={nombreDeReactions}
-						/>
+						<input type="number" class="w-12 ml-1 px-2 outline-none" id="nombreDeReactions" bind:value={nombreDeReactions} />
 					</label>
 				</div>
 			</div>
@@ -278,22 +248,12 @@
 		<div out:fade class="flex flex-col items-center">
 			<p class="text-5xl font-bold mb-4 inconsolata">{reaction}</p>
 			<p class="text-sm font-bold mb-4">Écrivez la chaine de caractères ci-dessus</p>
-			<input
-				type="text"
-				bind:value={typedReaction}
-				bind:this={reactionTextInput}
-				class="text-3xl inconsolata outline-none shadow-xl py-3 font-bold text-center"
-			/>
+			<input type="text" bind:value={typedReaction} bind:this={reactionTextInput} class="text-3xl inconsolata outline-none shadow-xl py-3 font-bold text-center" />
 		</div>
 	{/if}
 	{#if hasExerciceEnded}
-		<div
-			transition:fade
-			class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
-		>
-			<div
-				class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl border-2"
-			>
+		<div transition:fade class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20">
+			<div class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl border-2">
 				<div class="text-2xl text-justify">
 					<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
 					<p>
@@ -313,11 +273,7 @@
 						Recommencer
 					</button>
 
-					<a
-						on:click={quit}
-						class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center"
-						href="/keyboard">Retour</a
-					>
+					<a on:click={quit} class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center" href="/keyboard">Retour</a>
 				</div>
 			</div>
 		</div>

@@ -7,28 +7,28 @@
 	import { fade } from 'svelte/transition';
 
 	/** @type {Array<import('$lib/classes/Niveau').Niveau>} */
-	let niveaux = []; // Niveaux
+	let niveaux = []; // Les différents niveaux récupérés depuis python
 
 	/** @type {import('$lib/classes/Niveau').Niveau} */
-	let selectedLevelObj;
+	let selectedLevelObj; // Le niveau sélectionné
 
 	/** @type {number} */
-	let audioPosition = 0;
+	let audioPosition = 0; // La position actuelle de l'audio
 
 	/** @type {number} */
-	let score = 0;
+	let score = 0; // Le score actuel
 
 	/** @type {number} */
-	let scoreMax = 0;
+	let scoreMax = 0; // Le score maximum possible
 
 	/** @type {Array<string>} */
-	let keys = [];
+	let keys = []; // Les lettres dans l'ordre du clavier
 
 	/** @type {Array<any>} */
 	let keysScored = []; // Les lettres déjà scorés
 
 	/** @type {Array<string>} */
-	let keyboardLayout = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'w', 'x', 'c', 'v', 'b', 'n'];
+	let keyboardLayout = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'w', 'x', 'c', 'v', 'b', 'n']; // Le layout du clavier pour trier les touches dans l'ordre
 
 	/** @type {Array<string>} */
 	let touchesAppuyees = []; // Les touches actuellement appuyées
@@ -45,6 +45,10 @@
 	/** @type {boolean} */
 	let hasExerciceEnded = false; // L'exercice est terminé ?
 
+	/**
+	 * Appelée lorsque la fenêtre est chargée
+	 * Récupère les niveaux depuis python
+	 */
 	onMount(async () => {
 		window.addEventListener('keydown', keyDown);
 		window.addEventListener('keyup', keyUp);
@@ -69,6 +73,7 @@
 	/**
 	 * Appelée lorsqu'une touche est appuyée
 	 * Si la touche est ENTRÉE et que l'exercice n'a pas encore commencé, démarre l'exercice
+	 * Sinon, vérifie si la touche appuyée est dans les touches à appuyer pour le temps actuel
 	 * @param {KeyboardEvent} event
 	 */
 	function keyDown(event) {
@@ -116,6 +121,10 @@
 		}
 	}
 
+	/**
+	 * Démarre l'exercice
+	 * Récupère le niveau sélectionné et démarre l'audio
+	 */
 	function startExercice() {
 		hasExerciceStarted = true;
 
