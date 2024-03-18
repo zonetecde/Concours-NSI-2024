@@ -12,6 +12,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from mouse.scripts.Rosu.menu import Rosu
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
 from mouse.scripts.SM.menu import SM
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
+from mouse_keyboard.scripts.vw.menu import VW
+
 
 class Api:
     """Classe Api
@@ -52,6 +55,9 @@ class Api:
         elif nom == "SM":
             maze = SM()
             maze.start()
+        elif nom == "VW":
+            vw = VW()
+            vw.start()
 
     def recuperer_phrase_aleatoire_typescript(self, langue: str):
         """Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'
