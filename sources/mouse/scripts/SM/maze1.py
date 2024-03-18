@@ -50,6 +50,10 @@ class Maze:
         self.x_Mmove = SCREEN_WIDTH * (450/1280)
         self.y_Mappear = SCREEN_HEIGHT * (260/720)
 
+        self.x_Pappear = SCREEN_WIDTH * (750/1280)
+        self.x_spikeP = SCREEN_WIDTH * (660/1280)
+
+        self.y_realK = SCREEN_HEIGHT * (325/720)
 
     def start_maze(self):
         # Initialize Pygame
@@ -121,6 +125,19 @@ class Maze:
         color_Mappear = 0
         color_Mtp1 = 0
         color_Mtp2 = 0
+        color_Pappear = 0
+        trap_colorP = 0
+        timeTickP = pygame.time.get_ticks()
+        waitTime = 1000 #ms
+        position_P = "right"
+        color_realK = 0
+        color_end1K = 255
+        color_end2K = 0
+        color_real_endK = 0
+        song_troll1 = False
+        song_troll2 = False
+        color_temp1 = 0
+        color_temp2 = 255
 
         #for lvl11
         texte_write = False
@@ -793,10 +810,21 @@ class Maze:
                 ractangle_Mmove = (self.x_Mmove, SCREEN_HEIGHT * (230/720), SCREEN_WIDTH * (60/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_Mappear = (SCREEN_WIDTH * (550/1280), self.y_Mappear, SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (300/720))
 
-                ractangle_P1 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_P1 = (self.x_Pappear, SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (220/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_P2 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (500/720))
+                ractangle_P3 = (SCREEN_WIDTH * (660/1280), SCREEN_HEIGHT * (250/720), SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (80/720))
+                ractangle_P4 = (SCREEN_WIDTH * (860/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
+                trap1_P = (self.x_spikeP, SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (40/720))
+                trap2_P = (self.x_spikeP, SCREEN_HEIGHT * (210/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (40/720))
+                trap3_P = (self.x_spikeP, SCREEN_HEIGHT * (330/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (40/720))
+                trap4_P = (self.x_spikeP, SCREEN_HEIGHT * (390/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (40/720))
+                trap5_P = (self.x_spikeP, SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (40/720))
 
-                ractangle_K1 = (SCREEN_WIDTH * (990/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_K1 = (SCREEN_WIDTH * (1170/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (160/720))
+                ractangle_K2 = (SCREEN_WIDTH * (990/1280), SCREEN_HEIGHT * (50/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (500/720))
+                ractangle_K3 = (SCREEN_WIDTH * (1090/1280), SCREEN_HEIGHT * (190/720), SCREEN_WIDTH * (90/1280), SCREEN_HEIGHT * (130/720))
+                ractangle_K4 = (SCREEN_WIDTH * (1135/1280), self.y_realK, SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (90/720))
+                ractangle_K5 = (SCREEN_WIDTH * (1170/1280), SCREEN_HEIGHT * (410/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (140/720))
                 
                 
                 # Stop the song to be played only once
@@ -807,12 +835,20 @@ class Maze:
 
                 # Création début et fin
                 deb = (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (90/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
-                fin = (SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * (43/144), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fin = (SCREEN_WIDTH * (1210/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+
                 trigS = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (130/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (20/720))
                 trigM = (SCREEN_WIDTH * (580/1280), SCREEN_HEIGHT * (80/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                trigP = (SCREEN_WIDTH * (690/1280), SCREEN_HEIGHT * (520/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+
                 tp1 = (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 tp1_end = (SCREEN_WIDTH * (360/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 tp2 = (SCREEN_WIDTH * (580/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                tp2_end = (SCREEN_WIDTH * (690/1280), SCREEN_HEIGHT * (80/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                tp3 = (SCREEN_WIDTH * (900/1280), SCREEN_HEIGHT * (190/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+
+                fake_end1 = (SCREEN_WIDTH * (1210/1280), SCREEN_HEIGHT * (70/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                fake_end2 = (SCREEN_WIDTH * (1030/1280), SCREEN_HEIGHT * (70/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 # Création bord et mur
                 rect_Sfake = pygame.draw.rect(screen, (color_fake_S, 0, 0), ractangle_Sfake)
                 rect_Sreal = pygame.draw.rect(screen, (255, 0, 0), ractangle_Sreal)
@@ -830,19 +866,38 @@ class Maze:
                 rect_M4 = pygame.draw.rect(screen, (255, 0, 0), ractangle_M4)
 
 
-                rect_P1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_P1)
+                rect_P1 = pygame.draw.rect(screen, (color_Pappear, 0, 0), ractangle_P1)
                 rect_P2 = pygame.draw.rect(screen, (255, 0, 0), ractangle_P2)
+                rect_P3 = pygame.draw.rect(screen, (255, 0, 0), ractangle_P3)
+                rect_P4 = pygame.draw.rect(screen, (255, 0, 0), ractangle_P4)
+                trap1_P = pygame.draw.rect(screen, (trap_colorP, trap_colorP, trap_colorP), trap1_P)
+                trap2_P = pygame.draw.rect(screen, (trap_colorP, trap_colorP, trap_colorP), trap2_P)
+                trap3_P = pygame.draw.rect(screen, (trap_colorP, trap_colorP, trap_colorP), trap3_P)
+                trap4_P = pygame.draw.rect(screen, (trap_colorP, trap_colorP, trap_colorP), trap4_P)
+                trap5_P = pygame.draw.rect(screen, (trap_colorP, trap_colorP, trap_colorP), trap5_P)
 
 
                 rect_K1 = pygame.draw.rect(screen, (255, 0, 0), ractangle_K1)
+                rect_K2 = pygame.draw.rect(screen, (255, 0, 0), ractangle_K2)
+                rect_K3 = pygame.draw.rect(screen, (255, 0, 0), ractangle_K3)
+                rect_K4 = pygame.draw.rect(screen, (color_realK, 0, 0), ractangle_K4)
+                rect_K5 = pygame.draw.rect(screen, (color_realK, 0, 0), ractangle_K5)
+
+
+
                 #Création carré debut et fin 
                 deb_rect = pygame.draw.rect(screen, (35, 150, 245), deb)
-                fin_rect = pygame.draw.rect(screen, (35, 150, 245), fin)
+                fin_rect = pygame.draw.rect(screen, (0, 0, color_real_endK), fin)
                 trigger = pygame.draw.rect(screen, (255, 0, 0), trigS)
                 trigger2 = pygame.draw.rect(screen, (10, 240, 10), trigM)
+                trigger3 = pygame.draw.rect(screen, (10, 240, 10), trigP)
                 tp1 = pygame.draw.rect(screen, (160, 240, 30), tp1)
                 tp1_end = pygame.draw.rect(screen, (160, 240, 30), tp1_end)
                 tp2 = pygame.draw.rect(screen, (color_Mtp1, color_Mtp2, 0), tp2)
+                tp2_end = pygame.draw.rect(screen, (160, 240, 30), tp2_end)
+                tp3 = pygame.draw.rect(screen, (160, 240, 30), tp3)
+                fake_end1 = pygame.draw.rect(screen, (color_temp1, 0, color_end1K), fake_end1)
+                fake_end2 = pygame.draw.rect(screen, (color_temp2, 0, color_end2K), fake_end2)
 
                 # Met le cursor sur le départ
                 if not self.start:
@@ -852,6 +907,9 @@ class Maze:
                 # Boucle qui vérifie que l'on est bien dans le niveau + affiche le titre du niveau
                 title = font.render(("Maze 10"), 1, (255, 255, 255))
                 screen.blit(title, (SCREEN_WIDTH * (109/256), SCREEN_HEIGHT * (60/72)))
+                
+                if trap1_P.collidepoint(pygame.mouse.get_pos()) or trap2_P.collidepoint(pygame.mouse.get_pos()) 
+
 
                 #if not rect_zone.collidepoint(pygame.mouse.get_pos()):
                  #   sound_mana.play('OOB')
@@ -899,6 +957,45 @@ class Maze:
                     color_Mappear = 255
                     color_Mtp1 = 160
                     color_Mtp2 = 240
+                
+                if trigger3.collidepoint(pygame.mouse.get_pos()):
+                    self.x_Pappear = SCREEN_WIDTH * (740/1280)
+                    color_Pappear = 255
+
+                if timeTickP + waitTime < pygame.time.get_ticks() :
+                    if position_P == "right":
+                        trap_colorP = 128
+                        sound_mana.play("spike")
+                        self.x_spikeP = SCREEN_WIDTH * (660/1280)
+                        timeTickP = pygame.time.get_ticks()
+                        position_P = "left"
+                    else:
+                        trap_colorP = 0
+                        sound_mana.play("spike")
+                        self.x_spikeP = SCREEN_WIDTH * (740/1280)
+                        timeTickP = pygame.time.get_ticks()
+                        position_P = "right"
+
+
+                if fake_end1.collidepoint(pygame.mouse.get_pos()):
+                    if not song_troll1:
+                        sound_mana.play('giggle')
+                        color_end1K = 0
+                        color_end2K = 255
+                        song_troll1 = True
+                        color_temp1 = 255
+                        color_temp2 = 0
+
+                if fake_end2.collidepoint(pygame.mouse.get_pos()):
+                    if not song_troll2 and song_troll1:
+                        sound_mana.play('giggle')
+                        self.y_realK = SCREEN_HEIGHT * (320/720)
+                        color_realK = 255
+                        color_real_endK = 255
+                        color_end2K = 0
+                        song_troll2 = True
+                        color_temp2 = 255
+
 
             #End of the game 
             elif niveau == 11:
