@@ -14,6 +14,7 @@ class SoundManager:
             'tp'    : pygame.mixer.Sound('sources/mouse/sfx/tp.mp3'),
             'switch': pygame.mixer.Sound('sources/mouse/sfx/switch.mp3'),
             'spike' : pygame.mixer.Sound('sources/mouse/sfx/spike.mp3')
+            'egg'   : pygame.mixer.Sound('sources/mouse/sfx/egg.mp3')
         }
     
     def play(self, sound):

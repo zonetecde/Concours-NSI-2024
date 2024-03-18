@@ -12,6 +12,7 @@ import sounds
 
 sound_mana = sounds.SoundManager()
 
+
 # Screen dimensions
 desktopSize = pygame.display.get_desktop_sizes()
 SCREEN_WIDTH = desktopSize[0][0]
@@ -138,6 +139,7 @@ class Maze:
         song_troll2 = False
         color_temp1 = 0
         color_temp2 = 255
+        newCursor = False
 
         #for lvl11
         texte_write = False
@@ -841,11 +843,15 @@ class Maze:
                 trigM = (SCREEN_WIDTH * (580/1280), SCREEN_HEIGHT * (80/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 trigP = (SCREEN_WIDTH * (690/1280), SCREEN_HEIGHT * (520/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
 
+                trig_egg = (SCREEN_WIDTH * (760/1280), SCREEN_HEIGHT * (250/720), SCREEN_WIDTH * (80/1280), SCREEN_HEIGHT * (80/720))
+
                 tp1 = (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 tp1_end = (SCREEN_WIDTH * (360/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 tp2 = (SCREEN_WIDTH * (580/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 tp2_end = (SCREEN_WIDTH * (690/1280), SCREEN_HEIGHT * (80/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 tp3 = (SCREEN_WIDTH * (900/1280), SCREEN_HEIGHT * (190/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+                tp3_end = (SCREEN_WIDTH * (1030/1280), SCREEN_HEIGHT * (490/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
+
 
                 fake_end1 = (SCREEN_WIDTH * (1210/1280), SCREEN_HEIGHT * (70/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
                 fake_end2 = (SCREEN_WIDTH * (1030/1280), SCREEN_HEIGHT * (70/720), SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (1/72))
@@ -891,11 +897,13 @@ class Maze:
                 trigger = pygame.draw.rect(screen, (255, 0, 0), trigS)
                 trigger2 = pygame.draw.rect(screen, (10, 240, 10), trigM)
                 trigger3 = pygame.draw.rect(screen, (10, 240, 10), trigP)
+                trigger_egg = pygame.draw.rect(screen, (10, 240, 10), trig_egg)
                 tp1 = pygame.draw.rect(screen, (160, 240, 30), tp1)
                 tp1_end = pygame.draw.rect(screen, (160, 240, 30), tp1_end)
                 tp2 = pygame.draw.rect(screen, (color_Mtp1, color_Mtp2, 0), tp2)
                 tp2_end = pygame.draw.rect(screen, (160, 240, 30), tp2_end)
                 tp3 = pygame.draw.rect(screen, (160, 240, 30), tp3)
+                tp3_end = pygame.draw.rect(screen, (160, 240, 30), tp3_end)
                 fake_end1 = pygame.draw.rect(screen, (color_temp1, 0, color_end1K), fake_end1)
                 fake_end2 = pygame.draw.rect(screen, (color_temp2, 0, color_end2K), fake_end2)
 
@@ -908,13 +916,36 @@ class Maze:
                 title = font.render(("Maze 10"), 1, (255, 255, 255))
                 screen.blit(title, (SCREEN_WIDTH * (109/256), SCREEN_HEIGHT * (60/72)))
                 
-                if trap1_P.collidepoint(pygame.mouse.get_pos()) or trap2_P.collidepoint(pygame.mouse.get_pos()) 
+                if trap1_P.collidepoint(pygame.mouse.get_pos()) or trap2_P.collidepoint(pygame.mouse.get_pos()) or trap3_P.collidepoint(pygame.mouse.get_pos()) or trap4_P.collidepoint(pygame.mouse.get_pos()) or trap5_P.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play('OOB')
+                    pygame.mouse.set_pos([deb[0], deb[1]])
 
-
-                #if not rect_zone.collidepoint(pygame.mouse.get_pos()):
-                 #   sound_mana.play('OOB')
-                 #   pygame.mouse.set_pos([deb[0], deb[1]])
+                if not rect_S1.collidepoint(pygame.mouse.get_pos()):
+                   if not rect_S2.collidepoint(pygame.mouse.get_pos()):
+                       if not rect_S3.collidepoint(pygame.mouse.get_pos()):
+                           if not rect_Smove.collidepoint(pygame.mouse.get_pos()):
+                               if not rect_Sreal.collidepoint(pygame.mouse.get_pos()):
+                                   if not rect_P1.collidepoint(pygame.mouse.get_pos()):
+                                       if not rect_P2.collidepoint(pygame.mouse.get_pos()):
+                                           if not rect_P3.collidepoint(pygame.mouse.get_pos()):
+                                               if not rect_P4.collidepoint(pygame.mouse.get_pos()):
+                                                   if not rect_M1.collidepoint(pygame.mouse.get_pos()):
+                                                       if not rect_M2.collidepoint(pygame.mouse.get_pos()):
+                                                           if not rect_M3.collidepoint(pygame.mouse.get_pos()):
+                                                               if not rect_M4.collidepoint(pygame.mouse.get_pos()):
+                                                                   if not rect_Mmove.collidepoint(pygame.mouse.get_pos()):
+                                                                       if not rect_Mappear.collidepoint(pygame.mouse.get_pos()):
+                                                                           if not rect_K1.collidepoint(pygame.mouse.get_pos()):
+                                                                               if not rect_K2.collidepoint(pygame.mouse.get_pos()):
+                                                                                   if not rect_K3.collidepoint(pygame.mouse.get_pos()):
+                                                                                       if not rect_K4.collidepoint(pygame.mouse.get_pos()):
+                                                                                           if not rect_K5.collidepoint(pygame.mouse.get_pos()):
+                                                                                                sound_mana.play('OOB')
+                                                                                                pygame.mouse.set_pos([deb[0], deb[1]])
                 
+
+
+
                 if self.y_Smove >= SCREEN_HEIGHT * (250/720) and positionS == "up":
                     rect_Smove.move(SCREEN_WIDTH * (200/1280), self.y_Smove)
                     self.y_Smove += 1
@@ -941,6 +972,20 @@ class Maze:
                         positionM = "left"
                     pygame.display.flip()
                 
+                if tp1.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play("tp")
+                    pygame.mouse.set_pos([tp1_end[0], tp1_end[1]])
+                
+                if tp2.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play("tp")
+                    pygame.mouse.set_pos([tp2_end[0], tp2_end[1]])
+
+                if tp3.collidepoint(pygame.mouse.get_pos()):
+                    sound_mana.play("tp")
+                    pygame.mouse.set_pos([tp3_end[0], tp3_end[1]])
+
+
+
                 #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
                     win = True
@@ -995,6 +1040,11 @@ class Maze:
                         color_end2K = 0
                         song_troll2 = True
                         color_temp2 = 255
+                
+
+                if trigger_egg.collidepoint(pygame.mouse.get_pos()):
+                    pygame.mouse.set_visible(False)
+                    newCursor = True
 
 
             #End of the game 
@@ -1050,6 +1100,9 @@ class Maze:
                     screen.blit(screen, (0, 0))
                     end = font.render(("Press ESCAPE to get out of here."), 1, (255, 255, 255))
                     screen.blit(end, (SCREEN_WIDTH * (160/1280), SCREEN_HEIGHT * (310/720)))
+            
+
+            
 
 
 
@@ -1068,7 +1121,12 @@ class Maze:
                         is_playing = False
                         pygame.quit()
                 
-            
+            if newCursor == True:
+                cursor_img = pygame.image.load('sources/mouse/assets/cursor.png')
+                cursor_img_rect = cursor_img.get_rect()
+                cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
+                pygame.transform.scale(cursor_img, (32, 32))
+                screen.blit(cursor_img, cursor_img_rect) # draw the cursor
             
             # Cap the frame rate
             # clock.tick(60)
