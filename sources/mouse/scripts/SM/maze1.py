@@ -78,7 +78,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 10
+        niveau = 11
         
         #Total Timer
         all_timer = 0
@@ -925,9 +925,17 @@ class Maze:
                             screen.blit(tryagain, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (580/720)))
                         
                         pygame.display.flip()
-                        pygame.time.delay(500)
+                        pygame.time.delay(5000)
 
                     texte_write = True
+            
+                if texte_write:
+                    screen.fill((0, 0, 0))
+                    screen.blit(screen, (0, 0))
+                    end = font.render(("Press ESCAPE to get out of here."), 1, (255, 255, 255))
+                    screen.blit(end, (SCREEN_WIDTH * (160/1280), SCREEN_HEIGHT * (310/720)))
+
+
 
 
             #Pour gérer les évenements
