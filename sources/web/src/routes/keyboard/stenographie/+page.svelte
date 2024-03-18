@@ -76,6 +76,10 @@
 		}
 	}
 
+	/**
+	 * Démarre l'exercice
+	 * Récupère depuis l'API python les phrases et leurs audios
+	 */
 	async function startExercice() {
 		// Récupère depuis l'API python les phrases et leurs audios
 		hasExerciceStarted = true;
@@ -88,7 +92,8 @@
 	}
 
 	/**
-	 * Joue l'audio suivant
+	 * Joue l'audio suivant à retrancrire
+	 * Si il n'y a plus d'audios, récupère de nouvelles phrases depuis l'API python
 	 */
 	function playNextAudio() {
 		if (audios.length === 0) {
@@ -120,7 +125,7 @@
 
 	/**
 	 * Appelée lorsqu'on clique sur le bouton de soumission
-	 * Vérifie si la phrase est correcte en fonction des options choisies
+	 * Envoye la phrase tapée par l'utilisateur à l'API python pour vérifier si elle est correcte en fonction des options choisies
 	 */
 	async function handleSubmissionButtonClicked() {
 		if (currentAudio && hasExerciceStarted && !isFetching) {
@@ -128,13 +133,7 @@
 
 			// Vérifie si la phrase est correcte
 			// Le résultat est sous la forme [Vrai/Faux, pourcentage de ressemblance]
-			const data = await Api.api.verifier_phrase_stenographie(
-				currentAudio[0],
-				phrase,
-				checkMaj,
-				checkOrthographe,
-				checkPonctuations
-			);
+			const data = await Api.api.verifier_phrase_stenographie(currentAudio[0], phrase, checkMaj, checkOrthographe, checkPonctuations);
 
 			similitude = data[1];
 		}
@@ -149,34 +148,21 @@
 
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-			<p class="text-lg">
-				Un audio vous sera joué dans lequel une phrase sera dite. Vous devrez la recopier le plus
-				vite possible sans fautes.
-			</p>
+			<p class="text-lg">Un audio vous sera joué dans lequel une phrase sera dite. Vous devrez la recopier le plus vite possible sans fautes.</p>
 		</div>
 
-		<div
-			class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
-		>
+		<div class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl">
 			<div class="flex flex-col w-full">
 				<p class="pr-2">Options :</p>
 
 				<div class="flex gap-x-8 items-center">
 					<label for="accents" class="text-lg"
-						><input
-							type="checkbox"
-							class="mr-0.5 accent-blue-800"
-							id="accents"
-							bind:checked={checkOrthographe}
-						/>Vérifier l'orthographe et la conjugaison des verbes</label
+						><input type="checkbox" class="mr-0.5 accent-blue-800" id="accents" bind:checked={checkOrthographe} />Vérifier l'orthographe et la conjugaison des verbes</label
 					>
 
 					<label class="text-lg"
 						>Langue de l'audio :
-						<select
-							class="p-2 border-2 outline-none border-[#656c81] rounded-md w-[200px]"
-							bind:value={langue}
-						>
+						<select class="p-2 border-2 outline-none border-[#656c81] rounded-md w-[200px]" bind:value={langue}>
 							<option value="fr">Français</option>
 							<option value="en">Anglais</option>
 							<option value="sq">Albanian</option>
@@ -203,12 +189,7 @@
 				<source type="audio/wav" />
 			</audio>
 
-			<small class="mt-5"
-				><i
-					>Audio provenant de <a target="_blank" href="https://www.voxforge.org/">VoxForge.org</a
-					></i
-				></small
-			>
+			<small class="mt-5"><i>Audio provenant de <a target="_blank" href="https://www.voxforge.org/">VoxForge.org</a></i></small>
 
 			<!-- svelte-ignore a11y-autofocus -->
 			<input
@@ -233,12 +214,7 @@
 				</p>
 
 				<div class="flex gap-x-4">
-					<button
-						class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md"
-						on:click={playNextAudio}
-					>
-						Phrase suivante
-					</button>
+					<button class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md" on:click={playNextAudio}> Phrase suivante </button>
 					<button
 						class="mt-8 py-3 px-8 bg-[#e45656] border-2 border-[#813a3a] text-white rounded-md"
 						on:click={() => {
@@ -249,20 +225,10 @@
 					>
 						S'arrêter
 					</button>
-					<button
-						class="mt-8 py-3 px-8 bg-[#b9e456] border-2 border-[#80813a] rounded-md text-black"
-						on:click={startExercice}
-					>
-						Changer l'orateur/oratrice
-					</button>
+					<button class="mt-8 py-3 px-8 bg-[#b9e456] border-2 border-[#80813a] rounded-md text-black" on:click={startExercice}> Changer l'orateur/oratrice </button>
 				</div>
 			{:else}
-				<button
-					class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md"
-					on:click={handleSubmissionButtonClicked}
-				>
-					Soumettre
-				</button>
+				<button class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md" on:click={handleSubmissionButtonClicked}> Soumettre </button>
 			{/if}
 		</div>
 	{/if}

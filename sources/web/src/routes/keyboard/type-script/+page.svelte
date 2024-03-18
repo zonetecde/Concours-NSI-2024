@@ -179,6 +179,11 @@
 			);
 	}
 
+	/**
+	 * Démarre l'exercice
+	 * Récupère une phrase aléatoire depuis l'API python
+	 * @returns {Promise<void>}
+	 */
 	async function startExercice() {
 		// Récupère une phrase aléatoire depuis l'API python
 		hasExerciceStarted = true;
@@ -231,24 +236,14 @@
 	{#if !hasExerciceStarted}
 		<h1 class="font-bold text-3xl -mt-12 mb-8">Type Script</h1>
 
-		<Exercice
-			image="/keyboard/typescript.jpg"
-			link="/keyboard/type-script"
-			nom="Type Script"
-			handleClick={startExercice}
-		/>
+		<Exercice image="/keyboard/typescript.jpg" link="/keyboard/type-script" nom="Type Script" handleClick={startExercice} />
 
 		<div class="text-center">
 			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-			<p class="text-lg">
-				Vous devrez écrire le texte qui s'affichera le plus rapidement possible, tout en minimisant
-				les erreurs de frappe.
-			</p>
+			<p class="text-lg">Vous devrez écrire le texte qui s'affichera le plus rapidement possible, tout en minimisant les erreurs de frappe.</p>
 		</div>
 
-		<div
-			class="w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl"
-		>
+		<div class="w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl">
 			<div class="flex">
 				<p class="pr-2">Langue :</p>
 				<select bind:value={langue}>
@@ -261,23 +256,9 @@
 				</select>
 			</div>
 
-			<label for="majuscules" class="text-lg">
-				<input
-					type="checkbox"
-					class="ml-4 mr-1 accent-blue-800"
-					id="majuscules"
-					bind:checked={caseSensitive}
-				/>Majuscules</label
-			>
+			<label for="majuscules" class="text-lg"> <input type="checkbox" class="ml-4 mr-1 accent-blue-800" id="majuscules" bind:checked={caseSensitive} />Majuscules</label>
 
-			<label for="accents" class="text-lg"
-				><input
-					type="checkbox"
-					class="ml-4 mr-0.5 accent-blue-800"
-					id="accents"
-					bind:checked={accentSensitive}
-				/>Accents</label
-			>
+			<label for="accents" class="text-lg"><input type="checkbox" class="ml-4 mr-0.5 accent-blue-800" id="accents" bind:checked={accentSensitive} />Accents</label>
 		</div>
 
 		<p class="mt-4">Appuyez sur ENTRÉE pour commencer l'exercice</p>
@@ -304,10 +285,7 @@
 								(letter.letter === ESPACE && !letter.typed ? 'text-gray-800' : '') +
 								' ' +
 								// Souligne la lettre à taper
-								((i === 0 && lettersStatus[0].typed === false) ||
-								(i > 0 && lettersStatus[i - 1].typed && !lettersStatus[i].typed)
-									? ' underline'
-									: '')}>{letter.letter}</span
+								((i === 0 && lettersStatus[0].typed === false) || (i > 0 && lettersStatus[i - 1].typed && !lettersStatus[i].typed) ? ' underline' : '')}>{letter.letter}</span
 						>
 					{/each}
 				</p>
@@ -321,13 +299,8 @@
 		{/if}
 
 		{#if hasExerciceEnded}
-			<div
-				transition:fade
-				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
-			>
-				<div
-					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl"
-				>
+			<div transition:fade class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20">
+				<div class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] text-black shadow-xl rounded-xl">
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
 
@@ -352,11 +325,7 @@
 							Recommencer
 						</button>
 
-						<a
-							on:click={quit}
-							class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center"
-							href="/keyboard">Retour</a
-						>
+						<a on:click={quit} class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center" href="/keyboard">Retour</a>
 					</div>
 				</div>
 			</div>

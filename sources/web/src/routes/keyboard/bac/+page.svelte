@@ -124,6 +124,10 @@
 		}
 	}
 
+	/**
+	 * Démarre un round
+	 * Récupère une lettre aléatoire et crée une ligne pour cette lettre
+	 */
 	async function startRound() {
 		startRoulette().then((lettre) => {
 			// Ajoute la ligne pour cette lettre
@@ -156,6 +160,7 @@
 
 	/**
 	 * Démarre la roulette
+	 * Retourne une lettre aléatoire après un certain nombre de tours de roulette
 	 * @returns {Promise<string>}
 	 */
 	function startRoulette() {
@@ -212,6 +217,7 @@
 
 	/**
 	 * Appelée lorsqu'on clique sur le bouton de validation
+	 * Envoie les réponses à l'API python pour vérifier si les mots sont corrects depuis la base de données
 	 */
 	async function validateRow() {
 		// Arrete l'audio du tic tac
@@ -245,6 +251,7 @@
 
 	/**
 	 * Appelée lorsqu'on a fini l'exercice
+	 * Trouve le nombre de mots valides
 	 */
 	function endExercice() {
 		// Trouve le nombre de mots valides
@@ -291,34 +298,21 @@
 	{#if !hasExerciceStarted}
 		<h1 class="font-bold text-3xl mb-3 mt-36 xl:mt-0">Jeu du Bac</h1>
 
-		<Exercice
-			image="/keyboard/bac.jpg"
-			link="/keyboard/bac"
-			nom="Jeu du Bac"
-			handleClick={startExercice}
-		/>
+		<Exercice image="/keyboard/bac.jpg" link="/keyboard/bac" nom="Jeu du Bac" handleClick={startExercice} />
 
 		<div class="text-center">
 			<p class="lg:mt-8 mt-3 text-xl lg:mb-4 mb-1">Règles de l'exercice :</p>
-			<p class="lg:text-lg text-base">
-				Trouvez et écrivez un mot correspondant à chaque thème choisi qui commence par la lettre
-				donnée le plus rapidement possible
-			</p>
+			<p class="lg:text-lg text-base">Trouvez et écrivez un mot correspondant à chaque thème choisi qui commence par la lettre donnée le plus rapidement possible</p>
 		</div>
 
-		<div
-			class="lg:w-full max-w-[1000px] flex-col mt-4 p-4 justify-center items-center flex bg-[#ffffff25] rounded-xl"
-		>
+		<div class="lg:w-full max-w-[1000px] flex-col mt-4 p-4 justify-center items-center flex bg-[#ffffff25] rounded-xl">
 			<div class="flex flex-col w-full">
 				<p class="pr-2">Veuillez sélectionner 5 thèmes :</p>
 
 				<div class="flex py-2 gap-2 flex-wrap">
 					{#each themes as theme}
 						{#if !selectedThemes.includes(theme)}
-							<button
-								class="bg-[#fcfcfcab] shrink-0 rounded-xl lg:p-2 px-1 py-0.5"
-								on:click={(e) => handleThemeSelected(e, theme)}
-							>
+							<button class="bg-[#fcfcfcab] shrink-0 rounded-xl lg:p-2 px-1 py-0.5" on:click={(e) => handleThemeSelected(e, theme)}>
 								{theme}
 							</button>
 						{/if}
@@ -328,10 +322,7 @@
 				<p class="pr-2 mt-5">Thèmes sélectionnés :</p>
 				<div class="flex py-2 gap-x-2">
 					{#each selectedThemes as theme}
-						<button
-							class="bg-[#6cbb8df3] rounded-xl lg:p-2 px-1 py-0.5 group relative"
-							on:click={(e) => handleThemeSelected(e, theme)}
-						>
+						<button class="bg-[#6cbb8df3] rounded-xl lg:p-2 px-1 py-0.5 group relative" on:click={(e) => handleThemeSelected(e, theme)}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -340,11 +331,7 @@
 								stroke="white"
 								class="w-6 h-6 absolute -top-2 -right-2 bg-red-900 rounded-full hidden group-hover:block"
 							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-								/>
+								<path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
 							</svg>
 
 							{theme}
@@ -356,13 +343,7 @@
 			<div class="flex flex-row items-center w-full mt-3">
 				<p class="pr-2">Nombre de manches :</p>
 
-				<input
-					type="number"
-					min="1"
-					max="10"
-					bind:value={nombreDeRound}
-					class="bg-[#fcfcfcab] rounded-xl pb-1 pt-0.5 w-12 text-center outline-none"
-				/>
+				<input type="number" min="1" max="10" bind:value={nombreDeRound} class="bg-[#fcfcfcab] rounded-xl pb-1 pt-0.5 w-12 text-center outline-none" />
 
 				<small class="text-gray-500 ml-2 italic">*Lignes dans le tableau</small>
 			</div>
@@ -384,21 +365,13 @@
 
 		<p class="text-xl mb-5">Manche {rows.length}/{nombreDeRound}</p>
 
-		<div
-			class="bg-[#ffffffea] shadow-xl rounded-lg border-2 border-[#1d1b1bde] h-4/5 w-full text-center relative"
-		>
+		<div class="bg-[#ffffffea] shadow-xl rounded-lg border-2 border-[#1d1b1bde] h-4/5 w-full text-center relative">
 			<!-- Header -->
 			<div class="flex">
-				<p
-					class="border-r-2 w-[8%] h-10 border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2"
-				>
-					Lettre
-				</p>
+				<p class="border-r-2 w-[8%] h-10 border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2">Lettre</p>
 
 				{#each selectedThemes as theme, i}
-					<p
-						class="last:border-r-0 w-[18.4%] border-r-2 h-10 border-[#1d1b1b8c] border-b-2 pt-1 flex items-center justify-center"
-					>
+					<p class="last:border-r-0 w-[18.4%] border-r-2 h-10 border-[#1d1b1b8c] border-b-2 pt-1 flex items-center justify-center">
 						{theme}
 					</p>
 				{/each}
@@ -407,18 +380,13 @@
 			<!-- Rows -->
 			{#each rows as row}
 				<div class="flex" transition:fade>
-					<p
-						class="border-r-2 h-10 w-[8%] border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2"
-					>
+					<p class="border-r-2 h-10 w-[8%] border-[#1d1b1b8c] pt-1 flex items-center justify-center border-b-2">
 						{row.lettre}
 					</p>
 
 					{#each selectedThemes as theme, i}
 						{#if row.completer}
-							<p
-								class={'last:border-r-0 w-[18.4%] border-r-2 h-10 border-[#1d1b1b8c] border-b-2 flex pt-1 items-center px-2 ' +
-									(row.cols[i].valide ? 'bg-[#c7f5a8]' : 'bg-[#ebaa8c]')}
-							>
+							<p class={'last:border-r-0 w-[18.4%] border-r-2 h-10 border-[#1d1b1b8c] border-b-2 flex pt-1 items-center px-2 ' + (row.cols[i].valide ? 'bg-[#c7f5a8]' : 'bg-[#ebaa8c]')}>
 								{row.cols.find((col) => col.theme === theme)?.mot}
 							</p>
 						{:else}
@@ -436,56 +404,32 @@
 
 			<!-- Chronometre -->
 			<div class="w-full absolute bottom-0 h-3 rounded-b-md bg-slate-400">
-				<div
-					class="h-full bg-[#00000060] rounded-r-md rounded-b-md duration-1000"
-					style="width: {Math.min((chronometre / max_temps) * 100, 100)}%"
-				/>
+				<div class="h-full bg-[#00000060] rounded-r-md rounded-b-md duration-1000" style="width: {Math.min((chronometre / max_temps) * 100, 100)}%" />
 			</div>
 
-			<button
-				class="w-12 h-12 px-2 rounded-full py-2 absolute bottom-5 hover:scale-110 duration-150 right-3 shadow-xl cursor-pointer bg-green-800"
-				on:click={validateRow}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					stroke="white"
-				>
+			<button class="w-12 h-12 px-2 rounded-full py-2 absolute bottom-5 hover:scale-110 duration-150 right-3 shadow-xl cursor-pointer bg-green-800" on:click={validateRow}>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white">
 					<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
 				</svg>
 			</button>
 		</div>
 
 		{#if rouletteAlphabet}
-			<div
-				transition:fade
-				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center"
-			>
-				<p
-					class="inconsolata text-9xl text-black bg-white px-12 py-3 rounded-3xl border-4 border-black font-bold"
-				>
+			<div transition:fade class="absolute inset-0 backdrop-blur-sm flex items-center justify-center">
+				<p class="inconsolata text-9xl text-black bg-white px-12 py-3 rounded-3xl border-4 border-black font-bold">
 					{rouletteAlphabet}
 				</p>
 			</div>
 		{/if}
 
 		{#if hasExerciceEnded}
-			<div
-				transition:fade
-				class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20"
-			>
-				<div
-					class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] border-4 border-[#859aa5] text-black shadow-xl rounded-xl"
-				>
+			<div transition:fade class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20">
+				<div class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] border-4 border-[#859aa5] text-black shadow-xl rounded-xl">
 					<div class="text-2xl text-justify">
 						<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
 						<p>
-							Vous avez trouvé <span class="font-bold">{nombreDeMotsValides}</span> mots valides.<br
-							/><br />
-							Vous avez pris <span class="font-bold">{secondsToStr(chronometreTotal)}</span> pour finir
-							l'exercice.
+							Vous avez trouvé <span class="font-bold">{nombreDeMotsValides}</span> mots valides.<br /><br />
+							Vous avez pris <span class="font-bold">{secondsToStr(chronometreTotal)}</span> pour finir l'exercice.
 						</p>
 					</div>
 					<div class="flex justify-center gap-x-8 mt-4 h-14">
@@ -498,11 +442,7 @@
 							Recommencer
 						</button>
 
-						<a
-							on:click={quit}
-							class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center"
-							href="/keyboard">Retour</a
-						>
+						<a on:click={quit} class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center" href="/keyboard">Retour</a>
 					</div>
 				</div>
 			</div>
