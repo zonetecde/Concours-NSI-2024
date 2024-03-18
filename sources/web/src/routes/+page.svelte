@@ -20,6 +20,14 @@
 				<p>Entrainement au clavier</p>
 			</a>
 			<a
+			href="/mouse_keyboard"
+			class="w-1/2 flex items-center justify-center flex-col gap-y-12 hover:scale-110 duration-150 cursor-pointer"
+		>
+			<img src="mouse_keyboard.png" alt="Souris_clavier" class="h-40 p-4 object-contain" />
+
+			<p>Entrainement à la clavier + souris</p>
+		</a>
+			<a
 				href="/mouse"
 				class="w-1/2 flex items-center justify-center flex-col gap-y-12 hover:scale-110 duration-150 cursor-pointer"
 			>
