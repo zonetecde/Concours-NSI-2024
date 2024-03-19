@@ -23,6 +23,7 @@ class Maze:
     Classe permettant de récupérer le niveau 
     """
     def __init__(self):
+        self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
         #Savoir si le niveau a commencer ou non
         self.start = False
         self.spawn = ()
@@ -78,7 +79,8 @@ class Maze:
         bg = None
         
         # Font for all of the game
-        font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
+        
+        font = pygame.font.Font(self.folder + '/fonts/VCR_OSD_MONO.ttf', 50)
 
         #Variable running
         running = True
@@ -150,12 +152,6 @@ class Maze:
 
         # Main loop
         while running:
-            
-
-            
-        
-            
-
             mouseX = pygame.mouse.get_pos()[0]
             mouseY = pygame.mouse.get_pos()[1]
 
@@ -665,21 +661,9 @@ class Maze:
                     self.spawn = deb
                     
                 # Boucle qui vérifie que l'on est bien dans le niveau 
-                if not rect_zone.collidepoint(pygame.mouse.get_pos()):
-                    if not rect_zone2.collidepoint(pygame.mouse.get_pos()):
-                        if not rect_zone3.collidepoint(pygame.mouse.get_pos()):
-                            if not rect_zone1.collidepoint(pygame.mouse.get_pos()):
-                                if not rect_zone4.collidepoint(pygame.mouse.get_pos()):
-                                    if not rect_zone5.collidepoint(pygame.mouse.get_pos()):
-                                        if not rect_zone6.collidepoint(pygame.mouse.get_pos()):
-                                            if not rect_zone7.collidepoint(pygame.mouse.get_pos()):
-                                                if not rect_zone8.collidepoint(pygame.mouse.get_pos()):
-                                                    if not rect_zone9.collidepoint(pygame.mouse.get_pos()):
-                                                        if not rect_zone10.collidepoint(pygame.mouse.get_pos()):
-                                                            if not rect_inv.collidepoint(pygame.mouse.get_pos()):
-                                                                if not carre_zone.collidepoint(pygame.mouse.get_pos()):
-                                                                    sound_mana.play('OOB')
-                                                                    pygame.mouse.set_pos([self.spawn[0], self.spawn[1]])
+                if not any(rect.collidepoint(pygame.mouse.get_pos()) for rect in [rect_zone, rect_zone2, rect_zone3, rect_zone1, rect_zone4, rect_zone5, rect_zone6, rect_zone7, rect_zone8, rect_zone9, rect_zone10, rect_inv, carre_zone]):
+                    sound_mana.play('OOB')
+                    pygame.mouse.set_pos([self.spawn[0], self.spawn[1]])
                                                 
                 #Condition victory
                 if fin_rect.collidepoint(pygame.mouse.get_pos()):
@@ -924,30 +908,11 @@ class Maze:
                     sound_mana.play('OOB')
                     pygame.mouse.set_pos([deb[0], deb[1]])
 
-                if not rect_S1.collidepoint(pygame.mouse.get_pos()):
-                   if not rect_S2.collidepoint(pygame.mouse.get_pos()):
-                       if not rect_S3.collidepoint(pygame.mouse.get_pos()):
-                           if not rect_Smove.collidepoint(pygame.mouse.get_pos()):
-                               if not rect_Sreal.collidepoint(pygame.mouse.get_pos()):
-                                   if not rect_P1.collidepoint(pygame.mouse.get_pos()):
-                                       if not rect_P2.collidepoint(pygame.mouse.get_pos()):
-                                           if not rect_P3.collidepoint(pygame.mouse.get_pos()):
-                                               if not rect_P4.collidepoint(pygame.mouse.get_pos()):
-                                                   if not rect_M1.collidepoint(pygame.mouse.get_pos()):
-                                                       if not rect_M2.collidepoint(pygame.mouse.get_pos()):
-                                                           if not rect_M3.collidepoint(pygame.mouse.get_pos()):
-                                                               if not rect_M4.collidepoint(pygame.mouse.get_pos()):
-                                                                   if not rect_Mmove.collidepoint(pygame.mouse.get_pos()):
-                                                                       if not rect_Mappear.collidepoint(pygame.mouse.get_pos()):
-                                                                           if not rect_K1.collidepoint(pygame.mouse.get_pos()):
-                                                                               if not rect_K2.collidepoint(pygame.mouse.get_pos()):
-                                                                                   if not rect_K3.collidepoint(pygame.mouse.get_pos()):
-                                                                                       if not rect_K4.collidepoint(pygame.mouse.get_pos()):
-                                                                                           if not rect_K5.collidepoint(pygame.mouse.get_pos()):
-                                                                                                sound_mana.play('OOB')
-                                                                                                pygame.mouse.set_pos([deb[0], deb[1]])
-                
+                rectangles = [rect_S1, rect_S2, rect_S3, rect_Smove, rect_Sreal, rect_P1, rect_P2, rect_P3, rect_P4, rect_M1, rect_M2, rect_M3, rect_M4, rect_Mmove, rect_Mappear, rect_K1, rect_K2, rect_K3, rect_K4, rect_K5]
 
+                if not any(rect.collidepoint(pygame.mouse.get_pos()) for rect in rectangles):
+                    sound_mana.play('OOB')
+                    pygame.mouse.set_pos([deb[0], deb[1]])
 
 
                 if self.y_Smove >= SCREEN_HEIGHT * (250/720) and positionS == "up":
