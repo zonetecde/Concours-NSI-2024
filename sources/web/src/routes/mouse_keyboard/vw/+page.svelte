@@ -32,18 +32,11 @@
 <div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
 	<h1 class="font-bold text-3xl mb-6 -mt-3">Verbal Warfare</h1>
 
-	<Exercice
-		image="/mouse_keyboard/vw.png"
-		nom="Verbal Warfare"
-		handleClick={() => Api.openPythonProject('VW')}
-		imgStyle=" object-contain "
-	/>
+	<Exercice image="/mouse_keyboard/vw.png" nom="Verbal Warfare" handleClick={() => Api.openPythonProject('VW')} imgStyle=" object-contain" />
 
 	<div class="text-center">
 		<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-		<p class="text-lg">
-			Des mots incomplets vont apparaitre, complétez les dans une munition avec le clavier, chargez la dans le pistolet et tirez sur le mot
-		</p>
+		<p class="text-lg">Des mots incomplets vont apparaitre, complétez les dans une munition avec le clavier, chargez la dans le pistolet et tirez sur le mot</p>
 	</div>
 
 	<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
