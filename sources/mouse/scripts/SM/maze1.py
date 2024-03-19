@@ -84,7 +84,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 10
+        niveau = 1
         
         #Total Timer
         all_timer = 0
@@ -137,9 +137,13 @@ class Maze:
         color_real_endK = 0
         song_troll1 = False
         song_troll2 = False
+        song_egg = False
         color_temp1 = 0
         color_temp2 = 255
         newCursor = False
+        song_switch1 = False
+        song_switch2 = False
+
 
         #for lvl11
         texte_write = False
@@ -897,7 +901,7 @@ class Maze:
                 trigger = pygame.draw.rect(screen, (255, 0, 0), trigS)
                 trigger2 = pygame.draw.rect(screen, (10, 240, 10), trigM)
                 trigger3 = pygame.draw.rect(screen, (10, 240, 10), trigP)
-                trigger_egg = pygame.draw.rect(screen, (10, 240, 10), trig_egg)
+                trigger_egg = pygame.draw.rect(screen, (240, 0, 0), trig_egg)
                 tp1 = pygame.draw.rect(screen, (160, 240, 30), tp1)
                 tp1_end = pygame.draw.rect(screen, (160, 240, 30), tp1_end)
                 tp2 = pygame.draw.rect(screen, (color_Mtp1, color_Mtp2, 0), tp2)
@@ -997,15 +1001,21 @@ class Maze:
                     self.y_Sreal = 150
                     sound_mana.play("giggle")
                 
-                if trigger2.collidepoint(pygame.mouse.get_pos()):
-                    self.y_Mappear = SCREEN_HEIGHT * (250/720)
-                    color_Mappear = 255
-                    color_Mtp1 = 160
-                    color_Mtp2 = 240
+                if not song_switch1:
+                    if trigger2.collidepoint(pygame.mouse.get_pos()):
+                        self.y_Mappear = SCREEN_HEIGHT * (250/720)
+                        color_Mappear = 255
+                        color_Mtp1 = 160
+                        color_Mtp2 = 240
+                        sound_mana.play('switch')
+                        song_switch1 = True
                 
-                if trigger3.collidepoint(pygame.mouse.get_pos()):
-                    self.x_Pappear = SCREEN_WIDTH * (740/1280)
-                    color_Pappear = 255
+                if not song_switch2:
+                    if trigger3.collidepoint(pygame.mouse.get_pos()):
+                        self.x_Pappear = SCREEN_WIDTH * (740/1280)
+                        color_Pappear = 255
+                        sound_mana.play('switch')
+                        song_switch2 = True
 
                 if timeTickP + waitTime < pygame.time.get_ticks() :
                     if position_P == "right":
@@ -1016,7 +1026,6 @@ class Maze:
                         position_P = "left"
                     else:
                         trap_colorP = 0
-                        sound_mana.play("spike")
                         self.x_spikeP = SCREEN_WIDTH * (740/1280)
                         timeTickP = pygame.time.get_ticks()
                         position_P = "right"
@@ -1042,9 +1051,13 @@ class Maze:
                         color_temp2 = 255
                 
 
-                if trigger_egg.collidepoint(pygame.mouse.get_pos()):
-                    pygame.mouse.set_visible(False)
-                    newCursor = True
+                if not song_egg :
+                    if trigger_egg.collidepoint(pygame.mouse.get_pos()):
+                        pygame.mouse.set_visible(False)
+                        sound_mana.play('egg')
+                        newCursor = True
+                        song_egg = True
+
 
 
             #End of the game 
@@ -1122,10 +1135,10 @@ class Maze:
                         pygame.quit()
                 
             if newCursor == True:
-                cursor_img = pygame.image.load('sources/mouse/assets/cursor.png')
+                cursor_img = pygame.image.load('sources/mouse/assets/cursor_egg.png')
                 cursor_img_rect = cursor_img.get_rect()
                 cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
-                pygame.transform.scale(cursor_img, (32, 32))
+                #pygame.transform.scale(cursor_img, (32, 32))
                 screen.blit(cursor_img, cursor_img_rect) # draw the cursor
             
             # Cap the frame rate
