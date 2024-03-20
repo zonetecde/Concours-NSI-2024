@@ -26,7 +26,7 @@ class Api:
     """
 
     def __init__(self):
-        pass
+        self.langue = "fr"
 
     def set_window(self, window):
         """Set l'objet window pour pouvoir communiquer avec le code JS
@@ -44,6 +44,14 @@ class Api:
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         os.system("py main.py")
 
+    def definir_langue(self, langue):
+        """Définir la langue de l'application
+
+        Args:
+            langue (str): La langue
+        """
+        self.langue = langue
+
     def ouvrir_exercice(self, nom):
         """Ouvre un exercice fait en python
 
@@ -51,7 +59,7 @@ class Api:
             nom (str): Le nom de l'exercice
         """
         if nom == "Rosu!":
-            Rosu.start_rosu()
+            Rosu.start_rosu(self.langue)
         elif nom == "SM":
             maze = SM()
             maze.start()

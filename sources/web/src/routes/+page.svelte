@@ -1,10 +1,7 @@
 <script>
+	import LanguagePicker from '$lib/LanguagePicker.svelte';
+	import { langue } from '$lib/Store';
 	import Api from '../api/Api';
-
-	function handle() {
-		// provoke a svelte internal error
-		window.location.href = '/keyboadrd';
-	}
 </script>
 
 <div class="flex h-screen items-center justify-center w-full" id="main">
@@ -14,20 +11,40 @@
 		<div class="flex flex-row w-full h-4/5 text-2xl gap-x-16 text-center">
 			<a href="/keyboard" class="w-1/2 flex items-center justify-center flex-col gap-y-12 hover:scale-110 duration-150 cursor-pointer">
 				<img src="keyboard.png" alt="Clavier" class="h-40 object-contain" />
-				<p>Entrainement au clavier</p>
+				<p>
+					{#if $langue === 'fr'}
+						Entrainement au clavier
+					{:else}
+						Keyboard training
+					{/if}
+				</p>
 			</a>
 			<a href="/mouse_keyboard" class="w-2/3 flex items-center justify-center flex-col gap-y-12 hover:scale-110 duration-150 cursor-pointer">
 				<img src="mouse_keyboard.png" alt="Souris_clavier" class="h-40 p-4 object-contain" />
 
-				<p>Entrainement au clavier et à la souris</p>
+				<p>
+					{#if $langue === 'fr'}
+						Entrainement au clavier et à la souris
+					{:else}
+						Training at the keyboard and mouse
+					{/if}
+				</p>
 			</a>
 			<a href="/mouse" class="w-1/2 flex items-center justify-center flex-col gap-y-12 hover:scale-110 duration-150 cursor-pointer">
 				<img src="mouse.png" alt="Souris" class="h-40 p-4 object-contain" />
 
-				<p>Entrainement à la souris</p>
+				<p>
+					{#if $langue === 'fr'}
+						Entrainement à la souris
+					{:else}
+						Mouse training
+					{/if}
+				</p>
 			</a>
 		</div>
 	</div>
+
+	<LanguagePicker />
 </div>
 
 <style>

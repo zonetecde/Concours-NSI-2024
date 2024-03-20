@@ -5,6 +5,7 @@
 	import Api from '../../../api/Api';
 	import { PlayAudio } from '$lib/GlobalFunc';
 	import { fade } from 'svelte/transition';
+	import { langue } from '$lib/Store';
 
 	/** @type {Array<import('$lib/classes/Niveau').Niveau>} */
 	let niveaux = []; // Les différents niveaux récupérés depuis python
@@ -173,16 +174,19 @@
 		<Exercice image="/keyboard/rythme.jpg" nom="Rythme" handleClick={startExercice} />
 
 		<div class="text-center">
-			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
+			<p class="mt-8 text-xl mb-4">
+				{$langue === 'fr' ? "Règles de l'exercice :" : 'Exercise rules :'}
+			</p>
 			<p class="text-lg">
-				Des cercles tomberons du haut de l'écran. Appuyer sur la touche correspondante lorsque le cercle est entre les deux barres. <br />Si le cercle se prolonge, appuyez sur la touche correspondante
-				au moment où il commence à toucher la ligne jusqu'à ce qu'il finisse de tomber entièrement.
+				{$langue === 'fr'
+					? "Des cercles tomberons du haut de l'écran. Appuyer sur la touche correspondante lorsque le cercle est entre les deux barres. \nSi le cercle se prolonge, appuyez sur la touche correspondante au moment où il commence à toucher la ligne jusqu'à ce qu'il finisse de tomber entièrement."
+					: 'Circles will fall from the top of the screen. Press the corresponding key when the circle is between the two bars. \nIf the circle extends, press the corresponding key when it starts to touch the line until it finishes falling completely.'}
 			</p>
 		</div>
 
 		<div class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl">
 			<div class="flex flex-col w-full">
-				<p class="pr-2 mb-2">Niveaux :</p>
+				<p class="pr-2 mb-2">{$langue === 'fr' ? 'Niveaux :' : 'Levels :'}</p>
 
 				<div class="flex gap-x-8">
 					{#each niveaux as niveau}
@@ -195,7 +199,7 @@
 							}}
 						>
 							<label class="font-bold" for={niveau.Nom}>{niveau.Nom}</label>
-							<p>Difficulté : {niveau.Difficulte}/5</p>
+							<p>{$langue === 'fr' ? 'Difficulté' : 'Difficulty'} : {niveau.Difficulte}/5</p>
 							<input type="radio" bind:group={selectedLevelName} id={niveau.Nom} name="niveau" class="mt-2" value={niveau.Nom} />
 						</div>
 					{/each}
@@ -203,7 +207,7 @@
 			</div>
 		</div>
 
-		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
+		<p class="mt-8 mb-5">{$langue === 'fr' ? "Appuyez sur Entrée pour commencer l'exercice" : 'Press Enter to start the exercise'}</p>
 	{:else}
 		<div class="w-[450px] h-[600px] bg-[#84af80] outline-4 rounded-xl outline-[#206442] outline relative">
 			<!-- Barre d'appuie -->
@@ -234,7 +238,7 @@
 
 		<div class="absolute top-5 w-full flex justify-between items-center px-8">
 			<p class="text-2xl">Score : {score}</p>
-			<p class="text-2xl">Temps restant : {Math.round(selectedLevelObj.Duree - audioPosition)}</p>
+			<p class="text-2xl">{$langue == 'fr' ? 'Temps restant' : 'Time left'} : {Math.round(selectedLevelObj.Duree - audioPosition)}</p>
 		</div>
 	{/if}
 
@@ -242,8 +246,12 @@
 		<div transition:fade class="absolute inset-0 backdrop-blur-sm flex items-center justify-center bg-black bg-opacity-20">
 			<div class="flex flex-col gap-y-4 w-3/5 py-12 px-12 bg-[#abc8d6] border-4 border-[#859aa5] text-black shadow-xl rounded-xl">
 				<div class="text-2xl text-justify">
-					<h2 class="text-4xl font-bold text-center mb-8">Vos résultats :</h2>
-					<p>Vous avez un score de {score}. <br />Votre précision est de {Math.round((score / scoreMax) * 100)}%</p>
+					<h2 class="text-4xl font-bold text-center mb-8">{$langue === 'fr' ? 'Vos résultats :' : 'Your results :'}</h2>
+					<p>
+						{$langue == 'fr' ? 'Vous avez un score de' : 'Your score is '}
+						{score}. <br />{$langue == 'fr' ? 'Votre précision est de' : 'Your accuracy is '}
+						{Math.round((score / scoreMax) * 100)}%
+					</p>
 				</div>
 				<div class="flex justify-center gap-x-8 mt-4 h-14">
 					<button
@@ -252,10 +260,12 @@
 							window.location.reload();
 						}}
 					>
-						Recommencer
+						{$langue == 'fr' ? 'Recommencer' : 'Restart'}
 					</button>
 
-					<a on:click={quit} class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center" href="/keyboard">Retour</a>
+					<a on:click={quit} class="bg-red-400 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-red-500 transition-all w-2/5 flex items-center justify-center" href="/keyboard">
+						{$langue == 'fr' ? 'Quitter' : 'Quit'}
+					</a>
 				</div>
 			</div>
 		</div>

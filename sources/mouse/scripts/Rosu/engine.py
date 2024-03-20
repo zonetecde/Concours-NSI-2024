@@ -11,6 +11,9 @@ from storage import Niveau, niveaux
 from sauvegarde import Sauvegarde
 
 class Engine:
+    def __init__(self, langue) -> None:
+        self.langue = langue
+
     try:
         savefile_path = os.path.dirname(os.path.abspath(__file__)) + "/savefile.json"
         parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
@@ -154,7 +157,7 @@ class Engine:
                             else:
                                 font = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 80)
                                 color = (255, 0, 0)
-                                labelMistake = font.render("RATÉ", 1, color)
+                                labelMistake = font.render("RATÉ" if self.langue == 'fr' else "MISSED", 1, color)
                                 mistakeTick = current_tick
                                 renderMistake = True
                                 playerMiss += 1
@@ -189,7 +192,7 @@ class Engine:
                     
                     #Text complete! et le rectangle gris derrière ce dernier
                     pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(SCREEN_WIDTH * 0.3125, 40, 480, 100), 0, 10, 10, 10, 10, 10)
-                    textLabel = font.render("Level completed!", 1, BLACK)
+                    textLabel = font.render("Level completed!", 1, BLACK) if self.langue == 'en' else font.render("Niveau terminé !", 1, BLACK)
                     screen.blit(textLabel, (SCREEN_WIDTH * 0.3125, 50))
 
                     #Modification de la taille du rectagle selon le nombre d'erreurs 
@@ -202,13 +205,13 @@ class Engine:
                     
                     #Nombre d'erreurs et son rectangle
                     pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(40, SCREEN_HEIGHT * 0.28 - 10, rectLength, 100), 0, 10, 10, 10, 10, 10)
-                    textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK)
+                    textLabel = font.render(str("Missed: " + str(playerMiss)), 1, BLACK) if self.langue == 'en' else font.render(str("Manqués : " + str(playerMiss)), 1, BLACK)
                     screen.blit(textLabel, (50, SCREEN_HEIGHT * 0.28))
 
                     #Accuracy et son rectangle
                     accuracy = float(str((totalNotes - playerMiss)/totalNotes * 100)[0:5])
                     pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR, (40, SCREEN_HEIGHT * 0.42 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
-                    textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
+                    textLabel = font.render(str("Accuracy: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK) if self.langue == 'en' else font.render(str("Précision: " + str((totalNotes - playerMiss)/totalNotes * 100)[0:5] + "%"), 1, BLACK)
                     screen.blit(textLabel, (50, SCREEN_HEIGHT * 0.42))
                     pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR, (40, SCREEN_HEIGHT * 0.55 - 10, 750, 100), 0, 10, 10, 10, 10, 10)
                     scoreLabel = font.render(str("Score: " + str(score)), 1, BLACK)
@@ -217,7 +220,7 @@ class Engine:
                     #Retour possible et son rectangle
                     font2 = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 40)
                     pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(190, SCREEN_HEIGHT * 0.90 - 10, 860, 100), 0, 10, 10, 10, 10, 10)
-                    textLabel = font2.render(str("Press \"escape\" to get back to the menu."), 1, BLACK)
+                    textLabel = font2.render(str("Press \"escape\" to get back to the menu.") if self.langue == 'en' else str("Appuyez sur \"échappe\" pour revenir au menu."), 1, BLACK)
                     screen.blit(textLabel, (200, SCREEN_HEIGHT * 0.90))
                     
                     #Enregistrement du score et remplacement si il est meilleur

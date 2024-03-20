@@ -16,7 +16,7 @@ class Rosu:
     """
 
     @staticmethod
-    def start_rosu():
+    def start_rosu(langue="fr"):
         """ Méthode permettant de lancer l'exercice ROSU!
         """
     
@@ -118,15 +118,15 @@ class Rosu:
                         screen.blit(nameLabel, (SCREEN_WIDTH/2 + 50, 10))
                         
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
-                        scoreLabel = textFont.render(("Meilleur score : " + str(bestScore)), 1, (255, 255, 255))
+                        scoreLabel = textFont.render(("Meilleur score : " + str(bestScore) if langue == 'fr' else "Best score: " + str(bestScore)), 1, (255, 255, 255))
                         screen.blit(scoreLabel, (SCREEN_WIDTH/2 + 50, 120))
                         
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
-                        scoreLabel = textFont.render(("Précision : " + str(accuracy)), 1, (255, 255, 255))
+                        scoreLabel = textFont.render(("Précision : " + str(accuracy) if langue == 'fr' else "Accuracy: " + str(accuracy)), 1, (255, 255, 255))
                         screen.blit(scoreLabel, (SCREEN_WIDTH/2 + 50, 180))
                         
                         textFont = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
-                        scoreLabel = textFont.render(("Note : " + str(grade)), 1, (255, 255, 255))
+                        scoreLabel = textFont.render(("Note : " + str(grade) if langue == 'fr' else "Grade: " + str(grade)), 1, (255, 255, 255))
                         screen.blit(scoreLabel, (SCREEN_WIDTH/2 + 50, 240))
                                                         
                 for event in pygame.event.get():
@@ -142,7 +142,7 @@ class Rosu:
                         for rect_index in range(len(rectZones)):
                             if mouseX > rectZones[rect_index][1] and mouseX < rectZones[rect_index][3] and mouseY > rectZones[rect_index][2] and mouseY < rectZones[rect_index][4]:
                               
-                                game_engine = Engine()
+                                game_engine = Engine(langue)
                                 game_engine.start_level(niveaux[rect_index])
                                 
                                 savefile = open(savefile_path)
