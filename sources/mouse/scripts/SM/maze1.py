@@ -798,7 +798,7 @@ class Maze:
                 ractangle_S2 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (250/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_S3 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
 
-                ractangle_Sreal = (SCREEN_WIDTH * (0/1280), self.y_Sreal, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_Sreal = (SCREEN_WIDTH * (0/1280), self.y_Sreal, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (200/720))
                 ractangle_Sfake = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_Smove = (SCREEN_WIDTH * (200/1280), self.y_Smove, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
 
