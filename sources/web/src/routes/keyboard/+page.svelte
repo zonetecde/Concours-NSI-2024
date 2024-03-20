@@ -42,7 +42,7 @@
 		/>
 		<Exercice
 			image="/keyboard/bac.jpg"
-			nom="Jeu du Bac"
+			nom={$langue === 'fr' ? 'Jeu du Bac' : 'Bac Game'}
 			link="/keyboard/bac"
 			on:mouseleave={() => (phraseExplicatique = '')}
 			on:mouseenter={() =>
