@@ -62,7 +62,10 @@ class Maze:
         pygame.init()
         pygame.mixer.init()
 
-        
+        # Screen dimensions
+        desktopSize = pygame.display.get_desktop_sizes()
+        SCREEN_WIDTH = desktopSize[0][0]
+        SCREEN_HEIGHT = desktopSize[0][1]
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
@@ -70,6 +73,8 @@ class Maze:
 
 
         screen.fill((0, 0, 0))
+
+        
 
         #Position utilisable
         x = SCREEN_WIDTH * (50/1280)
@@ -86,7 +91,7 @@ class Maze:
         running = True
         song_played = False
         win = False
-        niveau = 1
+        niveau = 10
         
         #Total Timer
         all_timer = 0
@@ -152,6 +157,11 @@ class Maze:
 
         # Main loop
         while running:
+            # Screen dimensions
+            desktopSize = pygame.display.get_desktop_sizes()
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
+
             mouseX = pygame.mouse.get_pos()[0]
             mouseY = pygame.mouse.get_pos()[1]
 
@@ -1099,8 +1109,9 @@ class Maze:
                         is_playing = False
                         pygame.quit()
                 
-            if newCursor == True:
-                cursor_img = pygame.image.load('sources/mouse/assets/cursor_egg.png')
+            if newCursor == True:              
+                path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/cursor_egg.png"
+                cursor_img = pygame.image.load(path).convert()
                 cursor_img_rect = cursor_img.get_rect()
                 cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
                 #pygame.transform.scale(cursor_img, (32, 32))

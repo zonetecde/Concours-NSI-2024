@@ -45,6 +45,10 @@ class SM:
 
         # Main loop
         while running:
+            # Screen dimensions
+            desktopSize = pygame.display.get_desktop_sizes()
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
 
             #Permet de savoir si le jeu est lancer ou non
             if is_playing:
