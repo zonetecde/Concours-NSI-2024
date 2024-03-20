@@ -1,14 +1,16 @@
 import sys
 import os
-
+import sounds
 import pygame
+import jeu 
 
 class VW:
     def __init__(self):
-        pass
+        self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     def start(self):
         # Initialize Pygame
+        sound_mana = sounds.SoundManager()
         pygame.init()
         pygame.mixer.init()
 
@@ -34,7 +36,7 @@ class VW:
         while running:
             #Permet de savoir si le jeu est lancer ou non
             if is_playing:
-                pass
+                jeu.Jeu().demarrer()
 
             # Texte Start et sa collision 
             start = font.render(("START"), 1, (255, 255, 255))
@@ -47,14 +49,14 @@ class VW:
 
 
             # Texte Scary maze sans collision
-            title = font.render(("SCARY MAZE PARKINSON KILLER"), 1, (255, 255, 255))
+            title = font.render(("VERBAL WARFARE"), 1, (255, 255, 255))
             screen.blit(title, (SCREEN_WIDTH * (13/64), SCREEN_HEIGHT * (5/64)))
 
             #Texte explicatif du jeu
-            texte = font.render(("Fight the maze to kill the disease"), 1, (255, 255, 255))
+            texte = font.render(("MENU 0% COPIE DE SM"), 1, (255, 255, 255))
             screen.blit(texte, (SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * (520/720)))
 
-            texte2 = font.render(("getting over 10 LVL made to help you"), 1, (255, 255, 255))
+            texte2 = font.render(("CLIQUE PARTOUT"), 1, (255, 255, 255))
             screen.blit(texte2, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (570/720)))
 
             for event in pygame.event.get():
@@ -69,12 +71,15 @@ class VW:
                         running = False
                         is_playing = False
                         pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if start_rect.collidepoint(pygame.mouse.get_pos()):
+                        is_playing = True
 
 
             
             # Update the display
-            if not running:
-                pass
+            if running:
+                pygame.display.flip()
 
 if __name__ == "__main__":
     game = VW()

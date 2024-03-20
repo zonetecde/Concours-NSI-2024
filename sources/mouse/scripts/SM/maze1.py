@@ -62,7 +62,10 @@ class Maze:
         pygame.init()
         pygame.mixer.init()
 
-        
+        # Screen dimensions
+        desktopSize = pygame.display.get_desktop_sizes()
+        SCREEN_WIDTH = desktopSize[0][0]
+        SCREEN_HEIGHT = desktopSize[0][1]
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
@@ -70,6 +73,8 @@ class Maze:
 
 
         screen.fill((0, 0, 0))
+
+        
 
         #Position utilisable
         x = SCREEN_WIDTH * (50/1280)
@@ -86,6 +91,7 @@ class Maze:
         running = True
         song_played = False
         win = False
+        #N° niveau
         niveau = 1
         
         #Total Timer
@@ -152,6 +158,11 @@ class Maze:
 
         # Main loop
         while running:
+            # Screen dimensions
+            desktopSize = pygame.display.get_desktop_sizes()
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
+
             mouseX = pygame.mouse.get_pos()[0]
             mouseY = pygame.mouse.get_pos()[1]
 
@@ -788,7 +799,7 @@ class Maze:
                 ractangle_S2 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (250/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_S3 = (SCREEN_WIDTH * (0/1280), SCREEN_HEIGHT * (450/720), SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (100/720))
 
-                ractangle_Sreal = (SCREEN_WIDTH * (0/1280), self.y_Sreal, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
+                ractangle_Sreal = (SCREEN_WIDTH * (0/1280), self.y_Sreal, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (200/720))
                 ractangle_Sfake = (SCREEN_WIDTH * (200/1280), SCREEN_HEIGHT * (150/720), SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
                 ractangle_Smove = (SCREEN_WIDTH * (200/1280), self.y_Smove, SCREEN_WIDTH * (100/1280), SCREEN_HEIGHT * (100/720))
 
@@ -1099,8 +1110,9 @@ class Maze:
                         is_playing = False
                         pygame.quit()
                 
-            if newCursor == True:
-                cursor_img = pygame.image.load('sources/mouse/assets/cursor_egg.png')
+            if newCursor == True:              
+                path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/cursor_egg.png"
+                cursor_img = pygame.image.load(path).convert()
                 cursor_img_rect = cursor_img.get_rect()
                 cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
                 #pygame.transform.scale(cursor_img, (32, 32))

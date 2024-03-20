@@ -23,28 +23,35 @@ class SM:
         pygame.init()
         pygame.mixer.init()
 
+        # Utilisation de la classe SoundManager dans le fichier sounds.py
         sound_mana = sounds.SoundManager()
 
         # Screen dimensions
         desktopSize = pygame.display.get_desktop_sizes()
-
         SCREEN_WIDTH = desktopSize[0][0]
         SCREEN_HEIGHT = desktopSize[0][1]
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
         pygame.display.set_caption("Scary maze or not?")
+
+        # Initialize the font
         font = pygame.font.Font(self.folder + '/fonts/VCR_OSD_MONO.ttf', 50)
 
         #Position utilisable
         x = SCREEN_WIDTH * (50/1280)
         y = SCREEN_HEIGHT * (150/720)
 
+        #Pour vérifier que le jeu se joue
         is_playing = False
         running = True 
 
         # Main loop
         while running:
+            # Screen dimensions
+            desktopSize = pygame.display.get_desktop_sizes()
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
 
             #Permet de savoir si le jeu est lancer ou non
             if is_playing:
