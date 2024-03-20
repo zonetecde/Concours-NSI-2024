@@ -3,6 +3,7 @@
 	import Retour from '$lib/Retour.svelte';
 	import { onMount } from 'svelte';
 	import Api from '../../../api/Api';
+	import { langue } from '$lib/Store';
 
 	onMount(() => {
 		window.addEventListener('keydown', keyDown);
@@ -35,11 +36,15 @@
 	<Exercice image="/mouse/sm.png" nom="Scary Maze" handleClick={() => Api.openPythonProject('SM')} />
 
 	<div class="text-center">
-		<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-		<p class="text-lg">Déplacer votre souris de la position de départ à la position d'arrivée sans toucher les murs.</p>
+		<p class="mt-8 text-xl mb-4">{$langue == 'fr' ? "Règles de l'exercice :" : 'Rules of the exercise :'}</p>
+		<p class="text-lg">
+			{$langue == 'fr'
+				? "Déplacer votre souris de la position de départ à la position d'arrivée sans toucher les murs."
+				: 'Move your mouse from the starting position to the ending position without touching the walls.'}
+		</p>
 	</div>
 
-	<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
+	<p class="mt-8 mb-5">{$langue == 'fr' ? "Appuyez sur ENTRÉE pour commencer l'exercice" : 'Press ENTER to start the exercise'}</p>
 
 	<Retour urlToGo="/mouse" taille="w-10 h-10 bottom-3 left-3" toExecuteBefore={quit} />
 </div>

@@ -5,12 +5,13 @@
 	import { onMount } from 'svelte';
 	import Fetching from '$lib/Fetching.svelte';
 	import Api from '../../../api/Api';
+	import { langue as lang } from '$lib/Store';
 
 	/** @type {boolean} */
 	let isFetching = false;
 
 	/** @type {string} */
-	let langue = 'fr'; // La langue de l'audio
+	let langue = $lang; // La langue de l'audio
 
 	/**
 	 * Les audios des phrases ainsi que les phrases au format [(texte, audio file path), ...]
@@ -142,26 +143,33 @@
 
 <div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
 	{#if !hasExerciceStarted}
-		<h1 class="font-bold text-3xl mb-6 -mt-3">Sténographie</h1>
+		<h1 class="font-bold text-3xl mb-6 -mt-3">
+			{$lang === 'fr' ? 'Sténographie' : 'Stenography'}
+		</h1>
 
 		<Exercice image="/keyboard/stenographie.jpg" nom="Sténographie" handleClick={startExercice} />
 
 		<div class="text-center">
-			<p class="mt-8 text-xl mb-4">Règles de l'exercice :</p>
-			<p class="text-lg">Un audio vous sera joué dans lequel une phrase sera dite. Vous devrez la recopier le plus vite possible sans fautes.</p>
+			<p class="mt-8 text-xl mb-4">{$lang === 'fr' ? "Règles de l'exercice :" : 'Exercise rules :'}</p>
+			<p class="text-lg">
+				{$lang === 'fr'
+					? 'Un audio vous sera joué dans lequel une phrase sera dite. Vous devrez la recopier le plus vite possible sans fautes.'
+					: 'An audio will be played in which a sentence will be said to you. You will have to transcribe it as quickly as possible without mistakes.'}
+			</p>
 		</div>
 
 		<div class="md:w-full max-w-[1000px] mt-4 p-4 justify-center items-center flex flex-row bg-[#ffffff25] rounded-xl">
 			<div class="flex flex-col w-full">
-				<p class="pr-2">Options :</p>
+				<p class="pr-2">{$lang === 'fr' ? 'Options :' : 'Options :'}</p>
 
 				<div class="flex gap-x-8 items-center">
 					<label for="accents" class="text-lg"
-						><input type="checkbox" class="mr-0.5 accent-blue-800" id="accents" bind:checked={checkOrthographe} />Vérifier l'orthographe et la conjugaison des verbes</label
+						><input type="checkbox" class="mr-0.5 accent-blue-800" id="accents" bind:checked={checkOrthographe} />
+						{$lang === 'fr' ? "Vérifier l'orthographe et la conjugaison" : 'Check spelling and conjugation'}</label
 					>
 
 					<label class="text-lg"
-						>Langue de l'audio :
+						>{$lang === 'fr' ? "Langue de l'audio :" : 'Audio language :'}
 						<select class="p-2 border-2 outline-none border-[#656c81] rounded-md w-[200px]" bind:value={langue}>
 							<option value="fr">Français</option>
 							<option value="en">Anglais</option>
@@ -181,7 +189,7 @@
 			</div>
 		</div>
 
-		<p class="mt-8 mb-5">Appuyez sur ENTRÉE pour commencer l'exercice</p>
+		<p class="mt-8 mb-5">{$lang === 'fr' ? "Appuyez sur ENTRÉE l'exercice pour commencer" : 'Press ENTER to start the exercise'}</p>
 	{:else}
 		<div class="w-full h-full flex items-center justify-center flex-col">
 			<!-- Media player -->
@@ -189,7 +197,7 @@
 				<source type="audio/wav" />
 			</audio>
 
-			<small class="mt-5"><i>Audio provenant de <a target="_blank" href="https://www.voxforge.org/">VoxForge.org</a></i></small>
+			<small class="mt-5"><i>{$lang === 'fr' ? 'Audio provenant de' : 'Audio from'} <a target="_blank" href="https://www.voxforge.org/">VoxForge.org</a></i></small>
 
 			<!-- svelte-ignore a11y-autofocus -->
 			<input
@@ -210,11 +218,12 @@
 					<span class="text-lg underline underline-offset-2">Réponse :</span><br />{currentAudio[0]}
 				</p>
 				<p class="mt-5 text-lg">
-					Taux de réussite : <span class="font-bold">{similitude}%</span>
+					{$lang === 'fr' ? 'Taux de réussite' : 'Success rate'}
+					: <span class="font-bold">{similitude}%</span>
 				</p>
 
 				<div class="flex gap-x-4">
-					<button class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md" on:click={playNextAudio}> Phrase suivante </button>
+					<button class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md" on:click={playNextAudio}> {$lang === 'fr' ? 'Phrase suivante' : 'Next sentence'} </button>
 					<button
 						class="mt-8 py-3 px-8 bg-[#e45656] border-2 border-[#813a3a] text-white rounded-md"
 						on:click={() => {
@@ -223,12 +232,14 @@
 							a?.click();
 						}}
 					>
-						S'arrêter
+						{$lang === 'fr' ? "S'arrêter" : 'Stop'}
 					</button>
-					<button class="mt-8 py-3 px-8 bg-[#b9e456] border-2 border-[#80813a] rounded-md text-black" on:click={startExercice}> Changer l'orateur/oratrice </button>
+					<button class="mt-8 py-3 px-8 bg-[#b9e456] border-2 border-[#80813a] rounded-md text-black" on:click={startExercice}>
+						{$lang === 'fr' ? "Changer l'orateur/oratrice " : 'Change speaker'}
+					</button>
 				</div>
 			{:else}
-				<button class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md" on:click={handleSubmissionButtonClicked}> Soumettre </button>
+				<button class="mt-8 py-3 px-8 bg-[#5679e4] border-2 border-[#3a4181] text-white rounded-md" on:click={handleSubmissionButtonClicked}> {$lang === 'fr' ? 'Valider' : 'Submit'} </button>
 			{/if}
 		</div>
 	{/if}

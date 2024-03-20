@@ -8,6 +8,7 @@
 	import JeuBacRow, { Mot } from './JeuBacRow';
 	import Api from '../../../api/Api';
 	import Fetching from '$lib/Fetching.svelte';
+	import { langue } from '$lib/Store';
 
 	/** @type {boolean} */
 	let isFetching = false;
@@ -46,8 +47,9 @@
 		window.addEventListener('keydown', keyDown);
 		window.addEventListener('keyup', keyUp);
 
-		// Récupère les thèmes disponibles
+		if ($langue === 'en') toast.error('This exercise is only available in French');
 
+		// Récupère les thèmes disponibles
 		const response = await Api.api.get_themes_bac();
 		themes = response;
 	});
