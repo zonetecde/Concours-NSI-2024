@@ -92,7 +92,7 @@ class Maze:
         song_played = False
         win = False
         #N° niveau
-        niveau = 10
+        niveau = 1
         
         #Total Timer
         all_timer = 0
