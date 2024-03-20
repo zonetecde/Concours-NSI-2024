@@ -47,19 +47,19 @@ class Bac:
         print("Fin de l'ajout")
         
 
-    def clean_mot(self, mot: str):
-        """Nettoie un mot en enlevant les accents et en le mettant en minuscule.
-        Tous les caractères qui ne sont pas des lettres uniquement (a-z) sont supprimés.
-        afin de pouvoir le comparer avec les mots écrits par le joueur.
+        def clean_mot(self, mot: str):
+            """Nettoie un mot en enlevant les accents et en le mettant en minuscule.
+            Tous les caractères qui ne sont pas des lettres uniquement (a-z) sont supprimés.
+            afin de pouvoir le comparer avec les mots écrits par le joueur.
 
-        >>> b = Bac()
-        >>> b.clean_mot("Éléphant")
-        'elephant'
-        >>> b.clean_mot("Marie-Antoinette")
-        'marieantoinette'
-        >>> b.clean_mot("École 123")
-        'ecole'
-        """
+            >>> b = Bac()
+            >>> b.clean_mot("Éléphant")
+            'elephant'
+            >>> b.clean_mot("Marie-Antoinette")
+            'marieantoinette'
+            >>> b.clean_mot("École 123")
+            'ecole'
+            """
         mot_clean = ""
         
         for lettre in mot:
@@ -99,7 +99,7 @@ class Bac:
 
         Args:
             reponses (list): Liste des réponses données par le joueur.
-                             Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
+                                Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
             lettre (str): La lettre
 
         Returns:

@@ -8,6 +8,7 @@ class Rythme:
     """
     @staticmethod
     def recuperer_niveaux():
+        """Recupere les niveaux"""
         # Les niveaux se trouvent dans le dossier `/saves/`
         folder = os.path.dirname(os.path.abspath(__file__)) + "/saves/"
         files = os.listdir(folder)

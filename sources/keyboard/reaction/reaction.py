@@ -4,12 +4,12 @@ from time import sleep
 class Reaction:
     """Classe permettant de gérer l'exercice "Réaction"
     """
-    reactions = []
+    reactions = [] # Contient les reactions en str
 
-    ACCENTS = "éèàùçê"
-    MAJUSCULES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    SPECIAUX = ".,;:!?$%&()-_@"
-    MINUSCULES = "abcdefghijklmnopqrstuvwxyz"
+    ACCENTS = "éèàùçê" # Liste des accents
+    MAJUSCULES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" # Liste des majuscules
+    SPECIAUX = ".,;:!?$%&()-_@" # Liste des caractères speciaux
+    MINUSCULES = "abcdefghijklmnopqrstuvwxyz" # Liste des minuscules
 
     @staticmethod
     def init_reactions(autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
@@ -83,7 +83,7 @@ class Reaction:
 
         Args:
             data (list): Les données de l'utilisateur : 
-                         Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
+                            Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
         """
         score = 0
         temps_moyen_difficulte = 0
