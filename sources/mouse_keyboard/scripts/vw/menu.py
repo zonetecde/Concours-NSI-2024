@@ -2,6 +2,10 @@ import sys
 import os
 import sounds
 import pygame
+
+# Permet de ce placer dans le dossier contenant les scripts VW
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
+
 import jeu 
 
 class VW:
