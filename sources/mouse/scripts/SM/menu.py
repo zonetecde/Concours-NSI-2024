@@ -15,9 +15,10 @@ maze = maze1.Maze()
 
 class SM:
     def __init__(self):
-        pass
+        self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     def start(self):
+        
         # Initialize Pygame
         pygame.init()
         pygame.mixer.init()
@@ -33,7 +34,7 @@ class SM:
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
         pygame.display.set_caption("Scary maze or not?")
-        font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
+        font = pygame.font.Font(self.folder + '/fonts/VCR_OSD_MONO.ttf', 50)
 
         #Position utilisable
         x = SCREEN_WIDTH * (50/1280)
@@ -44,6 +45,10 @@ class SM:
 
         # Main loop
         while running:
+            # Screen dimensions
+            desktopSize = pygame.display.get_desktop_sizes()
+            SCREEN_WIDTH = desktopSize[0][0]
+            SCREEN_HEIGHT = desktopSize[0][1]
 
             #Permet de savoir si le jeu est lancer ou non
             if is_playing:
@@ -57,7 +62,6 @@ class SM:
             font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
             click = font2.render(("(click)"), 1, (255, 255, 255))
             screen.blit(click, (SCREEN_WIDTH * (29/64), SCREEN_HEIGHT * (400/720)))
-
 
             # Texte Scary maze sans collision
             title = font.render(("SCARY MAZE PARKINSON KILLER"), 1, (255, 255, 255))
@@ -87,11 +91,9 @@ class SM:
                     if start_rect.collidepoint(pygame.mouse.get_pos()):
                         sound_mana.play('click')
                         is_playing = True
-
-
             
             # Update the display
-            if not running:
+            if running:
                 pygame.display.flip()
 
 if __name__ == "__main__":
