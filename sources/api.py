@@ -10,6 +10,11 @@ from keyboard.rythme.rythme import Rythme
 # Permet de ce placer dans le dossier contenant les scripts ROSU
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/Rosu")
 from mouse.scripts.Rosu.menu import Rosu
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/SM")
+from mouse.scripts.SM.menu import SM
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
+from mouse_keyboard.scripts.vw.menu import VW
+
 
 class Api:
     """Classe Api
@@ -47,6 +52,12 @@ class Api:
         """
         if nom == "Rosu!":
             Rosu.start_rosu()
+        elif nom == "SM":
+            maze = SM()
+            maze.start()
+        elif nom == "VW":
+            vw = VW()
+            vw.start()
 
     def recuperer_phrase_aleatoire_typescript(self, langue: str):
         """Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'

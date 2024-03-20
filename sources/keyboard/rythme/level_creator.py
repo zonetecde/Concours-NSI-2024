@@ -162,7 +162,7 @@ class LevelCreator:
 AUDIO_PATH = os.path.dirname(__file__) + "/audios/"
 LEVEL_PATH = os.path.dirname(__file__) + "/saves/"
 
-level_creator = LevelCreator("Blue Ocean", 1, "Blue Ocean.mp3", True)
+level_creator = LevelCreator("Blue Ocean 2", 1, "Blue Ocean.mp3", True)
 level_creator.create_level()
 
 # Lance le compteur de touches appuyées (sur un thread séparé pour pas bloquer le programme)
