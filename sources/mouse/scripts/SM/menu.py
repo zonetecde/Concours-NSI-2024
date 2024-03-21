@@ -9,21 +9,26 @@ import sounds
 import json
 from os.path import exists
 
-
-import maze1
-maze = maze1.Maze()
+import maze
 
 class SM:
+    """ Classe permettant de gérer le menu du jeu
+    """
     def __init__(self):
         self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.maze = maze.Maze()
 
     def start(self):
+        """ Fonction permettant de lancer le menu de l'exercice
+
+        Elle dessine le menu avec pygame et permet de lancer l'exercice
+        """
         
         # Initialize Pygame
         pygame.init()
         pygame.mixer.init()
 
-        # Utilisation de la classe SoundManager dans le fichier sounds.py
+        # Init sound manager
         sound_mana = sounds.SoundManager()
 
         # Screen dimensions
@@ -33,7 +38,7 @@ class SM:
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
-        pygame.display.set_caption("Scary maze or not?")
+        pygame.display.set_caption("SM")
 
         # Initialize the font
         font = pygame.font.Font(self.folder + '/fonts/VCR_OSD_MONO.ttf', 50)
@@ -55,7 +60,7 @@ class SM:
 
             #Permet de savoir si le jeu est lancer ou non
             if is_playing:
-                maze.start_maze()
+                self.maze.start_maze()
 
             # Texte Start et sa collision 
             start = font.render(("START"), 1, (255, 255, 255))
