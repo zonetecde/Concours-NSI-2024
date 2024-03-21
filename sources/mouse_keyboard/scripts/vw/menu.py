@@ -14,7 +14,7 @@ class VW:
 
     def start(self):
         # Initialize Pygame
-        sound_mana = sounds.SoundManager()
+        #sound_mana = sounds.SoundManager()
         pygame.init()
         pygame.mixer.init()
 
@@ -26,7 +26,7 @@ class VW:
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
-        pygame.display.set_caption("JAI PAS TOUT CASSE")
+        pygame.display.set_caption("Verbal Warfare")
         font = pygame.font.SysFont('arial', 50)
 
         #Position utilisable
@@ -38,9 +38,10 @@ class VW:
 
         # Main loop
         while running:
-            #Permet de savoir si le jeu est lancer ou non
+            #Permet de savoir si le jeu est lance ou non
             if is_playing:
                 jeu.Jeu().demarrer()
+                break
 
             # Texte Start et sa collision 
             start = font.render(("START"), 1, (255, 255, 255))
@@ -60,7 +61,7 @@ class VW:
             texte = font.render(("MENU 0% COPIE DE SM"), 1, (255, 255, 255))
             screen.blit(texte, (SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * (520/720)))
 
-            texte2 = font.render(("CLIQUE PARTOUT"), 1, (255, 255, 255))
+            texte2 = font.render(("Je maintiens que kill the rayane ça aurait plus rigolo"), 1, (255, 255, 255))
             screen.blit(texte2, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (570/720)))
 
             for event in pygame.event.get():

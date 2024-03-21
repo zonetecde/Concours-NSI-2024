@@ -1,6 +1,12 @@
 import pygame
 import random
 import time
+import sys
+import os 
+import sqlite3
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
+
 
 class Jeu:
     def __init__(self):
@@ -14,6 +20,7 @@ class Jeu:
         self.duree_jeu = 60
         self.en_cours = True
         self.input_text = ""
+        self.rate = 0
 
     def demarrer(self):
         # Initialiser pygame
@@ -59,14 +66,6 @@ class Jeu:
                         self.score += 1
                         del self.rectangles_mots[mot_clique]
                         self.input_text = ""
-                        mot = self.generer_mot()
-                        rect_mot = self.police.render(mot[0], True, NOIR).get_rect(
-                            center=(
-                                random.randint(100, self.largeur_ecran - 100),
-                                random.randint(100, self.hauteur_ecran - 100),
-                            )
-                        )
-                        self.rectangles_mots[mot] = rect_mot
 
                 elif event.type == pygame.KEYDOWN:
                     # Gérer la saisie de l'utilisateur
@@ -75,17 +74,7 @@ class Jeu:
                     elif event.key == pygame.K_RETURN:
                         self.input_text = ""
                     elif event.key == pygame.K_ESCAPE:
-                        texte_fin_jeu = self.police.render("Fin du jeu", True, NOIR)
-                        self.ecran.blit(
-                            texte_fin_jeu,
-                            (
-                                self.largeur_ecran // 2 - texte_fin_jeu.get_width() // 2,
-                                self.hauteur_ecran // 2 - texte_fin_jeu.get_height() // 2,
-                            ),
-                        )
-                        pygame.time.wait(3000)
-                        pygame.quit()
-                        
+                        self.en_cours = False  
                     else:
                         self.input_text += event.unicode
 
@@ -94,12 +83,21 @@ class Jeu:
                 mot = self.generer_mot()
                 rect_mot = self.police.render(mot[1], True, NOIR).get_rect(
                     center=(
-                        random.randint(100, self.largeur_ecran - 100),
+                        #random.choice([0, self.largeur_ecran]), je fixerais pour avoir les 2 cotes
+                        0,
                         random.randint(100, self.hauteur_ecran - 100),
                     )
                 )
                 self.rectangles_mots[mot] = rect_mot
+                self.duree_jeu -= 1
                 self.temps_debut = time.time()
+                
+            # Déplacer les mots d'un côté à l'autre de l'écran
+            for mot, rect in list(self.rectangles_mots.items()):
+                rect.move_ip(1, 0) 
+                if rect.centerx > self.largeur_ecran:
+                    del self.rectangles_mots[mot]  
+        
 
             # Dessiner les mots à l'écran
             for mot, rect in self.rectangles_mots.items():
@@ -110,8 +108,7 @@ class Jeu:
             self.ecran.blit(texte_score, (10, 10))
 
             # Dessiner le temps restant à l'écran
-            temps_restant = max(0, self.duree_jeu - (time.time() - self.temps_debut))
-            texte_temps = self.police.render("Temps : " + str(int(temps_restant)), True, NOIR)
+            texte_temps = self.police.render("Temps : " + str(self.duree_jeu), True, NOIR)
             self.ecran.blit(
                 texte_temps, (self.largeur_ecran - texte_temps.get_width() - 10, 10)
             )
@@ -122,16 +119,26 @@ class Jeu:
             pygame.draw.rect(self.ecran, BLANC, rect_input)
             pygame.draw.rect(self.ecran, NOIR, rect_input, 2)
             self.ecran.blit(texte_input, rect_input)
-
+            
+            # Terminer le jeu après 60 secondes
+            if self.duree_jeu <= 0:
+                self.en_cours = False
+                
             # Mettre à jour l'affichage
             pygame.display.flip()
 
-            # Terminer le jeu après 60 secondes
-            if time.time() - self.temps_debut >= self.duree_jeu:
-                self.en_cours = False
+
 
         # Fin du jeu
         texte_fin_jeu = self.police.render("Fin du jeu", True, NOIR)
+        texte_score = self.police.render("Score : " + str(self.score), True, NOIR)
+        self.ecran.blit(
+            texte_score,
+            (
+                self.largeur_ecran // 2 - texte_score.get_width() // 2,
+                self.hauteur_ecran // 2 - texte_score.get_height() // 2 - 50,
+            )
+        )
         self.ecran.blit(
             texte_fin_jeu,
             (
@@ -146,9 +153,20 @@ class Jeu:
 
         # Quitter pygame
         pygame.quit()
+        
 
     def generer_mot(self):
-        mots = ["pomme", "banane", "cerise", "raisin", "orange"]
+        # Connect to the database
+        #conn = sqlite3.connect('mots.db')
+        #cursor = conn.cursor()
+
+        # Fetch all the words from the database
+        #cursor.execute("SELECT mot FROM mots")
+        #mots = [row[0] for row in cursor.fetchall()]
+
+        # Close the database connection
+        #conn.close()
+        mots = ["rayane", "lilian", "mathieu", "esteban", "penelope"]
         mot_complet = random.choice(mots)
         index = random.randint(0, len(mot_complet) - 1)
         mot_incomplet = mot_complet[:index] + "_" + mot_complet[index+1:]
