@@ -46,19 +46,37 @@ if __name__ == "__main__":
     presentation en pdf
     500 char résumé
     video matthieu
+
+    Un résumé de 500 caractères maximum
+
+    Key Mouse Training est un logiciel d'entraînement à la frappe clavier et à la souris. Il propose des exercices variés pour améliorer la rapidité et la précision de la frappe clavier, ainsi que la coordination main-souris. Le logiciel est divisé en plusieurs exercices, chacun ayant ses propres règles et objectifs. Les exercices sont conçus pour être ludiques et stimulants, tout en permettant de progresser rapidement. Key Mouse Training est un outil idéal pour les personnes souhaitant améliorer leurs compétences en frappe clavier et en utilisation de la souris, que ce soit pour un usage professionnel ou personnel.
+
     
-    candidater -> lien ppx
+    Esteban THIS a réalisé l’exercice CoordiMaze avec PyGame dont il n’était pas familier. Il a ainsi acquit des nouvelles notions pour mener à bien son idée. Il a aussi trouver toutes les images et sons libre de droit utilisés dans l'ensemble des exercices de la partie sourie. 
+
+    Lilian Fisher à réalisé l’exercice Rosu et STR avec PyGame. Ses connaissances en Lua et ses projets personnels lui ont permis de réaliser ces exercices avec aisance. Sa détermination et son envie de bien faire lui ont permis de réaliser des exercices de qualité.
 
 
-    FONCTIONNEMENT ET OPÉRATIONNALITÉ :
-Pouvez-vous présenter l’état d’avancement du projet au moment du dépôt ? (ce qui est terminé, en cours de réalisation, reste à faire)
-Quelles approches avez-vous mis en œuvre pour vérifier l’absence de bugs et garantir une facilité d'utilisation de votre projet ?
-Quelles sont les difficultés rencontrées et les solutions apportées ?
+Le nom du projet : Key Mouse Training
 
+L’établissement scolaire de l’équipe : Lycée Louis-Vincent, Metz
 
-Le code déposé est fonctionnel et peut être exécuté sans erreur. Il contient 5 exerices d'entraimenebt au clavier, 3 exercices d'entrainement à la souris et 1 exercice combinant le clavier et la souris.
+Les membres de l’équipe : Penelope WELFRINGER-LAPAQUE, Esteban THIS, Rayane STASZEWSKI, Lilian FISCHER, Mathieu BUANNIC
 
-Nous aurions aimé ajouter plus d'exercices, mais nous avons manqué de temps pour les implémenter. Nous avons également rencontré des difficultés, notammant au niveau de l'affichage en fonction de la résolution de l'écran. Nous avons ainsi dû adapter l'affichage pour que les exercices soient visibles sur tous les écrans. Une autre difficulté a été de trouver des ressources libre de droit pour les images des exercices. Nous avons donc dû créer nos propres images pour les exercices.
+Le niveau d'étude : Terminale 
 
-Les exercices sont vérifiés pour garantir leur bon fonctionnement et leur facilité d'utilisation. Nous avons mis en place des tests unitaires un peu partout dans le code pour vérifier le bon fonctionnement des fonctions. Nous avons également fait tester le logiciel par de nombreuses personnes pour vérifier la facilité d'utilisation, la compréhension des exercices et la présence d'éventuels bugs.
-    """
+La composition de la classe de NSI : 1 fille et 4 garçons (ou il demande le nombre de garçon et de fille chez les T5 ?)
+
+Le résumé du projet : Key Mouse Training est un logiciel d'entraînement à la frappe clavier et à la souris. Il propose une diversité d'exercices pour augmenter sa vitesse et sa précision au clavier, en plus d'exercices pour améliorer la coordination entre ses mains et la souris. Le programme est séparé en différents exercices, chacun possédant ses propres règles et paramètres. Les exercices sont créés pour être ludiques et stimulants, tout en permettant de progresser rapidement.
+
+Le lien de la vidéo :
+
+Le lien du dossier technique : 
+
+L’image au format PNG ou JPG : 
+
+La présentation au format PDF : 
+
+Le commentaire de l’enseignant : 
+
+"""

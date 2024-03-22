@@ -6,7 +6,7 @@ import pygame
 # Permet de ce placer dans le dossier contenant les scripts VW
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
 
-import jeu 
+import vw_engine
 
 class VW:
     def __init__(self):
@@ -40,7 +40,7 @@ class VW:
         while running:
             #Permet de savoir si le jeu est lance ou non
             if is_playing:
-                jeu.Jeu().demarrer()
+                vw_engine.Jeu().start()
                 break
 
             # Texte Start et sa collision 

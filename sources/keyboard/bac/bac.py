@@ -47,19 +47,19 @@ class Bac:
         print("Fin de l'ajout")
         
 
-        def clean_mot(self, mot: str):
-            """Nettoie un mot en enlevant les accents et en le mettant en minuscule.
-            Tous les caractères qui ne sont pas des lettres uniquement (a-z) sont supprimés.
-            afin de pouvoir le comparer avec les mots écrits par le joueur.
+    def clean_mot(self, mot: str):
+        """Nettoie un mot en enlevant les accents et en le mettant en minuscule.
+        Tous les caractères qui ne sont pas des lettres uniquement (a-z) sont supprimés.
+        afin de pouvoir le comparer avec les mots écrits par le joueur.
 
-            >>> b = Bac()
-            >>> b.clean_mot("Éléphant")
-            'elephant'
-            >>> b.clean_mot("Marie-Antoinette")
-            'marieantoinette'
-            >>> b.clean_mot("École 123")
-            'ecole'
-            """
+        >>> b = Bac()
+        >>> b.clean_mot("Éléphant")
+        'elephant'
+        >>> b.clean_mot("Marie-Antoinette")
+        'marieantoinette'
+        >>> b.clean_mot("École 123")
+        'ecole'
+        """
         mot_clean = ""
         
         for lettre in mot:
@@ -93,7 +93,6 @@ class Bac:
         """
         self.connexion.close()
 
-    
     def verifier_mot(self, reponses, lettre: str):
         """Vérifie si les réponses données par le joueur sont correctes.
 
@@ -106,12 +105,13 @@ class Bac:
             list: Liste des réponses correctes et incorrectes.
             Exemple : [True, False, False] 
         """
+        assert len(reponses) > 0, "Il faut au moins une réponse"
+
         lettre = lettre.upper()
         list_rep = []
 
         for theme, reponse in reponses:
             clean_rep = self.clean_mot(reponse)
-
 
             if len(clean_rep) > 0 and clean_rep[0] == lettre.lower():
                 resultat = self.executer_sql(f"SELECT COUNT(*) FROM mots WHERE theme = '{theme}' AND mot_clean = '{clean_rep}' AND lettre = '{lettre}'")[0][0]
@@ -138,6 +138,8 @@ class Bac:
         """
         Renvoie les lettres qui ont des mots pour tout les themes
         """
+        assert len(themes) > 0, "Il faut au moins un thème"
+
         alphabet = [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
         lettres_valides = []
         for lettre in alphabet:
@@ -164,7 +166,6 @@ class Bac:
         themes = self.executer_sql("SELECT DISTINCT theme FROM mots")
         return [theme[0] for theme in themes]
                     
-
 # =====================================
 # Programme principal 
 # =====================================

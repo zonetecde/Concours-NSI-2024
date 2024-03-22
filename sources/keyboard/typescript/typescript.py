@@ -20,13 +20,16 @@ class TypeScript:
         return article.get_ramdom_sentences_from_random_article()
 
     @staticmethod
-    def calculer_score_typescript(self, data):
+    def calculer_score_typescript(data):
         """Cette fonction est appelé par le code javascript
         lorsque l'utilisateur a fini l'exercice "Type Script"
 
         Returns:
             obj: Les différentes données de l'exercice : le temps mis, le nombre d'erreurs et le nombre de caractères total
         """
+        assert "temps_mis" in data, "Il faut un temps mis"
+        assert "nb_erreurs" in data, "Il faut un nombre d'erreurs"
+        assert "nb_caracteres" in data, "Il faut un nombre de caractères"
 
         temps_mis = data["temps_mis"]
         nb_erreurs = data["nb_erreurs"]
