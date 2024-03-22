@@ -6,7 +6,7 @@
 
 <div class="flex h-screen items-center justify-center w-full" id="main">
 	<div class="w-10/12 h-5/6 flex flex-col items-center gap-y-16">
-		<h1 class="font-bold text-5xl">Keymaster</h1>
+		<h1 class="font-bold text-5xl">Key Mouse Training</h1>
 
 		<div class="flex flex-row w-full h-4/5 text-2xl gap-x-16 text-center">
 			<a href="/keyboard" class="w-1/2 flex items-center justify-center flex-col gap-y-12 hover:scale-110 duration-150 cursor-pointer">

@@ -48,7 +48,7 @@ class Maze:
         self.y_Sreal = SCREEN_HEIGHT * (250/720)
         self.y_Smove = SCREEN_HEIGHT * (350/720)
         
-        self.x_Mmove = SCREEN_WIDTH * (450/1280)
+        self.x_Mmove = SCREEN_WIDTH * (470/1280)
         self.y_Mappear = SCREEN_HEIGHT * (260/720)
 
         self.x_Pappear = SCREEN_WIDTH * (750/1280)
