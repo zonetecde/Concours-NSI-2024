@@ -7,24 +7,6 @@ import sqlite3
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
 
-
-class MotObject(pygame.sprite.Sprite):
-    def __init__(self, mot, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.mot = mot
-        self.image = pygame.Surface((100, 50))
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-
-    def update(self):
-        self.rect.x += 1
-        if self.rect.x > 1280:
-            self.kill()
-
-    
-        
-
 class Jeu:
     CHARACTERE_DE_REMPLACEMENT = "_"
     BLANC = (255, 255, 255)
@@ -38,10 +20,11 @@ class Jeu:
         self.police = None
         self.rectangles_mots = {}
         self.score = 0
-        self.temps_debut = 0
-        self.duree_jeu = 60
+        self.temps_dernier_mot = 0 # Temps du dernier mot ajouté
+        self.temps_debut = 0 # Temps du début du jeu
+        self.duree_jeu = 60 # Durée du jeu max
         self.en_cours = True
-        self.input_text = ""
+        self.input_text = "" # Texte saisi par l'utilisateur
         self.rate = 0
         self.temps_avant_nouveau_mot = 1 # Temps avant d'ajouter un nouveau mot
 
@@ -130,14 +113,10 @@ class Jeu:
         """ Ajoute un mot à l'écran toutes les 3 secondes
         """
         # Génère un mot toutes les 3 secondes
-        if time.time() - self.temps_debut >= self.temps_avant_nouveau_mot:
+        if time.time() - self.temps_dernier_mot >= self.temps_avant_nouveau_mot:
             # Génère un mot aléatoire
             mot = self.generer_mot()
             # Ajoute le mot à l'écran
-            #mot_obj = MotObject(mot, 0, random.randint(100, self.hauteur_ecran - 100))
-
-            
-
             rect_mot = self.police.render(mot, True, self.NOIR).get_rect(
                 center=(
                     #random.choice([0, self.largeur_ecran]), je fixerais pour avoir les 2 cotes
@@ -146,15 +125,14 @@ class Jeu:
                 )
             )
             self.rectangles_mots[mot] = rect_mot
-            self.duree_jeu -= 1
-            self.temps_debut = time.time()
+            self.temps_dernier_mot = time.time()
             self.temps_avant_nouveau_mot = random.randint(1, 3)
 
     def deplacer_mots(self):
         """Déplace les mots d'un côté à l'autre de l'écran
         """
         for mot, rect in list(self.rectangles_mots.items()):
-            rect.move_ip(self.VITESSE_DEFILEMENT, 0) 
+            rect.centerx += self.VITESSE_DEFILEMENT
             if rect.centerx > self.largeur_ecran:
                 del self.rectangles_mots[mot]
                 self.rate += 1
@@ -213,6 +191,9 @@ class Jeu:
             # Dessiner le score à l'écran
             texte_score = self.police.render("Score : " + str(self.score), True, self.NOIR)
             self.ecran.blit(texte_score, (10, 10))
+
+            # calcul le temps restant
+            self.duree_jeu = 60 - int(time.time() - self.temps_debut)
 
             # Dessiner le temps restant à l'écran
             texte_temps = self.police.render("Temps : " + str(self.duree_jeu), True, self.NOIR)
