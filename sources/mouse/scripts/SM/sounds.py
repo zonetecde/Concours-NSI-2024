@@ -28,4 +28,5 @@ class SoundManager:
         Args:
             sound (str): Nom du son à jouer
         """
+        self.sounds[sound].set_volume(0.2)
         self.sounds[sound].play()

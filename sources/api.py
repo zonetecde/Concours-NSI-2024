@@ -62,7 +62,7 @@ class Api:
             Rosu.start_rosu(self.langue)
         elif nom == "SM":
             maze = SM()
-            maze.start()
+            maze.start(self.langue)
         elif nom == "VW":
             vw = VW()
             vw.start()

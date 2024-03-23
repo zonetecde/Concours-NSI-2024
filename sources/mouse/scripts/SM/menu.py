@@ -18,10 +18,13 @@ class SM:
         self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.maze = maze.Maze()
 
-    def start(self):
+    def start(self, langue):
         """ Fonction permettant de lancer le menu de l'exercice
 
         Elle dessine le menu avec pygame et permet de lancer l'exercice
+
+        Args:
+            langue (str): La langue de l'application
         """
         
         # Initialize Pygame
@@ -43,10 +46,6 @@ class SM:
         # Initialize the font
         font = pygame.font.Font(self.folder + '/fonts/VCR_OSD_MONO.ttf', 50)
 
-        #Position utilisable
-        x = SCREEN_WIDTH * (50/1280)
-        y = SCREEN_HEIGHT * (150/720)
-
         #Pour vérifier que le jeu se joue
         is_playing = False
         running = True 
@@ -63,24 +62,23 @@ class SM:
                 self.maze.start_maze()
 
             # Texte Start et sa collision 
-            start = font.render(("START"), 1, (255, 255, 255))
-            screen.blit(start, (SCREEN_WIDTH * (29/64), SCREEN_HEIGHT/2))
+            start = font.render(("DÉMARRER" if langue == "fr" else "START"), 1, (255, 255, 255))
+            screen.blit(start, (SCREEN_WIDTH * (28/64), SCREEN_HEIGHT/2))
+
+
             start_rect = pygame.Rect(SCREEN_WIDTH * (7/16), SCREEN_HEIGHT/2, SCREEN_WIDTH * (1/8), SCREEN_HEIGHT * (5/72))
             
-            font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
-            click = font2.render(("(click)"), 1, (255, 255, 255))
-            screen.blit(click, (SCREEN_WIDTH * (29/64), SCREEN_HEIGHT * (400/720)))
+            click = font.render(("(cliquez)" if langue == "fr" else "(click)"), 1, (255, 255, 255))
+            screen.blit(click, (SCREEN_WIDTH * (28/64), SCREEN_HEIGHT * (400/720)))
 
-            # Texte Scary maze sans collision
-            title = font.render(("SCARY MAZE PARKINSON KILLER"), 1, (255, 255, 255))
-            screen.blit(title, (SCREEN_WIDTH * (13/64), SCREEN_HEIGHT * (5/64)))
+            title = font.render(("SM Éradicateur de Parkinson" if langue == "fr" else "SM Parkinson Eradicator"), 1, (255, 255, 255))
+            screen.blit(title, (SCREEN_WIDTH * (21/64), SCREEN_HEIGHT * (5/64)))
 
-            #Texte explicatif du jeu
-            texte = font.render(("Fight the maze to kill the disease"), 1, (255, 255, 255))
-            screen.blit(texte, (SCREEN_WIDTH * (150/1280), SCREEN_HEIGHT * (520/720)))
+            texte = font.render(("Entraînez-vous dans ces labyrinthes pour atténuer la maladie" if langue == "fr" else "Train in these mazes to alleviate the disease"), 1, (255, 255, 255))
+            screen.blit(texte, (SCREEN_WIDTH * ((70 if langue == "fr" else 200)/1280), SCREEN_HEIGHT * (520/720)))
 
-            texte2 = font.render(("getting over 10 LVL made to help you"), 1, (255, 255, 255))
-            screen.blit(texte2, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (570/720)))
+            texte2 = font.render((("Il y a 10 niveaux à compléter." if langue == "fr" else "There are 10 levels to complete.")), 1, (255, 255, 255))
+            screen.blit(texte2, (SCREEN_WIDTH * (294/1280), SCREEN_HEIGHT * (570/720)))
 
             for event in pygame.event.get():
                 #Permet de quitter so on appuie sur la croix
@@ -106,4 +104,4 @@ class SM:
 
 if __name__ == "__main__":
     game = SM()
-    game.start()
+    game.start("fr")
