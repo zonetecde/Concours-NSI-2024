@@ -56,7 +56,7 @@ class Maze:
 
         self.y_realK = SCREEN_HEIGHT * (325/720)
 
-    def start_maze(self):
+    def start_maze(self, langue = "fr"):
         """
         Fonction permettant de lancer le labyrinthe
 
@@ -112,7 +112,7 @@ class Maze:
         song_played = False
         win = False
         #N° niveau
-        niveau = 10
+        niveau = 1
         
         #Total Timer
         all_timer = 0
@@ -123,7 +123,6 @@ class Maze:
 
         # pour le lvl5
         position = "right"
-        
         
         # pour le lvl6
         position1_lvl6 = "up"
@@ -1068,23 +1067,22 @@ class Maze:
 
                         if i == 0:
                             # Texte congrats
-                            congrat = font.render(("CONGRATULATION FOR BEATING THE GAME"), 1, (255, 255, 255))
+                            congrat = font.render(("Félicitations pour avoir terminé l'exercice !" if langue == "fr" else "Congratulations on finishing the exercise !"), 1, (255, 255, 255))
                             screen.blit(congrat, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT* (50/720)))
 
                         if i == 1:
-
                             # Texte lie
-                            start = font.render(("That means you don't have Parkinson anymore"), 1, (255, 255, 255))
+                            start = font.render(("Vous avez réussi à vous contrôler" if langue == "fr" else "You've managed to control yourself"), 1, (255, 255, 255))
                             screen.blit(start, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT* (150/720)))
                         
                         if i == 2:
                             # Texte correction 
                             font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
-                            correct = font2.render(("(well it can't vanish)"), 1, (255, 255, 255))
-                            screen.blit(correct, (SCREEN_WIDTH * (820/1280), SCREEN_HEIGHT* (190/720)))
+                            correct = font2.render(("C'est un début," if langue == "fr" else "It's a start"), 1, (255, 255, 255))
+                            screen.blit(correct, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT* (200/720)))
                             # Texte proud
-                            texte = font.render(("But at least you practised and it's a start"), 1, (255, 255, 255))
-                            screen.blit(texte, (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (250/720)))
+                            texte = font.render(("Mais le plus important est que vous vous êtes entraîné" if langue == "fr" else "But the important thing is that you've been practicing"), 1, (255, 255, 255))
+                            screen.blit(texte, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT * (250/720)))
 
                         pygame.display.flip()
                         pygame.time.delay(1000)
@@ -1093,22 +1091,21 @@ class Maze:
                     for j in range(0,1):
                         if j == 0:
                             # Texte time + tryagain
-                            finaltime = font.render(("Your final time is : " + str(all_timer)), 1, (255, 255, 255))
+                            finaltime = font.render(("Votre temps final est : " + str(all_timer) if langue == "fr" else "Your final time is : " + str(all_timer)), 1, (255, 255, 255))
                             screen.blit(finaltime, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (520/720)))
-                            tryagain = font.render(("Try to do better next time ;)"), 1, (255, 255, 255))
+                            tryagain = font.render(("Améliorez-vous encore plus la prochaine fois !" if langue == "fr" else "Improve yourself even more next time !"), 1, (255, 255, 255))
                             screen.blit(tryagain, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (580/720)))
                         
                         pygame.display.flip()
-                        pygame.time.delay(5000)
+                        pygame.time.delay(8000)
 
                     texte_write = True
-            
+
                 if texte_write:
                     screen.fill((0, 0, 0))
                     screen.blit(screen, (0, 0))
-                    end = font.render(("Press ESCAPE to get out of here."), 1, (255, 255, 255))
+                    end = font.render(("Appuyez sur ESC pour retourner au menu" if langue == "fr" else "Press ESC to return to the menu"), 1, (255, 255, 255))
                     screen.blit(end, (SCREEN_WIDTH * (160/1280), SCREEN_HEIGHT * (310/720)))
-            
 
             
 

@@ -19,6 +19,7 @@
 			// @ts-ignore
 			Api.api.definir_langue(e.target.value);
 		}}
+		bind:value={$langue}
 	>
 		<option selected value="fr">Français</option>
 		<option value="en">Anglais</option>

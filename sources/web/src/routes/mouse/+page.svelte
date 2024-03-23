@@ -14,7 +14,7 @@
 	<div class="flex gap-x-8 gap-y-10 items-center justify-center flex-wrap mt-10 w-[90%]">
 		<Exercice
 			image="/mouse/sm.png"
-			nom="Scary Maze"
+			nom={$langue === 'fr' ? 'Aide contre Parkinson' : 'Parkinson Eradicator'}
 			link="/mouse/sm"
 			on:mouseleave={() => (phraseExplicatique = '')}
 			on:mouseenter={() => (phraseExplicatique = $langue === 'fr' ? 'Améliorer votre précision et votre vitesse de déplacement de la souris' : 'Improve your mouse accuracy and speed')}
