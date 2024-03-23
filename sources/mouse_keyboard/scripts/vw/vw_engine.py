@@ -149,7 +149,7 @@ class Jeu:
         self.rectangles_mots = {}
 
         # Définir la police
-        self.police = pygame.font.Font(None, 36)
+        self.police = pygame.font.Font(None, self.hauteur_ecran // 16)
 
         # Définir le temps de début
         self.temps_debut = time.time()
@@ -201,13 +201,23 @@ class Jeu:
                 texte_temps, (self.largeur_ecran - texte_temps.get_width() - 10, 10)
             )
 
-            # Dessiner la zone d'input
-            texte_input = self.police.render(self.input_text, True, self.NOIR)
-            rect_input = texte_input.get_rect(center=(self.largeur_ecran // 2, self.hauteur_ecran - 50))
-            pygame.draw.rect(self.ecran, self.BLANC, rect_input)
-            pygame.draw.rect(self.ecran, self.NOIR, rect_input, 2)
-            self.ecran.blit(texte_input, rect_input)
+            # Dessiner la zone d'input qui fait du 200x50, bord noir et fond blanc
+            input_width = max(200, self.police.size(self.input_text)[0] + 10)
             
+            pygame.draw.rect(self.ecran, self.NOIR, (self.largeur_ecran // 2 - input_width // 2, self.hauteur_ecran - 100, input_width, 50))
+            pygame.draw.rect(self.ecran, self.BLANC, (self.largeur_ecran // 2 - input_width // 2 + 2, self.hauteur_ecran - 98, input_width - 4, 46))
+
+            # dessine le texte saisi par l'utilisateur
+            texte_input = self.police.render(self.input_text, True, self.NOIR)
+            self.ecran.blit(
+                texte_input,
+                (
+                    self.largeur_ecran // 2 - texte_input.get_width() // 2,
+                    self.hauteur_ecran - 95,
+                ),
+            )
+            
+
             # Terminer le jeu après 60 secondes
             if self.duree_jeu <= 0:
                 self.en_cours = False
