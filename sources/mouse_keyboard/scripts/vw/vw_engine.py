@@ -5,7 +5,7 @@ import sys
 import os 
 import sqlite3
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
+ASSETS_FOLDER = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/"
 
 class Jeu:
     CHARACTERE_DE_REMPLACEMENT = "_"
@@ -59,6 +59,11 @@ class Jeu:
         lettre_ecrites = self.input_text.lower()
         mot_incomplet = mot_clique.lower()
 
+        if not mot_clique:
+            return ""
+        if len(lettre_ecrites) < mot_incomplet.count(self.CHARACTERE_DE_REMPLACEMENT):
+            return mot_clique
+
         # remplace les lettres par des `_` pour comparer
         z = 0
         for i in range(len(mot_incomplet)):
@@ -106,6 +111,9 @@ class Jeu:
                 del self.rectangles_mots[mot_clique]
                 # Réinitialise l'input
                 self.input_text = ""
+                # Joue le son de shoot
+                pygame.mixer.music.load(ASSETS_FOLDER + "shoot.mp3")
+                pygame.mixer.music.play()
             else:
                 self.rate += 1
 
@@ -119,14 +127,13 @@ class Jeu:
             # Ajoute le mot à l'écran
             rect_mot = self.police.render(mot, True, self.NOIR).get_rect(
                 center=(
-                    #random.choice([0, self.largeur_ecran]), je fixerais pour avoir les 2 cotes
                     0,
                     random.randint(100, self.hauteur_ecran - 100),
                 )
             )
             self.rectangles_mots[mot] = rect_mot
             self.temps_dernier_mot = time.time()
-            self.temps_avant_nouveau_mot = random.randint(1, 3)
+            self.temps_avant_nouveau_mot = random.randint(3, 6)
 
     def deplacer_mots(self):
         """Déplace les mots d'un côté à l'autre de l'écran
@@ -136,6 +143,16 @@ class Jeu:
             if rect.centerx > self.largeur_ecran:
                 del self.rectangles_mots[mot]
                 self.rate += 1
+
+    def afficher_viseur(self, pos):
+        """Affiche l'image du viseur à la position de la souris
+
+        Args:
+            pos (tuple): La position de la souris
+        """
+        viseur = pygame.image.load(ASSETS_FOLDER + "viseur.png")
+        viseur = pygame.transform.scale(viseur, (110, 110))
+        self.ecran.blit(viseur, (pos[0] - viseur.get_width() // 2, pos[1] - viseur.get_height() // 2))
 
     def start(self):
         # Initialiser pygame
@@ -154,10 +171,14 @@ class Jeu:
         # Définir le temps de début
         self.temps_debut = time.time()
 
+        # Charger l'image de fond
+        background = pygame.image.load(ASSETS_FOLDER + "background.jpg")
+        background = pygame.transform.scale(background, (self.largeur_ecran, self.hauteur_ecran))
+        
         # Boucle de jeu
         while self.en_cours:
-            # Effacer l'écran
-            self.ecran.fill(self.BLANC)
+            # Affiche l'image de fond
+            self.ecran.blit(background, (0, 0))
 
             # Vérifier les événements
             for event in pygame.event.get():
@@ -168,6 +189,10 @@ class Jeu:
                     self.handle_mouse_click(event.pos)
 
                 elif event.type == pygame.KEYDOWN:
+                    # Joue le son de la touche pressée
+                    pygame.mixer.music.load(ASSETS_FOLDER + "keypress.mp3")
+                    pygame.mixer.music.play()
+
                     # Gérer la saisie de l'utilisateur
                     if event.key == pygame.K_BACKSPACE:
                         self.input_text = self.input_text[:-1]
@@ -177,6 +202,9 @@ class Jeu:
                         self.en_cours = False  
                     else:
                         self.input_text += event.unicode
+
+            # Affiche l'image du viseur à la position de la souris
+            self.afficher_viseur(pygame.mouse.get_pos())
 
             # Générer un nouveau mot toutes les X secondes
             self.ajouter_mot()
@@ -272,7 +300,6 @@ class Jeu:
         for index in range(indices, indices + nombre_lettres_a_ajouter):
             mot = mot[:index] + self.CHARACTERE_DE_REMPLACEMENT + mot[index + 1:]
 
-        print(mot_complet, mot)
         return mot
 
     def executer_sql(self, requete):
