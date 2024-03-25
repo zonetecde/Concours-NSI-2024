@@ -17,7 +17,8 @@
 			nom={$langue === 'fr' ? 'Aide contre Parkinson' : 'Parkinson Eradicator'}
 			link="/mouse/sm"
 			on:mouseleave={() => (phraseExplicatique = '')}
-			on:mouseenter={() => (phraseExplicatique = $langue === 'fr' ? 'Améliorer votre précision et votre vitesse de déplacement de la souris' : 'Improve your mouse accuracy and speed')}
+			on:mouseenter={() =>
+				(phraseExplicatique = $langue === 'fr' ? 'Améliorer votre précision et votre aptitude à suivre une trajectoire' : 'Improve your mouse accuracy and your ability to follow a trajectory')}
 		/>
 		<Exercice
 			image="/mouse/rosu.png"
