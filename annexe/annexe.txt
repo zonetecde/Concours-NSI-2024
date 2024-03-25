@@ -1,0 +1,21 @@
+Le nom du projet : Key Mouse Training
+
+L’établissement scolaire de l’équipe : Lycée Louis-Vincent, Metz
+
+Les membres de l’équipe : Penelope WELFRINGER-LAPAQUE, Esteban THIS, Rayane STASZEWSKI, Lilian FISCHER, Mathieu BUANNIC
+
+Le niveau d'étude : Terminale 
+
+La composition de la classe de NSI : 1 fille et 4 garçons (ou il demande le nombre de garçon et de fille chez les T5 ?)
+
+Le résumé du projet : Key Mouse Training est un logiciel d'entraînement à la frappe clavier et à la souris. Il propose une diversité d'exercices pour augmenter sa vitesse et sa précision au clavier, en plus d'exercices pour améliorer la coordination entre ses mains et la souris. Le programme est séparé en différents exercices, chacun possédant ses propres règles et paramètres. Les exercices sont créés pour être ludiques et stimulants, tout en permettant de progresser rapidement.
+
+Le lien de la vidéo : https://we.tl/t-BtmpRrpI5E
+
+Le lien du dossier technique : 
+
+L’image au format PNG ou JPG : 
+
+La présentation au format PDF : 
+
+Le commentaire de l’enseignant : 

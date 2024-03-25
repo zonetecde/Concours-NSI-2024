@@ -20,13 +20,12 @@ SCREEN_HEIGHT = desktopSize[0][1]
 
 class Maze:
     """
-    Classe permettant de récupérer le niveau 
+    Classe permettant de gérer les différents niveaux du labyrinthe
     """
     def __init__(self):
         self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
-        #Savoir si le niveau a commencer ou non
-        self.start = False
-        self.spawn = ()
+        self.start = False # Permet de savoir si le niveau a commencé ou non
+        self.spawn = () # Position de départ du curseur
 
         #Pour lvl4
         self.x_lvl4 = SCREEN_WIDTH * (160/1280)
@@ -49,7 +48,7 @@ class Maze:
         self.y_Sreal = SCREEN_HEIGHT * (250/720)
         self.y_Smove = SCREEN_HEIGHT * (350/720)
         
-        self.x_Mmove = SCREEN_WIDTH * (450/1280)
+        self.x_Mmove = SCREEN_WIDTH * (465/1280)
         self.y_Mappear = SCREEN_HEIGHT * (260/720)
 
         self.x_Pappear = SCREEN_WIDTH * (750/1280)
@@ -57,7 +56,30 @@ class Maze:
 
         self.y_realK = SCREEN_HEIGHT * (325/720)
 
-    def start_maze(self):
+    def start_maze(self, langue = "fr"):
+        """
+        Fonction permettant de lancer le labyrinthe
+
+        Elle fait, en boucle, les actions suivantes :
+        - Initialisation de Pygame
+
+        - Boucle principale
+            > Initialisation des dimensions de l'écran
+            > Initialisation des variables de la souris
+            > Initialisation des variables de victoire
+            > Initialisation des niveaux
+
+            > Pour chaque niveau
+                - Affichage des rectangles (murs, chemins, etc.)
+                - Affichage du début et de la fin du labyrinthe
+                - Initialisation des carrés de début et fin
+                - Initialisation du curseur
+                - Boucle de vérification du niveau
+                - Condition de victoire
+                - Condition de téléportation
+                - Condition de mouvement
+        """
+
         # Initialize Pygame
         pygame.init()
         pygame.mixer.init()
@@ -69,12 +91,10 @@ class Maze:
 
         # Initialize the screen
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN) # Mode plein écran
-        pygame.display.set_caption("Scary maze or not?")
+        pygame.display.set_caption("SM")
 
 
         screen.fill((0, 0, 0))
-
-        
 
         #Position utilisable
         x = SCREEN_WIDTH * (50/1280)
@@ -97,36 +117,35 @@ class Maze:
         #Total Timer
         all_timer = 0
 
-        #for lvl4
+        # pour le lvl4
         couleur_rect_inv = 0
         sfx = False
 
-        #for lvl5
+        # pour le lvl5
         position = "right"
         
-        
-        #for lvl6
+        # pour le lvl6
         position1_lvl6 = "up"
         position2_lvl6 = "down"
         
-        #for lvl7
+        # pour le lvl7
         couleur_rect_invi = 0
         
         couleur_rect_fake = 255
 
-        #for lvl8
+        # pour le lvl8
         couleur_fin = 0
         couleur_rect_invicible = 0
-        song_troll = False
+        song_t = False
 
 
-        #for lvl9
+        # pour le lvl9
         trap_color = 0
         timeTick = pygame.time.get_ticks()
         waitTime = 1000 #ms
         position_lvl9 = "up"
 
-        #for lvl10
+        # pour le lvl10
 
         color_fake_S = 255
         positionS = "up"
@@ -143,8 +162,8 @@ class Maze:
         color_end1K = 255
         color_end2K = 0
         color_real_endK = 0
-        song_troll1 = False
-        song_troll2 = False
+        song_1 = False
+        song_2 = False
         song_egg = False
         color_temp1 = 0
         color_temp2 = 255
@@ -153,7 +172,7 @@ class Maze:
         song_switch2 = False
 
 
-        #for lvl11
+        # pour le lvl11
         texte_write = False
 
         # Main loop
@@ -213,8 +232,7 @@ class Maze:
             #Niveau 1
             if niveau == 1:
                 ractangle = (x, y, SCREEN_WIDTH/2, SCREEN_HEIGHT * 0.2)
-                
-                # Stop the song to be played only once
+                       
                 song_played = False
                 #Arrière plan
                 screen.fill((0, 0, 0))
@@ -683,11 +701,11 @@ class Maze:
                     total_time = str((end_tick - starting_tick)/1000)[0:4]
                 #Si on est dans le trigger le rectangle apparait
                 if fake_fin_rect.collidepoint(pygame.mouse.get_pos()):
-                    if song_troll == False:
+                    if song_t == False:
                         sound_mana.play('giggle')
                         couleur_rect_invicible = 255
                         couleur_fin = 255
-                        song_troll = True
+                        song_t = True
                         self.spawn = fake_fin
                         self.x_lvl8 = SCREEN_WIDTH * (305/1280)
                         rect_inv.move(self.x_lvl8, SCREEN_HEIGHT * (10/720))
@@ -1008,22 +1026,22 @@ class Maze:
 
 
                 if fake_end1.collidepoint(pygame.mouse.get_pos()):
-                    if not song_troll1:
+                    if not song_1:
                         sound_mana.play('giggle')
                         color_end1K = 0
                         color_end2K = 255
-                        song_troll1 = True
+                        song_1 = True
                         color_temp1 = 255
                         color_temp2 = 0
 
                 if fake_end2.collidepoint(pygame.mouse.get_pos()):
-                    if not song_troll2 and song_troll1:
+                    if not song_2 and song_1:
                         sound_mana.play('giggle')
                         self.y_realK = SCREEN_HEIGHT * (320/720)
                         color_realK = 255
                         color_real_endK = 255
                         color_end2K = 0
-                        song_troll2 = True
+                        song_2 = True
                         color_temp2 = 255
                 
 
@@ -1049,23 +1067,22 @@ class Maze:
 
                         if i == 0:
                             # Texte congrats
-                            congrat = font.render(("CONGRATULATION FOR BEATING THE GAME"), 1, (255, 255, 255))
+                            congrat = font.render(("Félicitations pour avoir terminé l'exercice !" if langue == "fr" else "Congratulations on finishing the exercise !"), 1, (255, 255, 255))
                             screen.blit(congrat, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT* (50/720)))
 
                         if i == 1:
-
                             # Texte lie
-                            start = font.render(("That means you don't have Parkinson anymore"), 1, (255, 255, 255))
+                            start = font.render(("Vous avez réussi à vous contrôler" if langue == "fr" else "You've managed to control yourself"), 1, (255, 255, 255))
                             screen.blit(start, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT* (150/720)))
                         
                         if i == 2:
                             # Texte correction 
                             font2 = pygame.font.SysFont("monospace", 35, bold=True, italic=False)
-                            correct = font2.render(("(well it can't vanish)"), 1, (255, 255, 255))
-                            screen.blit(correct, (SCREEN_WIDTH * (820/1280), SCREEN_HEIGHT* (190/720)))
+                            correct = font2.render(("C'est un début," if langue == "fr" else "It's a start"), 1, (255, 255, 255))
+                            screen.blit(correct, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT* (200/720)))
                             # Texte proud
-                            texte = font.render(("But at least you practised and it's a start"), 1, (255, 255, 255))
-                            screen.blit(texte, (SCREEN_WIDTH * (10/1280), SCREEN_HEIGHT * (250/720)))
+                            texte = font.render(("Mais le plus important est que vous vous êtes entraîné" if langue == "fr" else "But the important thing is that you've been practicing"), 1, (255, 255, 255))
+                            screen.blit(texte, (SCREEN_WIDTH * (20/1280), SCREEN_HEIGHT * (250/720)))
 
                         pygame.display.flip()
                         pygame.time.delay(1000)
@@ -1074,22 +1091,21 @@ class Maze:
                     for j in range(0,1):
                         if j == 0:
                             # Texte time + tryagain
-                            finaltime = font.render(("Your final time is : " + str(all_timer)), 1, (255, 255, 255))
+                            finaltime = font.render(("Votre temps final est : " + str(all_timer) if langue == "fr" else "Your final time is : " + str(all_timer)), 1, (255, 255, 255))
                             screen.blit(finaltime, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (520/720)))
-                            tryagain = font.render(("Try to do better next time ;)"), 1, (255, 255, 255))
+                            tryagain = font.render(("Améliorez-vous encore plus la prochaine fois !" if langue == "fr" else "Improve yourself even more next time !"), 1, (255, 255, 255))
                             screen.blit(tryagain, (SCREEN_WIDTH * (120/1280), SCREEN_HEIGHT * (580/720)))
                         
                         pygame.display.flip()
-                        pygame.time.delay(5000)
+                        pygame.time.delay(8000)
 
                     texte_write = True
-            
+
                 if texte_write:
                     screen.fill((0, 0, 0))
                     screen.blit(screen, (0, 0))
-                    end = font.render(("Press ESCAPE to get out of here."), 1, (255, 255, 255))
+                    end = font.render(("Appuyez sur ESC pour retourner au menu" if langue == "fr" else "Press ESC to return to the menu"), 1, (255, 255, 255))
                     screen.blit(end, (SCREEN_WIDTH * (160/1280), SCREEN_HEIGHT * (310/720)))
-            
 
             
 

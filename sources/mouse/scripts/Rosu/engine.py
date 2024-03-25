@@ -11,7 +11,14 @@ from storage import Niveau, niveaux
 from sauvegarde import Sauvegarde
 
 class Engine:
+    """ Classe permettant de lancer un niveau de l'exercice ROSU!
+    """
     def __init__(self, langue) -> None:
+        """Constructeur de la classe Engine
+
+        Args:
+            langue (str): La langue utilisée pour l'affichage des textes. Peut être "fr" ou "en".
+        """
         self.langue = langue
 
     try:
@@ -20,6 +27,18 @@ class Engine:
 
         def start_level(self, niveau: Niveau):
             """ Méthode permettant de lancer un niveau de l'exercice ROSU!
+
+            Args:
+                niveau (Niveau): Le niveau à lancer.
+                
+            Execute dans l'ordre :
+            - Affichage du fond
+            - Lancement de la musique
+                - Affichage des cercles en fonction du temps
+                - Vérification des clics
+                - Affichage des erreurs
+            - Affichage du score
+            - Enregistrement du score
             """
             TEXT_BACKGROUND_COLOR = (169, 191, 250)
             
@@ -162,7 +181,7 @@ class Engine:
                                 renderMistake = True
                                 playerMiss += 1
                                 multiplicator = 1
-                        #Si on appuie sur échappe on quitte le jeu
+                        #Si on appuie sur échap on quitte le jeu
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             pygame.mixer.stop()
@@ -220,7 +239,7 @@ class Engine:
                     #Retour possible et son rectangle
                     font2 = pygame.font.Font(Engine.parent_dir + '/fonts/Cabin-Regular.ttf', 40)
                     pygame.draw.rect(screen, TEXT_BACKGROUND_COLOR,(190, SCREEN_HEIGHT * 0.90 - 10, 860, 100), 0, 10, 10, 10, 10, 10)
-                    textLabel = font2.render(str("Press \"escape\" to get back to the menu.") if self.langue == 'en' else str("Appuyez sur \"échappe\" pour revenir au menu."), 1, BLACK)
+                    textLabel = font2.render(str("Press \"escape\" to get back to the menu.") if self.langue == 'en' else str("Appuyez sur \"échap\" pour revenir au menu."), 1, BLACK)
                     screen.blit(textLabel, (200, SCREEN_HEIGHT * 0.90))
                     
                     #Enregistrement du score et remplacement si il est meilleur

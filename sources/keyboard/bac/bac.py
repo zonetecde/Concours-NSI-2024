@@ -93,25 +93,25 @@ class Bac:
         """
         self.connexion.close()
 
-    
     def verifier_mot(self, reponses, lettre: str):
         """Vérifie si les réponses données par le joueur sont correctes.
 
         Args:
             reponses (list): Liste des réponses données par le joueur.
-                             Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
+                                Exemple : [("Animaux", "éléphant"), ("Fruits et légumes", "épinard"), ("Pays", "Paris")]
             lettre (str): La lettre
 
         Returns:
             list: Liste des réponses correctes et incorrectes.
             Exemple : [True, False, False] 
         """
+        assert len(reponses) > 0, "Il faut au moins une réponse"
+
         lettre = lettre.upper()
         list_rep = []
 
         for theme, reponse in reponses:
             clean_rep = self.clean_mot(reponse)
-
 
             if len(clean_rep) > 0 and clean_rep[0] == lettre.lower():
                 resultat = self.executer_sql(f"SELECT COUNT(*) FROM mots WHERE theme = '{theme}' AND mot_clean = '{clean_rep}' AND lettre = '{lettre}'")[0][0]
@@ -138,6 +138,8 @@ class Bac:
         """
         Renvoie les lettres qui ont des mots pour tout les themes
         """
+        assert len(themes) > 0, "Il faut au moins un thème"
+
         alphabet = [*"ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
         lettres_valides = []
         for lettre in alphabet:
@@ -164,7 +166,6 @@ class Bac:
         themes = self.executer_sql("SELECT DISTINCT theme FROM mots")
         return [theme[0] for theme in themes]
                     
-
 # =====================================
 # Programme principal 
 # =====================================

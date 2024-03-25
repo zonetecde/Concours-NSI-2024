@@ -134,6 +134,8 @@ class Stenographie:
         """Renvoie une page aléatoire de voxforge.org
         Entre 1 et 76
         """
+        assert langue in ["fr", "en", "sq", "nl", "de", "he", "el", "it", "pt", "ru", "es", "tr"], "La langue donnée n'est pas supportée"
+        
         base_url = "https://www.voxforge.org/home/downloads/speech/"
         
         max_page = 1

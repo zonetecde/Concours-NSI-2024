@@ -4,12 +4,12 @@ from time import sleep
 class Reaction:
     """Classe permettant de gérer l'exercice "Réaction"
     """
-    reactions = []
+    reactions = [] # Contient les reactions en str
 
-    ACCENTS = "éèàùçê"
-    MAJUSCULES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    SPECIAUX = ".,;:!?$%&()-_@"
-    MINUSCULES = "abcdefghijklmnopqrstuvwxyz"
+    ACCENTS = "éèàùçê" # Liste des accents
+    MAJUSCULES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" # Liste des majuscules
+    SPECIAUX = ".,;:!?$%&()-_@" # Liste des caractères speciaux
+    MINUSCULES = "abcdefghijklmnopqrstuvwxyz" # Liste des minuscules
 
     @staticmethod
     def init_reactions(autoriser_accent, autoriser_maj, autoriser_speciaux, nombre):
@@ -27,6 +27,8 @@ class Reaction:
 
         Exemple d'output : [(500, "h"), (1900, "zoi"), (4100, "vx"), (700, "lOi")]
         """
+        assert nombre > 0, "Le nombre de réactions doit être supérieur à 0"
+
         # [*str] transforme str en une liste de chaine de caractère
         alphabet_maj = [*Reaction.MAJUSCULES]
         accents = [*(Reaction.ACCENTS * 2)] # x2 pour qu'ils y soient plus souvent
@@ -43,7 +45,7 @@ class Reaction:
 
         liste = []
 
-        for i in range(nombre):
+        for _ in range(nombre):
             # entre 1,5 secondes et 7 secondes
             temps_aleatoire = random.randint(1500, 7000)
 
@@ -61,13 +63,15 @@ class Reaction:
         Reaction.reactions = liste
     
     @staticmethod
-    def lancer_reaction(self, index, api):
+    def lancer_reaction(index, api):
         """Lance la réaction à l'index donné
 
         Args:
             index (int): L'index de la réaction à lancer
             api (Api): L'API pour communiquer avec le site
         """
+        assert index < len(Reaction.reactions), "L'index donné est supérieur au nombre de réactions"
+
         # Récupère la réaction à l'index donné sous forme de tuple (temps, chaine)
         reaction = Reaction.reactions[index]
 
@@ -83,8 +87,11 @@ class Reaction:
 
         Args:
             data (list): Les données de l'utilisateur : 
-                         Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
+                            Une liste au format [[reaction, temps], [reaction, temps], [reaction, temps], ...]
         """
+        assert len(data) > 0, "Il faut au moins une réaction"
+        assert all(isinstance(reaction, list) and len(reaction) == 2 for reaction in data), "Les données doivent être sous forme de liste de listes"
+
         score = 0
         temps_moyen_difficulte = 0
         temps_moyen_total = 0

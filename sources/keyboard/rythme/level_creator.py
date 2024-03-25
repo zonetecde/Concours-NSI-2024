@@ -9,8 +9,8 @@ from pynput import keyboard # pip install pynput
 
 class KeyCounter:
     def __init__(self, register_key):
-        self.current_key = None
-        self.register_key = register_key
+        self.current_key = None # la lettre actuellement pressée
+        self.register_key = register_key 
 
     def key_pressed(self, key):
         """Appelée lorsque l'utilisateur appuie sur une touche	

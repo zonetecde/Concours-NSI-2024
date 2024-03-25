@@ -62,7 +62,7 @@ class Api:
             Rosu.start_rosu(self.langue)
         elif nom == "SM":
             maze = SM()
-            maze.start()
+            maze.start(self.langue)
         elif nom == "VW":
             vw = VW()
             vw.start()
@@ -82,7 +82,7 @@ class Api:
             data (dict): Les données de l'utilisateur : 
                          le temps mis, le nombre d'erreurs et le nombre de caractères total
         """
-        return TypeScript.calculer_score_typescript(self, data)
+        return TypeScript.calculer_score_typescript(data)
     
     def verifier_mot_bac(self, reponses, lettre):
         """Vérifie si les réponses données par le joueur sont correctes dans l'exercice 'Bac'
@@ -130,7 +130,7 @@ class Api:
         Args:
             index (int): L'index de la réaction à lancer
         """
-        return Reaction.lancer_reaction(self, index, self)
+        return Reaction.lancer_reaction(index, self)
     
     def calculer_score_reaction(self, data):
         """Calcule le score de l'exercice 'Réaction' à partir des données de l'utilisateur

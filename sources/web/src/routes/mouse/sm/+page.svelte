@@ -31,9 +31,9 @@
 </script>
 
 <div class="flex pt-10 px-10 h-screen justify-center flex-col items-center w-screen">
-	<h1 class="font-bold text-3xl mb-6 -mt-3">Scary Maze</h1>
+	<h1 class="font-bold text-3xl mb-6 -mt-3">{$langue === 'fr' ? 'Aide contre Parkinson' : 'Parkinson Eradicator'}</h1>
 
-	<Exercice image="/mouse/sm.png" nom="Scary Maze" handleClick={() => Api.openPythonProject('SM')} />
+	<Exercice image="/mouse/sm.png" nom={$langue === 'fr' ? 'Aide contre Parkinson' : 'Parkinson Eradicator'} handleClick={() => Api.openPythonProject('SM')} />
 
 	<div class="text-center">
 		<p class="mt-8 text-xl mb-4">{$langue == 'fr' ? "Règles de l'exercice :" : 'Rules of the exercise :'}</p>
