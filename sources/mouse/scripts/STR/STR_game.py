@@ -196,7 +196,7 @@ def CTD_MainButton_Clicked():
 
 
 ### OVERALL PARAMETERS ### IMP MAX!
-OVERALL_difficulty = 20 # Ranges from 1 to 20
+OVERALL_difficulty = 3 # Ranges from 1 to 20
 ### 1 is VERY VERY VERY easy, 20 is VERY VERY VERY hard
 ### Min rcmd is 5, max rcmd is 15
 OVERALL_days = 1
@@ -208,7 +208,7 @@ OVERALL_CORE_MELTDOWN_TIME_LEFT = 120000 # 2 minutes
 moduleFlashingLightTime = 0
 
 ### INITIALIZING CORE PARAMETERS
-core_temperature = 3900
+core_temperature = 0
 core_max_temperature = 4000
 core_energy_demand = 300
 core_energy_demand_list = [300, 450, 600, 900, 1200, 1550, 2000]
