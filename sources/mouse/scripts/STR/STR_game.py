@@ -8,6 +8,32 @@ from os.path import exists
 # Initialize Pygame
 pygame.init()
 
+# Initialize el pymixer boi
+pygame.mixer.init()
+backgroundAmbientChannel = pygame.mixer.Channel(0)
+alertsChannel = pygame.mixer.Channel(1)
+miscChannel = pygame.mixer.Channel(2)
+playerActionsChannel = pygame.mixer.Channel(3)
+
+# Initialize all audio files
+ambientLoop = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/coreLoopAmbient.wav")
+moduleClear = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/beepButtonPress.wav")
+coolantStartup = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/coolantStartupProtocolInitiated.wav")
+coreAtCriticalCut = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/coreAtCriticalCut.wav")
+coreMeltdownInTwoMinutes = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/CoreMeltdownSelfDestructSequenceInitiated.wav")
+playerClick = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/highPitchedBeep.wav")
+selfDestructInitiated = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/InstantMeltdownProtocolInitiated.wav")
+lockdown = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/Lockdown.wav")
+pbAlarm1 = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/pbAlarm1.wav")
+pbAlarm2 = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/pbAlarm2.wav")
+pbAlarm3 = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/pbAlarm3.wav")
+pbAlarm4 = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/pbAlarm4.wav")
+pbAlarm5 = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/pbAlarm5.wav")
+coreSafeguardNonFunctional = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/prepareForReactorCoreMeltdown.wav")
+safeModeDesactivated = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/SafeModeDesactivated.wav")
+coreOverheating = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/warningCoreOverheating.wav")
+finalExplosion = pygame.mixer.Sound("sources/mouse/scripts/STR/STR_ASSETS/finalExplosion.wav")
+
 # Screen dimension
 desktopSize = pygame.display.get_desktop_sizes()
 
@@ -30,6 +56,7 @@ temperatureBarLightsOn = 0
 temperatureBarColors = [(0, 95, 0), (89, 82, 0), (95, 0, 0)]
 
 buttonsList = []
+hoverList = []
 
 running = True
 
@@ -37,12 +64,6 @@ def create_layout():
     modulesCentralZone = pygame.draw.rect(screen, (135, 135, 135), (0, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT/2))
     modulesCentralZoneContour = pygame.draw.rect(screen, (125, 0, 0), (0, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT/2), 5)
     
-    modulesLeftZone = pygame.draw.rect(screen, (125, 125, 125), (0, SCREEN_HEIGHT * (5/36), SCREEN_WIDTH * 0.1875, SCREEN_HEIGHT * (13/36)))
-    modulesLeftZoneContour = pygame.draw.rect(screen, (0, 0, 125), (0, SCREEN_HEIGHT * (5/36), SCREEN_WIDTH * 0.1875, SCREEN_HEIGHT * (13/36)), 3)
-    
-    modulesRightZone = pygame.draw.rect(screen, (125, 125, 125), (SCREEN_WIDTH * (13/16), SCREEN_HEIGHT * (5/36), SCREEN_WIDTH * (3/16), SCREEN_HEIGHT * (13/36)))
-    modulesRightZoneContour = pygame.draw.rect(screen, (0, 0, 125), (SCREEN_WIDTH * (13/16), SCREEN_HEIGHT * (5/36), SCREEN_WIDTH * (3/16), SCREEN_HEIGHT * (13/36)), 3)
-
     temperatureBar = pygame.draw.rect(screen, (100, 100, 100), (SCREEN_WIDTH * (17/64), 0, SCREEN_WIDTH * (31/64), SCREEN_HEIGHT * (1 / 24)))
     temperatureBarContour = pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (17/64), 0, SCREEN_WIDTH * (31/64), SCREEN_HEIGHT * (1 / 24)), 3)
     
@@ -68,20 +89,19 @@ def create_layout():
     energyBar = pygame.draw.rect(screen, (25, 25, 25), (SCREEN_WIDTH * (207/512), SCREEN_HEIGHT * (65/144), SCREEN_WIDTH * (6/32), SCREEN_HEIGHT * (7/144)))
     energyBarContour = pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (207/512), SCREEN_HEIGHT * (65/144), SCREEN_WIDTH * (6/32), SCREEN_HEIGHT * (7/144)), 3)
     
-    reactorCore = pygame.draw.rect(screen, (185, 25, 25), (SCREEN_WIDTH * (27/64), SCREEN_HEIGHT * (1/9), SCREEN_WIDTH * (5/32), SCREEN_HEIGHT * (5/18)))
-    reactorCoreContour = pygame.draw.rect(screen, (255, 255, 255), (SCREEN_WIDTH * (27/64), SCREEN_HEIGHT * (1/9), SCREEN_WIDTH * (5/32), SCREEN_HEIGHT * (5/18)), 5)
-    
 
-def module_create_bounding_box(moduleName, posX, posY, sizeX, sizeY, moduleColor, moduleDangerLevel):
+def module_create_bounding_box(moduleName, posX, posY, sizeX, sizeY, moduleColor, moduleDangerLevel, hoverText = ""):
 
     pygame.draw.rect(screen, moduleColor, (posX, posY, sizeX, sizeY), 0, 1)
     pygame.draw.rect(screen, (85, 85, 85), (posX, posY, sizeX, sizeY), 2, 1)
     pygame.draw.rect(screen, (85, 85, 85), (posX + 5, posY + 5, sizeX - 10, 35))
+    
     pygame.draw.circle(screen, (50, 50, 50), (posX + sizeX - 23, posY + 23), 15)
     pygame.draw.circle(screen, (35, 35, 35), (posX + sizeX - 23, posY + 23), 15, 3)
     font = pygame.font.SysFont("monospace", 24)
     questionMark = font.render("?", 1, (255, 255, 255))
     screen.blit(questionMark, ((posX + sizeX - 30, posY + 10)))
+    hoverList.append((posX + sizeX - 23, posY + 23, hoverText))
     
     if moduleDangerLevel == 0:
         dangerDiodeColor = (0, 185, 0)
@@ -109,7 +129,7 @@ module_CTD_danger_level = 0
 module_CTD_PPT = 0.2
 module_CTD_TPT = 0.4
 module_CTD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
-module_CTD_lateness_MOE = 5000
+module_CTD_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_CTD_errored = False
 module_CTD_firstTickTrue = False
 ### ADDITIONAL PARAMETERS
@@ -161,8 +181,49 @@ def CTD_MainButton_Clicked():
 """
 
 
-### OVERALL PARAMETERS ###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### OVERALL PARAMETERS ### IMP MAX!
 OVERALL_difficulty = 20 # Ranges from 1 to 20
+### 1 is VERY VERY VERY easy, 20 is VERY VERY VERY hard
+### Min rcmd is 5, max rcmd is 15
+OVERALL_days = 1
+
+OVERALL_CORE_MELTDOWN_STARTED = False
+OVERALL_CORE_MELTDOWN_STARTTICK = None
+OVERALL_CORE_MELTDOWN_TIME_LEFT = 120000 # 2 minutes
+
+moduleFlashingLightTime = 0
+
+### INITIALIZING CORE PARAMETERS
+core_temperature = 3900
+core_max_temperature = 4000
+core_energy_demand = 300
+core_energy_demand_list = [300, 450, 600, 900, 1200, 1550, 2000]
+core_energy_provided = 0
+
+GAME_OVER = False
+
+
+
+
+
+
+
+
+
 
 
 
@@ -176,19 +237,19 @@ OVERALL_difficulty = 20 # Ranges from 1 to 20
 module_CTG_danger_level = 0
 module_CTG_PPT = 0.2
 module_CTG_TPT = 0.4
-module_CTG_randomNumberGiven = pygame.time.get_ticks() + random.randint(1, 3) * 20 * 1000 * (21 - OVERALL_difficulty)
-module_CTG_lateness_MOE = 5000
+module_CTG_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
+module_CTG_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_CTG_errored = False
 module_CTG_firstTickTrue = False
 ### ADDITIONAL PARAMETERS
 module_CTG_timesToClick = 0
 def reInit_Module_click_until_green():
     global module_CTG_randomNumberGiven
-    module_CTG_randomNumberGiven = pygame.time.get_ticks() + random.randint(1, 3) * 20 * 1000 * (21 - OVERALL_difficulty)
+    module_CTG_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
 def module_click_until_green():
     global core_temperature, core_energy_provided, enabled
     global module_CTG_danger_level, module_CTG_lateness_MOE, module_CTG_PPT, module_CTG_randomNumberGiven, module_CTG_TPT, module_CTG_firstTickTrue, module_CTG_timesToClick
-    module_create_bounding_box("Click until green", 0, SCREEN_HEIGHT * (3/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_CTG_danger_level)
+    module_create_bounding_box("Click until green", 0, SCREEN_HEIGHT * (3/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_CTG_danger_level, "The button will turn red. Press it until it gets back to green.")
     
     if module_CTG_randomNumberGiven < pygame.time.get_ticks() - module_CTG_lateness_MOE:
         module_CTG_danger_level = 2
@@ -252,7 +313,7 @@ module_TP_PPT = 0.2
 module_TP_TPT = 0.4
 module_TP_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
 module_TP_setTimeTick = pygame.time.get_ticks()
-module_TP_lateness_MOE = 5000
+module_TP_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_TP_errored = False
 module_TP_firstTickTrue = False
 ### RANDOMISATION PARAMETER
@@ -266,7 +327,7 @@ def reInit_Module_target_practice():
 def module_target_practice():
     global core_temperature, core_energy_provided
     global module_TP_danger_level, module_TP_lateness_MOE, module_TP_PPT, module_TP_randomNumberGiven, module_TP_TPT, module_TP_firstTickTrue, module_TP_timesToClick, module_TP_setTimeTick, module_TP_errored, module_TP_targetsList, module_TP_targetsClicked, module_TP_randomizationTick
-    module_create_bounding_box("Target practice", 0, SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (4/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_TP_danger_level)
+    module_create_bounding_box("Target practice", 0, SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (4/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_TP_danger_level, "Targets will appear. Shoot them as soon as you can.")
     
     # OPERATION METHOD
     # Red dots will appear, click them to make them disappear
@@ -276,7 +337,7 @@ def module_target_practice():
     interiorPannel = pygame.draw.rect(screen, (10, 10, 10), (SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (41/72), SCREEN_WIDTH * (15/64), SCREEN_HEIGHT * (1/6)), 0, 30)    
     interiorPannelContour = pygame.draw.rect(screen, (45, 45, 45), (SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (41/72), SCREEN_WIDTH * (15/64), SCREEN_HEIGHT * (1/6)), 3, 30)
     
-    tickDifference = int((module_TP_randomNumberGiven - module_TP_setTimeTick) // 4)
+    tickDifference = int((module_TP_randomNumberGiven - module_TP_setTimeTick) // 1.5)
     circlesToDraw = pygame.time.get_ticks() // tickDifference
     circlesToDraw -= module_TP_targetsClicked
     circlesDrawnNumber = len(module_TP_targetsList)
@@ -327,7 +388,7 @@ module_TETRIS_danger_level = 0
 module_TETRIS_PPT = 0.2
 module_TETRIS_TPT = 0.4
 module_TETRIS_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
-module_TETRIS_lateness_MOE = 5000
+module_TETRIS_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_TETRIS_errored = False
 module_TETRIS_firstTickTrue = False
 ### ADDITIONAL PARAMETERS
@@ -350,7 +411,7 @@ def reInit_Module_tetris():
 def module_tetris():
     global core_temperature, core_energy_provided
     global module_TETRIS_danger_level, module_TETRIS_lateness_MOE, module_TETRIS_PPT, module_TETRIS_randomNumberGiven, module_TETRIS_TPT, module_TETRIS_firstTickTrue, module_TETRIS_timesToClick, module_TETRIS_errored, module_TETRIS_attempts, module_TETRIS_attemptInProgress, module_TETRIS_bricksColor, module_TETRIS_gapPosition, module_TETRIS_movingBlockX, module_TETRIS_movingBlockY, module_TETRIS_movingBlockDelay, module_TETRIS_movingStage, module_TETRIS_timestamp, module_TETRIS_failure, module_TETRIS_failTime, module_TETRIS_movable, module_TETRIS_win
-    module_create_bounding_box("Tetris", SCREEN_WIDTH * (4/16), SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (2/4), (105, 10, 10), module_TETRIS_danger_level)
+    module_create_bounding_box("Tetris", SCREEN_WIDTH * (4/16), SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (2/4), (105, 10, 10), module_TETRIS_danger_level, "If there's a hole, there's a goal. Correctly place the tetris block.")
     
     if module_TETRIS_randomNumberGiven < pygame.time.get_ticks() - module_TETRIS_lateness_MOE and module_TETRIS_attempts > 3:
         module_TETRIS_danger_level = 2
@@ -370,6 +431,8 @@ def module_tetris():
     
     # OPERATION METHOD
     # Once the module is errored, a tetris game will start and you have to orient the block in the hole to clear all lines.
+    
+    pygame.draw.rect(screen, (75, 75, 75), (SCREEN_WIDTH * (4/16) + 10, SCREEN_HEIGHT * (5/8) - 4, SCREEN_WIDTH * (2/16) - 20, SCREEN_HEIGHT * (3/8) - 6), 0, 1)
     
     #Check if already errored, if not the initialize it
     if module_TETRIS_errored == True and module_TETRIS_firstTickTrue == False:
@@ -483,7 +546,7 @@ module_IP_danger_level = 0
 module_IP_PPT = 0.2
 module_IP_TPT = 0.4
 module_IP_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
-module_IP_lateness_MOE = 5000
+module_IP_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_IP_errored = False
 module_IP_firstTickTrue = False
 ### ADDITIONAL PARAMETERS
@@ -494,7 +557,7 @@ def reInit_Module_it_pops():
 def module_it_pops():
     global core_temperature, core_energy_provided
     global module_IP_danger_level, module_IP_lateness_MOE, module_IP_PPT, module_IP_randomNumberGiven, module_IP_TPT, module_IP_firstTickTrue, module_IP_timesToClick, module_IP_buttonsIndex
-    module_create_bounding_box("It pops", SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (3/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_IP_danger_level)
+    module_create_bounding_box("It pops", SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (3/4), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (1/4), (105, 10, 10), module_IP_danger_level, "Click each button until they are the same color.")
     
     if module_IP_randomNumberGiven < pygame.time.get_ticks() - module_IP_lateness_MOE:
         module_IP_danger_level = 2
@@ -604,7 +667,7 @@ module_CTD_danger_level = 0
 module_CTD_PPT = 0.2
 module_CTD_TPT = 0.4
 module_CTD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
-module_CTD_lateness_MOE = 5000
+module_CTD_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_CTD_errored = False
 module_CTD_firstTickTrue = False
 ### ADDITIONAL PARAMETERS
@@ -627,7 +690,7 @@ def reInit_Module_connect_the_dots():
 def module_connect_the_dots():
     global core_temperature, core_energy_provided
     global module_CTD_danger_level, module_CTD_lateness_MOE, module_CTD_PPT, module_CTD_randomNumberGiven, module_CTD_TPT, module_CTD_firstTickTrue, module_CTD_timesToClick, module_CTD_patternChosen, module_CTD_patternProgressionIndex, module_CTD_patternsList
-    module_create_bounding_box("Connect the dots", SCREEN_WIDTH * (3/4), SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (1/4), SCREEN_HEIGHT * (2/4), (105, 10, 10), module_CTD_danger_level)
+    module_create_bounding_box("Connect the dots", SCREEN_WIDTH * (3/4), SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (1/4), SCREEN_HEIGHT * (2/4), (105, 10, 10), module_CTD_danger_level, "Click on the dots do draw a shape and clear the module.")
     
     if module_CTD_randomNumberGiven < pygame.time.get_ticks() - module_CTD_lateness_MOE:
         module_CTD_danger_level = 2
@@ -692,19 +755,19 @@ module_CD_danger_level = 0
 module_CD_PPT = 0.2
 module_CD_TPT = 0.4
 module_CD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
-module_CD_lateness_MOE = 5000
+module_CD_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_CD_errored = False
 module_CD_firstTickTrue = False
 ### ADDITIONAL PARAMETERS
 module_CD_setCode = None
-module_CD_inputCode = None
+module_CD_inputCode = ""
 def reInit_Module_code():
     global module_CD_randomNumberGiven
     module_CD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
 def module_code():
     global core_temperature, core_energy_provided
-    global module_CD_danger_level, module_CD_lateness_MOE, module_CD_PPT, module_CD_randomNumberGiven, module_CD_TPT, module_CD_firstTickTrue, module_CD_timesToClick
-    module_create_bounding_box("Code", SCREEN_WIDTH * (10/16), SCREEN_HEIGHT * (5/8), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (3/8), (105, 10, 10), module_CD_danger_level)
+    global module_CD_danger_level, module_CD_lateness_MOE, module_CD_PPT, module_CD_randomNumberGiven, module_CD_TPT, module_CD_firstTickTrue, module_CD_timesToClick, module_CD_setCode, module_CD_inputCode
+    module_create_bounding_box("Code", SCREEN_WIDTH * (10/16), SCREEN_HEIGHT * (5/8), SCREEN_WIDTH * (2/16), SCREEN_HEIGHT * (3/8), (105, 10, 10), module_CD_danger_level, "Input the correct code to clear the module.")
     
     if module_CD_randomNumberGiven < pygame.time.get_ticks() - module_CD_lateness_MOE:
         module_CD_danger_level = 2
@@ -725,18 +788,60 @@ def module_code():
     # OPERATION METHOD
     # A code will be shown. Input it to reset the module.
     
+    pygame.draw.rect(screen, (45, 45, 45), (SCREEN_WIDTH * (10/16) + 10, SCREEN_HEIGHT * (5/8) + 55, SCREEN_WIDTH * (2/16) - 16, SCREEN_HEIGHT * (3/8) - 65), 0, 2)
+    pygame.draw.rect(screen, (95, 95, 95), (SCREEN_WIDTH * (10/16) + 10, SCREEN_HEIGHT * (5/8) + 55, SCREEN_WIDTH * (2/16) - 16, SCREEN_HEIGHT * (3/8) - 65), 3, 2)
+    
     #Check if already errored, if not the initialize it
     if module_CD_errored == True and module_CD_firstTickTrue == False:
         #Init danger parameters
         module_CD_setCode = random.randint(1000, 9999)
-        module_CD_inputCode = None
+        module_CD_inputCode = ""
         #Set init danger as DONE
         module_CD_firstTickTrue = True
-        
-    pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (10/16) + 10, SCREEN_HEIGHT * (6/8) + 55, SCREEN_WIDTH * (2/16) / 3 - 20, SCREEN_HEIGHT * (2/8) / 3 - 65), 0)
     
-    #button = pygame.draw.circle(screen, buttonColor, (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50)
-    #buttonsList.append(("CD_MainButton_Clicked", "Circle", (SCREEN_WIDTH * (2/16) / 2, SCREEN_HEIGHT * (3/4) + SCREEN_HEIGHT * (1/4) / 2 + 25), 50))
+    for height in range(4):
+        for width in range (3):
+            button = pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (10/16) + 13 + width * (SCREEN_HEIGHT * (2/8) / 3 - 12.5) , SCREEN_HEIGHT * (6/8) + 45 + height * (SCREEN_WIDTH * (2/16) / 3 - 21), SCREEN_WIDTH * (2/16) / 3 - 10, SCREEN_HEIGHT * (2/8) / 4 - 20), 0, 2)
+            button = pygame.draw.rect(screen, (135, 135, 135), (SCREEN_WIDTH * (10/16) + 13 + width * (SCREEN_HEIGHT * (2/8) / 3 - 12.5) , SCREEN_HEIGHT * (6/8) + 45 + height * (SCREEN_WIDTH * (2/16) / 3 - 21), SCREEN_WIDTH * (2/16) / 3 - 10, SCREEN_HEIGHT * (2/8) / 4 - 20), 2, 2)
+            buttonsList.append((str("CD_" + str(width + 3 * height + 1) + "_Clicked"), "Rectangle", (SCREEN_WIDTH * (10/16) + 13 + width * (SCREEN_HEIGHT * (2/8) / 3 - 12.5) , SCREEN_HEIGHT * (6/8) + 45 + height * (SCREEN_WIDTH * (2/16) / 3 - 21), SCREEN_WIDTH * (2/16) / 3 - 10, SCREEN_HEIGHT * (2/8) / 4 - 20)))
+            
+            font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 20)
+            if width + 3 * height + 1 == 10:
+                text = font.render(str("X"), 1, (180, 15, 15))
+            elif width + 3 * height + 1 == 11:
+                text = font.render(str("0"), 1, (180, 15, 15))
+            elif width + 3 * height + 1 == 12:
+                text = font.render(str("OK"), 1, (180, 15, 15))
+            else:
+                text = font.render(str(width + 3 * height + 1), 1, (180, 15, 15))
+            textRect = text.get_rect()
+            textRect.center = (SCREEN_WIDTH * (10/16) + 35 + width * (SCREEN_HEIGHT * (2/8) / 3 - 12.5) , SCREEN_HEIGHT * (6/8) + 57.5 + height * (SCREEN_WIDTH * (2/16) / 3 - 21))
+            screen.blit(text, textRect)
+            
+    pygame.draw.rect(screen, ( 35,  35,  35), (SCREEN_WIDTH * (10/16) + 12.5, SCREEN_HEIGHT * (45/64) + 2, SCREEN_WIDTH * (2/16) - 20, SCREEN_HEIGHT * (2/16) - 55), 0, 2)
+    pygame.draw.rect(screen, (135, 135, 135), (SCREEN_WIDTH * (10/16) + 12.5, SCREEN_HEIGHT * (45/64) + 2, SCREEN_WIDTH * (2/16) - 20, SCREEN_HEIGHT * (2/16) - 55), 2, 2)
+    
+    font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 35)
+    if module_CD_errored == True:
+        text = font.render(str(module_CD_setCode), 1, (180, 15, 15))
+    else:
+        text = font.render("", 1, (180, 15, 15))
+    textRect = text.get_rect()
+    textRect.center = (SCREEN_WIDTH * (21.75/32) + 12.5, SCREEN_HEIGHT * (46.5/64) + 2)
+    screen.blit(text, textRect)
+    
+    pygame.draw.rect(screen, ( 35,  35,  35), (SCREEN_WIDTH * (10/16) + 12.5, SCREEN_HEIGHT * (96.5/128) + 2, SCREEN_WIDTH * (2/16) - 20, SCREEN_HEIGHT * (2/16) - 55), 0, 2)
+    pygame.draw.rect(screen, (135, 135, 135), (SCREEN_WIDTH * (10/16) + 12.5, SCREEN_HEIGHT * (96.5/128) + 2, SCREEN_WIDTH * (2/16) - 20, SCREEN_HEIGHT * (2/16) - 55), 2, 2)
+    
+    font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 35)
+    if module_CD_errored == True:
+        text = font.render(str(module_CD_inputCode), 1, (180, 15, 15))
+    else:
+        text = font.render("", 1, (180, 15, 15))
+    textRect = text.get_rect()
+    textRect.center = (SCREEN_WIDTH * (21.75/32) + 12.5, SCREEN_HEIGHT * (99/128) + 2)
+    screen.blit(text, textRect)   
+      
 ### Functions for that module
 def CD_1_Clicked():
     global module_CD_inputCode
@@ -774,15 +879,15 @@ def CD_9_Clicked():
     global module_CD_inputCode
     if len(module_CD_inputCode) < 4:
         module_CD_inputCode += "9"
-def CD_0_Clicked():
+def CD_11_Clicked():
     global module_CD_inputCode
     if len(module_CD_inputCode) < 4:
         module_CD_inputCode += "0"
-def CD_back_Clicked():
+def CD_10_Clicked():
     global module_CD_inputCode
     if len(module_CD_inputCode) > 0:
         module_CD_inputCode = module_CD_inputCode[:-1]
-def CD_enter_Clicked():
+def CD_12_Clicked():
     global module_CD_inputCode, module_CD_setCode, module_CD_errored, module_CD_firstTickTrue
     if module_CD_inputCode == str(module_CD_setCode):
         module_CD_errored = False
@@ -796,6 +901,240 @@ def CD_enter_Clicked():
     
     
     
+    
+### MODULE COOL IT DOWN
+### INITIAL MODULE PARAMETERS (PPT = PRODUCTION PER TICK; TPT = TEMPERATURE PER TICK)
+module_CID_danger_level = 0
+module_CID_PPT = 0.2
+module_CID_TPT = 0.4
+module_CID_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
+module_CID_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
+module_CID_errored = False
+module_CID_firstTickTrue = False
+### ADDITIONAL PARAMETERS
+module_CID_setTimeTick = pygame.time.get_ticks()
+module_CID_timesClicked = 0
+def change_speed_module_cool_it_down():
+    pass
+def module_cool_it_down():
+    global core_temperature, core_energy_provided
+    global module_CID_danger_level, module_CID_lateness_MOE, module_CID_PPT, module_CID_randomNumberGiven, module_CID_TPT, module_CID_firstTickTrue, module_CID_timesToClick
+    global module_CID_setTimeTick, module_CID_timesClicked
+    module_create_bounding_box("Cool It Down", SCREEN_WIDTH * (6/16), SCREEN_HEIGHT * (2/4), SCREEN_WIDTH * (6/16), SCREEN_HEIGHT * (1/8), (105, 10, 10), module_CID_danger_level, "Press the blue button so that the bar stay at a safe level.")
+    
+    # OPERATION METHOD
+    # The bar will slowly increase, press a button repeatedly to decrease that bar progress.
+        
+    tickDifference = int((module_CID_randomNumberGiven - module_CID_setTimeTick) // 4)
+    barsToDraw = pygame.time.get_ticks() // tickDifference
+    barsToDraw -= module_CID_timesClicked
+    
+    pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (2/4) + 50, SCREEN_WIDTH * (5/16) - 30, SCREEN_HEIGHT * (1 / 24)), 0, 2)
+    pygame.draw.rect(screen, (35, 35, 35), (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (2/4) + 50, SCREEN_WIDTH * (5/16) - 30, SCREEN_HEIGHT * (1 / 24)), 2, 2)
+    
+    barX = SCREEN_WIDTH * (6/16) + 20
+    for bar in range(30):
+        barColorIndex = bar // 10
+        barColor = temperatureBarColors[barColorIndex]
+        colorR = barColor[0]
+        colorG = barColor[1]
+        colorB = barColor[2]
+        if bar < barsToDraw:
+            if barColorIndex == 0:
+                colorG += 140
+            elif barColorIndex == 1:
+                colorR += 140
+                colorG += 140
+            else:
+                colorR += 140
+        barColor = (colorR, colorG, colorB)
+        tempIndicator = pygame.draw.rect(screen, barColor, (barX, SCREEN_HEIGHT * (2/4) + 55, 5, SCREEN_HEIGHT * (1 / 24) - 10), 0, 2)
+        barX += (SCREEN_WIDTH * (6/16)) / 40 - 0.1
+    
+    if barsToDraw >= 20:
+        module_CID_danger_level = 2
+        module_CID_errored = True
+    elif barsToDraw >= 10:
+        module_CID_danger_level = 1
+        module_CID_errored = True
+    else:
+        module_CID_danger_level = 0
+        module_CID_errored = False
+        
+    if module_CID_danger_level == 1:
+        core_temperature += module_CID_TPT
+    elif module_CID_danger_level == 2:
+        core_temperature += 2 * module_CID_TPT
+    core_energy_provided += module_CID_PPT
+    
+    button = pygame.draw.rect(screen, (55, 55, 135), (SCREEN_WIDTH * (11/16), SCREEN_HEIGHT * (2/4) + 50, SCREEN_WIDTH * (1/16) - 20, SCREEN_HEIGHT * (1 / 24)), 0, 2)
+    pygame.draw.rect(screen, (35, 35, 135), (SCREEN_WIDTH * (11/16), SCREEN_HEIGHT * (2/4) + 50, SCREEN_WIDTH * (1/16) - 20, SCREEN_HEIGHT * (1 / 24)), 2, 2)
+    buttonsList.append(("CID_MainButton_Clicked", "Rectangle", (SCREEN_WIDTH * (11/16), SCREEN_HEIGHT * (2/4) + 50, SCREEN_WIDTH * (1/16) - 20, SCREEN_HEIGHT * (1 / 24))))
+### Functions for that module
+def CID_MainButton_Clicked():
+        global module_CID_timesClicked
+        tickDifference = int((module_CID_randomNumberGiven - module_CID_setTimeTick) // 4)
+        barsToDraw = pygame.time.get_ticks() // tickDifference
+        barsToDraw -= module_CID_timesClicked
+        if barsToDraw > 0:
+            module_CID_timesClicked += 1
+            
+            
+            
+            
+
+
+
+
+
+coreColorR = 255
+coreColorG = 0
+coreColorB = 0
+coreColor = (coreColorR, coreColorG, coreColorB)
+def draw_core():
+    global coreColorR, coreColorG, coreColorB
+    if coreColorG < 255 and coreColorR == 255 and coreColorB == 0:
+        coreColorG += 5
+    elif coreColorG == 255 and coreColorR > 0 and coreColorB == 0:
+        coreColorR -= 5
+    elif coreColorR == 0 and coreColorG == 255 and coreColorB < 255:
+        coreColorB += 5
+    elif coreColorR == 0 and coreColorG > 0 and coreColorB == 255:
+        coreColorG -= 5
+    elif coreColorR < 255 and coreColorG == 0 and coreColorB == 255:
+        coreColorR += 5
+    elif coreColorR == 255 and coreColorG == 0 and coreColorB > 0:
+        coreColorB -= 5
+            
+    coreColor = (coreColorR, coreColorG, coreColorB)
+    pygame.draw.circle(screen, coreColor, (SCREEN_WIDTH * (1/2) - 2.5, SCREEN_HEIGHT * (1/4)), 100, 0)
+    
+    
+    
+    
+              
+            
+            
+            
+            
+backgroundAmbientChannel.play(ambientLoop, loops = -1)
+
+coolStrtupAlreadyPlayed = False
+firstAlarmPlayed = False
+firstOverheatWarnPlayed = False
+thirdAlarmPlayed = False
+coreCritCutPlayed = False
+fifthAlarmPlayed = False
+fourthAlarmPlayed = False
+meltdownAnnouncementPlayed = False
+beforeLastAnnouncementPlayed = False
+lastAnnouncementPlayed = False
+finalPlayed = False
+### MODULE CENTRAL UNIT
+def module_central_unit(previousTemp):
+    global core_temperature, core_energy_provided, core_energy_demand, core_energy_demand_list, OVERALL_difficulty, OVERALL_days
+    global coolStrtupAlreadyPlayed, firstOverheatWarnPlayed, firstAlarmPlayed, thirdAlarmPlayed, coreCritCutPlayed, fourthAlarmPlayed, fifthAlarmPlayed, meltdownAnnouncementPlayed, beforeLastAnnouncementPlayed, lastAnnouncementPlayed, finalPlayed
+    global OVERALL_CORE_MELTDOWN_STARTED, OVERALL_CORE_MELTDOWN_STARTTICK, GAME_OVER
+    module_create_bounding_box("Target practice", SCREEN_WIDTH * (6/16), SCREEN_HEIGHT * (5/8), SCREEN_WIDTH * (4/16), SCREEN_HEIGHT * (3/8), (105, 10, 10), 0, "Overview module for basic informations about the current game.")
+    
+    if pygame.time.get_ticks() > 5000 and pygame.time.get_ticks() < 5500:
+        alertsChannel.play(safeModeDesactivated)
+        
+    if coolStrtupAlreadyPlayed == False and core_temperature > 0:
+        alertsChannel.play(coolantStartup)
+        coolStrtupAlreadyPlayed = True
+        
+    if core_temperature > 2000 and firstAlarmPlayed == False:
+        alarm1Channel = pygame.mixer.Channel(4)
+        alarm1Channel.play(pbAlarm1, loops = 10)
+        firstAlarmPlayed = True
+    
+    if core_temperature > 2500 and firstOverheatWarnPlayed == False:
+        alertsChannel.play(coreOverheating)
+        alarm2Channel = pygame.mixer.Channel(5)
+        alarm2Channel.play(pbAlarm2, loops = 3)
+        firstOverheatWarnPlayed = True
+        
+    if core_temperature > 3000 and thirdAlarmPlayed == False:
+        alarm3Channel = pygame.mixer.Channel(6)
+        alarm3Channel.play(pbAlarm3, loops = 2)
+        thirdAlarmPlayed = True
+        
+    if core_temperature > 3200 and coreCritCutPlayed == False:
+        alertsChannel.play(coreAtCriticalCut)
+        coreCritCutPlayed = True
+        
+    if core_temperature > 3500 and fifthAlarmPlayed == False:
+        alarm5Channel = pygame.mixer.Channel(4)
+        alarm5Channel.play(pbAlarm5)
+        fifthAlarmPlayed = True
+        
+    if core_temperature > 3800 and fourthAlarmPlayed == False:
+        alarm4Channel = pygame.mixer.Channel(5)
+        alarm4Channel.play(pbAlarm4)
+        fourthAlarmPlayed = True
+        
+    if core_temperature > 4000 and meltdownAnnouncementPlayed == False:
+        alertsChannel.play(coreMeltdownInTwoMinutes)
+        OVERALL_CORE_MELTDOWN_STARTED = True
+        OVERALL_CORE_MELTDOWN_STARTTICK = pygame.time.get_ticks()
+        meltdownAnnouncementPlayed = True
+    
+    if OVERALL_CORE_MELTDOWN_STARTED == True:
+        if (OVERALL_CORE_MELTDOWN_STARTTICK + 120000 - pygame.time.get_ticks()) // 1000 < 70 and beforeLastAnnouncementPlayed == False:
+            alertsChannel.play(lockdown)
+            beforeLastAnnouncementPlayed = True
+            
+        if (OVERALL_CORE_MELTDOWN_STARTTICK + 120000 - pygame.time.get_ticks()) // 1000 < 20 and lastAnnouncementPlayed == False:
+            alertsChannel.play(selfDestructInitiated)
+            lastAnnouncementPlayed = True
+            
+        if (OVERALL_CORE_MELTDOWN_STARTTICK + 120000 - pygame.time.get_ticks()) // 1000 < 0 and finalPlayed == False:
+            pygame.mixer.stop()
+            alertsChannel.play(finalExplosion)
+            GAME_OVER = True
+            finalPlayed = True
+            
+        if core_energy_provided > core_energy_demand:
+            change_set = False
+            if OVERALL_days >= 7:
+                core_energy_provided = 0
+                OVERALL_days += 1
+                if OVERALL_difficulty < 20:
+                    OVERALL_difficulty += 1
+            for demand in core_energy_demand_list:
+                if demand == core_energy_demand and demand != core_energy_demand_list[-1] and change_set == False:
+                    core_energy_demand = core_energy_demand_list[core_energy_demand_list.index(demand) + 1]
+                    core_energy_provided = 0
+                    OVERALL_days += 1
+                    OVERALL_difficulty += 1
+                    change_set = True
+                
+    pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (6/16) + 5, SCREEN_HEIGHT * (5/8) + 55, SCREEN_WIDTH * (4/16) - 10, SCREEN_HEIGHT * (3/8) - 65), 0, 2)
+    pygame.draw.rect(screen, (45, 45, 45), (SCREEN_WIDTH * (6/16) + 5, SCREEN_HEIGHT * (5/8) + 55, SCREEN_WIDTH * (4/16) - 10, SCREEN_HEIGHT * (3/8) - 65), 2, 2)
+    
+    font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 25)
+    currentDayText = font.render("Day " + str(OVERALL_days), 1, (25, 25, 180))
+    currentDifficutlyText = font.render("Difficulty: " + str(OVERALL_difficulty), 1, (25, 25, 180))
+    temperatureRateText = font.render("Temp. rate: " + str(round(core_temperature - previousTemp, 1)), 1, (25, 25, 180))
+    screen.blit(currentDayText, (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (5/8) + 55))
+    screen.blit(currentDifficutlyText, (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (5/8) + 85))
+    screen.blit(temperatureRateText, (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (5/8) + 115))
+    
+    if OVERALL_CORE_MELTDOWN_STARTED == True:
+        imminentDangerText = font.render("IMMINENT DANGER", 1, (255, 25, 25))
+        timeLeftText = font.render("Time left: " + str((OVERALL_CORE_MELTDOWN_STARTTICK + 120000 - pygame.time.get_ticks()) // 1000) + "s", 1, (255, 25, 25))
+        screen.blit(imminentDangerText, (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (5/8) + 175))
+        screen.blit(timeLeftText, (SCREEN_WIDTH * (6/16) + 10, SCREEN_HEIGHT * (5/8) + 205))
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     
 """
 ### RANDOMISATION SETTINGS
@@ -812,15 +1151,6 @@ def energyBarIndications():
     textRect.center = (SCREEN_WIDTH * (1/2), SCREEN_HEIGHT * (68.5/144))
     screen.blit(text, textRect)
 
-moduleFlashingLightTime = 0
-
-### INITIALIZING CORE PARAMETERS
-core_temperature = 0
-core_max_temperature = 4000
-core_energy_demand = 300
-core_energy_provided = 0
-
-
 def Render_Text(what, color, where):
     font = pygame.font.SysFont('monospace', 30)
     text = font.render(what, 1, pygame.Color(color))
@@ -828,63 +1158,115 @@ def Render_Text(what, color, where):
 
 ### MAIN LOOP
 while running:
-    screen.fill((0, 0, 0))
-    screen.blit(bg, (0, 0))
-    
-    #Create the layout
-    create_layout()
-    
-    #Modules handler
-    module_click_until_green()
-    module_target_practice()
-    module_tetris()
-    module_it_pops()
-    module_connect_the_dots()
-    module_code()
-    
-    #Misc handler
-    energyBarIndications()
-    
-    mouseX = pygame.mouse.get_pos()[0]
-    mouseY = pygame.mouse.get_pos()[1]
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    if not GAME_OVER:
+        screen.fill((0, 0, 0))
+        screen.blit(bg, (0, 0))
+        
+        beforeTemp = core_temperature
+        
+        #Create the layout
+        create_layout()
+        draw_core()
+        
+        #Modules handler
+        module_click_until_green()
+        module_target_practice()
+        module_tetris()
+        module_it_pops()
+        module_connect_the_dots()
+        module_code()
+        module_cool_it_down()
+        
+        
+        #Central unit module
+        core_temperature -= 1.0
+        if core_temperature < 0:
+            core_temperature = 0
             
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouseX = pygame.mouse.get_pos()[0]
-            mouseY = pygame.mouse.get_pos()[1]
-            
-            for clickable in range(len(buttonsList)):
-                if buttonsList[clickable][1] == "Circle":
-                    if math.sqrt((mouseX - buttonsList[clickable][2][0]) ** 2 + (mouseY - buttonsList[clickable][2][1]) ** 2) < buttonsList[clickable][3]:
-                        function = globals()[buttonsList[clickable][0]]
-                        function()
-                if buttonsList[clickable][1] == "Rectangle":
-                    if buttonsList[clickable][2][0] <= mouseX <= buttonsList[clickable][2][0] + buttonsList[clickable][2][2] and buttonsList[clickable][2][1] <= mouseY <= buttonsList[clickable][2][1] + buttonsList[clickable][2][3]:
-                        function = globals()[buttonsList[clickable][0]]
-                        function()
-            
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.mixer.stop()
+        module_central_unit(beforeTemp)
+        
+        #Misc handler
+        energyBarIndications()
+        
+        mouseX = pygame.mouse.get_pos()[0]
+        mouseY = pygame.mouse.get_pos()[1]
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 running = False
                 
-    Render_Text(str(int(clock.get_fps())), (255,0,0), (0,0))
-    
-    # Update the display
-    pygame.display.flip()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouseX = pygame.mouse.get_pos()[0]
+                mouseY = pygame.mouse.get_pos()[1]
+                
+                for clickable in range(len(buttonsList)):
+                    if buttonsList[clickable][1] == "Circle":
+                        if math.sqrt((mouseX - buttonsList[clickable][2][0]) ** 2 + (mouseY - buttonsList[clickable][2][1]) ** 2) < buttonsList[clickable][3]:
+                            function = globals()[buttonsList[clickable][0]]
+                            function()
+                    if buttonsList[clickable][1] == "Rectangle":
+                        if buttonsList[clickable][2][0] <= mouseX <= buttonsList[clickable][2][0] + buttonsList[clickable][2][2] and buttonsList[clickable][2][1] <= mouseY <= buttonsList[clickable][2][1] + buttonsList[clickable][2][3]:
+                            function = globals()[buttonsList[clickable][0]]
+                            function()
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.mixer.stop()
+                    running = False
+                    
+        Render_Text(str(int(clock.get_fps())), (255,0,0), (0,0))
+        
+        mouseX = pygame.mouse.get_pos()[0]
+        mouseY = pygame.mouse.get_pos()[1]
+        
+        for item in range(len(hoverList)):
+            if math.sqrt((mouseX - hoverList[item][0]) ** 2 + (mouseY - hoverList[item][1]) ** 2) < 15:
+                font = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 30)
+                text = font.render(str(hoverList[item][2]), 1, (25, 25, 180))
+                background = pygame.Surface((text.get_width() + 10, text.get_height() + 10))
+                background.fill((0, 0, 0))
+                background.blit(text, (5, 5))
+                screen.blit(background, (SCREEN_WIDTH * (1/2) - background.get_width() / 2, SCREEN_HEIGHT * (1/2) - background.get_height() / 2))
+            
+        
+        # Update the display
+        pygame.display.flip()
 
-    #Update values
-    moduleFlashingLightTime += 1
-    if moduleFlashingLightTime == 60:
-        moduleFlashingLightTime = 0
-    
-    temperatureBarLightsOn = core_temperature // 60
-    
-    buttonsList = []
-    
+        #Update values
+        moduleFlashingLightTime += 1
+        if moduleFlashingLightTime == 60:
+            moduleFlashingLightTime = 0
+            
+        temperatureBarLightsOn = core_temperature // 60
+        
+        buttonsList = []
+        hoverList = []
+        
+        if OVERALL_CORE_MELTDOWN_STARTED == True:
+            OVERALL_CORE_MELTDOWN_TIME_LEFT = OVERALL_CORE_MELTDOWN_STARTTICK - pygame.time.get_ticks()
+            
+    else:
+        screen.fill((0, 0, 0))
+        endTextFont = pygame.font.Font('sources/mouse/fonts/VCR_OSD_MONO.ttf', 50)
+        dayReached = endTextFont.render("Days survived: " + str(OVERALL_days), 1, (255, 255, 255))
+        congratsText = endTextFont.render("Congratulations!", 1, (255, 255, 255))
+        pressEscToExitText = endTextFont.render("Press ESC to exit", 1, (255, 255, 255))
+        screen.blit(dayReached, (SCREEN_WIDTH * (1/2) - dayReached.get_width() / 2, SCREEN_HEIGHT * (1/2) - dayReached.get_height() / 2))
+        screen.blit(congratsText, (SCREEN_WIDTH * (1/2) - congratsText.get_width() / 2, SCREEN_HEIGHT * (1/2) - congratsText.get_height() / 2 + 50))
+        screen.blit(pressEscToExitText, (SCREEN_WIDTH * (1/2) - pressEscToExitText.get_width() / 2, SCREEN_HEIGHT * (1/2) - pressEscToExitText.get_height() / 2 + 100))
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.mixer.stop()
+                    running = False
+                
+        # Update the display
+        pygame.display.flip()
+        
     # Cap the frame rate
     clock.tick(60)
 
