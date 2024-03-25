@@ -4,6 +4,7 @@ import time
 import sys
 import os 
 import sqlite3
+import queue 
 
 ASSETS_FOLDER = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/"
 
@@ -27,7 +28,8 @@ class Jeu:
         self.input_text = "" # Texte saisi par l'utilisateur
         self.rate = 0
         self.temps_avant_nouveau_mot = 1 # Temps avant d'ajouter un nouveau mot
-
+        self.chargeur = queue.Queue()
+        self.combo = 0
         self.connexion = sqlite3.connect(os.path.dirname(os.path.abspath(__file__)) + "/mots.db")
         self.dictionnaires = self.executer_sql("SELECT mot FROM mots") # Récupère tous les mots de la base de données
 
@@ -56,7 +58,11 @@ class Jeu:
         Returns:
             str: Le mot à compléter (ex: "Bonjour")
         """
-        lettre_ecrites = self.input_text.lower()
+        if self.chargeur.empty():
+            lettre_ecrites = self.input_text.lower()
+        else:
+            lettre_ecrites = self.chargeur.get()
+            
         mot_incomplet = mot_clique.lower()
 
         if not mot_clique:
@@ -72,6 +78,7 @@ class Jeu:
                 z += 1
 
         return mot_incomplet
+
     
     def check_existance(self, mot):
         """
@@ -93,7 +100,10 @@ class Jeu:
         Args:
             mot (str): Le mot qui a été complété (ex: "B__jour")
         """
-        self.score += mot.count(self.CHARACTERE_DE_REMPLACEMENT)
+        if self.combo > 0:
+            self.score += round(mot.count(self.CHARACTERE_DE_REMPLACEMENT)*(self.VITESSE_DEFILEMENT/2)*self.combo)
+        else:
+            self.score += round(mot.count(self.CHARACTERE_DE_REMPLACEMENT)*(self.VITESSE_DEFILEMENT/2))
 
     def handle_mouse_click(self, pos):
         """
@@ -106,6 +116,7 @@ class Jeu:
         if mot_clique:
             mot_complet = self.remplir_mot(mot_clique)
             if self.check_existance(mot_complet):
+                self.combo +=1
                 self.incrementer_score(mot_clique)
                 # Supprime le mot cliqué de l'écran
                 del self.rectangles_mots[mot_clique]
@@ -116,6 +127,7 @@ class Jeu:
                 pygame.mixer.music.play()
             else:
                 self.rate += 1
+                self.combo = 0
 
     def ajouter_mot(self):
         """ Ajoute un mot à l'écran toutes les 3 secondes
@@ -143,6 +155,7 @@ class Jeu:
             if rect.centerx > self.largeur_ecran:
                 del self.rectangles_mots[mot]
                 self.rate += 1
+                self.combo = 0
 
     def afficher_viseur(self, pos):
         """Affiche l'image du viseur à la position de la souris
@@ -154,7 +167,8 @@ class Jeu:
         viseur = pygame.transform.scale(viseur, (110, 110))
         self.ecran.blit(viseur, (pos[0] - viseur.get_width() // 2, pos[1] - viseur.get_height() // 2))
 
-    def start(self):
+    def start(self, difficulte=1):
+        self.VITESSE_DEFILEMENT = difficulte
         # Initialiser pygame
         pygame.init()
 
@@ -192,7 +206,6 @@ class Jeu:
                     # Joue le son de la touche pressée
                     pygame.mixer.music.load(ASSETS_FOLDER + "keypress.mp3")
                     pygame.mixer.music.play()
-
                     # Gérer la saisie de l'utilisateur
                     if event.key == pygame.K_BACKSPACE:
                         self.input_text = self.input_text[:-1]
@@ -200,6 +213,10 @@ class Jeu:
                         self.input_text = ""
                     elif event.key == pygame.K_ESCAPE:
                         self.en_cours = False  
+                    elif event.key == 1073742050: #code de alt
+                        #met le contenu de l'input dans le chargeur  
+                        self.chargeur.put(self.input_text)
+                        self.input_text = ""
                     else:
                         self.input_text += event.unicode
 
@@ -227,6 +244,16 @@ class Jeu:
             texte_temps = self.police.render("Temps : " + str(self.duree_jeu), True, self.NOIR)
             self.ecran.blit(
                 texte_temps, (self.largeur_ecran - texte_temps.get_width() - 10, 10)
+            )
+            
+            texte_chargeur = self.police.render("Chargeur : "+ str(list(self.chargeur.queue)), True, self.NOIR)
+            self.ecran.blit(
+                texte_chargeur, (self.largeur_ecran - texte_chargeur.get_width() - 50, 60)
+            )
+            
+            texte_combo = self.police.render("Combo : "+ str(self.combo), True, self.NOIR)
+            self.ecran.blit(
+                texte_combo, (self.largeur_ecran - texte_combo.get_width() - 50, 110)
             )
 
             # Dessiner la zone d'input qui fait du 200x50, bord noir et fond blanc
@@ -270,10 +297,18 @@ class Jeu:
                 self.hauteur_ecran // 2 - texte_fin_jeu.get_height() // 2,
             ),
         )
+        texte_precision = self.police.render("Rates : " + str(self.rate), True, self.NOIR)
+        self.ecran.blit(
+            texte_precision,
+            (
+                self.largeur_ecran // 2 - texte_score.get_width() // 2,
+                self.hauteur_ecran // 2 - texte_score.get_height() // 2 - 100,
+            )
+        )
         pygame.display.flip()
 
         # Attendre quelques secondes avant de quitter
-        pygame.time.wait(2000)
+        pygame.time.wait(3000)
 
         # Quitter pygame
         pygame.quit()
