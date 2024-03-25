@@ -213,7 +213,7 @@ class Jeu:
                         self.input_text = ""
                     elif event.key == pygame.K_ESCAPE:
                         self.en_cours = False  
-                    elif event.key == 1073742050: #code de alt
+                    elif event.key == 1073742050 or event.key == pygame.K_SPACE or  event.key == pygame.K_RETURN: #code de alt
                         #met le contenu de l'input dans le chargeur  
                         self.chargeur.put(self.input_text)
                         self.input_text = ""
@@ -297,7 +297,7 @@ class Jeu:
                 self.hauteur_ecran // 2 - texte_fin_jeu.get_height() // 2,
             ),
         )
-        texte_precision = self.police.render("Rates : " + str(self.rate), True, self.NOIR)
+        texte_precision = self.police.render("Raté(s) : " + str(self.rate), True, self.NOIR)
         self.ecran.blit(
             texte_precision,
             (
@@ -308,7 +308,7 @@ class Jeu:
         pygame.display.flip()
 
         # Attendre quelques secondes avant de quitter
-        pygame.time.wait(3000)
+        pygame.time.wait(5000)
 
         # Quitter pygame
         pygame.quit()
@@ -342,11 +342,14 @@ class Jeu:
         """
         curseur = self.connexion.cursor()
 
-        # Exécute la requête
-        curseur.execute(requete)
+        try:
+            # Exécute la requête
+            curseur.execute(requete)
 
-        # Récupère les résultats
-        resultats = curseur.fetchall()
+            # Récupère les résultats
+            resultats = curseur.fetchall()
+        except Exception as e:
+            resultats = [] # Si la requête contient des accents ou autes
 
         # Retourne les résultats
         return resultats

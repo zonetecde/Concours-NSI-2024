@@ -7,8 +7,8 @@ import pygame
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/scripts/vw")
 
 import vw_engine
-
 ASSETS_FOLDER = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/"
+
 class VW:
     def __init__(self):
         self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,13 +30,16 @@ class VW:
         pygame.display.set_caption("Verbal Warfare")
         font = pygame.font.SysFont('arial', 50)
 
-        # Load background image
+        # Charge l'image de sous fond
+        background1 = pygame.image.load(ASSETS_FOLDER + "background.jpg")
+        background1 = pygame.transform.scale(background1, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        
+        # Charge l'image de sous fond
         background = pygame.image.load(ASSETS_FOLDER + "menu.png")
         background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        
-        #Position utilisable
-        x = SCREEN_WIDTH * (50/1280)
-        y = SCREEN_HEIGHT * (150/720)
+
+        # set background color to light red (the png is transparant)
+        screen.fill((255, 0, 0))
 
         is_playing = False
         running = True 
@@ -45,6 +48,7 @@ class VW:
         # Main loop
         while running:
             # Draw background image
+            screen.blit(background1, (0, 0))
             screen.blit(background, (0, 0))
 
             # Texte Start et sa collision 
@@ -64,16 +68,22 @@ class VW:
             # Bouton Facile
             facile_rect = pygame.Rect(SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (600/720), SCREEN_WIDTH * (1/8), SCREEN_HEIGHT * (5/72))
             facile = font.render(("Facile"), 1, (255, 255, 255))
+            if difficulte == 1:
+                facile = font.render(("Facile"), 1, (255, 0, 0))  # Set the color to red if selected
             screen.blit(facile, (SCREEN_WIDTH * (300/1280), SCREEN_HEIGHT * (620/720)))
 
             # Bouton Moyen
             moyen_rect = pygame.Rect(SCREEN_WIDTH * (500/1280), SCREEN_HEIGHT * (620/720), SCREEN_WIDTH * (1/8), SCREEN_HEIGHT * (5/72))
             moyen = font.render(("Moyen"), 1, (255, 255, 255))
+            if difficulte == 2:
+                moyen = font.render(("Moyen"), 1, (255, 0, 0))  # Set the color to red if selected
             screen.blit(moyen, (SCREEN_WIDTH * (500/1280), SCREEN_HEIGHT * (620/720)))
 
             # Bouton Difficile
             difficile_rect = pygame.Rect(SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (620/720), SCREEN_WIDTH * (1/8), SCREEN_HEIGHT * (5/72))
             difficile = font.render(("Difficile"), 1, (255, 255, 255))
+            if difficulte == 3:
+                difficile = font.render(("Difficile"), 1, (255, 0, 0))  # Set the color to red if selected
             screen.blit(difficile, (SCREEN_WIDTH * (700/1280), SCREEN_HEIGHT * (620/720)))
 
             for event in pygame.event.get():
