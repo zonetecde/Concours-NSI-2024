@@ -12,12 +12,15 @@ from sauvegarde import Sauvegarde
 from storage import Niveau, niveaux
 
 class Rosu:
-    """ Classe permettant de lancer l'exercice ROSU!    
+    """ Classe permettant de lancer le menu de ROSU!  
     """
 
     @staticmethod
     def start_rosu(langue="fr"):
-        """ Méthode permettant de lancer l'exercice ROSU!
+        """ Méthode permettant de lancer le menu de l'exercice ROSU!
+
+        Args:
+            langue (str): La langue utilisée pour l'affichage des textes. Peut être "fr" ou "en". Par défaut, "fr".
         """
     
         try:

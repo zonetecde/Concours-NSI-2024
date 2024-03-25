@@ -11,7 +11,14 @@ from storage import Niveau, niveaux
 from sauvegarde import Sauvegarde
 
 class Engine:
+    """ Classe permettant de lancer un niveau de l'exercice ROSU!
+    """
     def __init__(self, langue) -> None:
+        """Constructeur de la classe Engine
+
+        Args:
+            langue (str): La langue utilisée pour l'affichage des textes. Peut être "fr" ou "en".
+        """
         self.langue = langue
 
     try:
@@ -20,6 +27,18 @@ class Engine:
 
         def start_level(self, niveau: Niveau):
             """ Méthode permettant de lancer un niveau de l'exercice ROSU!
+
+            Args:
+                niveau (Niveau): Le niveau à lancer.
+                
+            Execute dans l'ordre :
+            - Affichage du fond
+            - Lancement de la musique
+                - Affichage des cercles en fonction du temps
+                - Vérification des clics
+                - Affichage des erreurs
+            - Affichage du score
+            - Enregistrement du score
             """
             TEXT_BACKGROUND_COLOR = (169, 191, 250)
             

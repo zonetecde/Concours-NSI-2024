@@ -3,8 +3,10 @@ from os.path import exists
 from typing import List
 
 class Niveau:
+   """ Classe permettant de stocker les niveaux
+   """
    def __init__(self, nom, musique, image_fond, difficulty, data) -> None:
-      """ Classe permettant de créer un niveau de ROSU!
+      """ Constructeur de la classe Niveau
 
       Args:
          nom (str): Nom du niveau
@@ -13,11 +15,11 @@ class Niveau:
          difficulte (int): Difficulté du niveau (sur 20)
          data (list): Liste des cercles à cliquer
       """
-      self.nom = nom
-      self.musique = musique
-      self.image_fond = image_fond
-      self.difficulte = difficulty
-      self.data = data
+      self.nom = nom # Nom du niveau
+      self.musique = musique # Chemin du fichier de la musique du niveau
+      self.image_fond = image_fond # Chemin du fichier de l'image de fond du niveau
+      self.difficulte = difficulty # Difficulté du niveau (sur 20)
+      self.data = data # Liste des cercles à cliquer (format: [(temps, (x, y))])
    
 
 # ==============================
