@@ -9,11 +9,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 import vw_engine
 ASSETS_FOLDER = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/"
 
-class VW:
+class VW_Menu:
+    """Affiche le menu du jeu Verbal Warfare
+    """
     def __init__(self):
         self.folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     def start(self):
+        """Lance le menu de l'exercice
+        """
         # Initialize Pygame
         #sound_mana = sounds.SoundManager()
         pygame.init()
@@ -109,7 +113,7 @@ class VW:
                         difficulte = 3
                         #Permet de savoir si le jeu est lance ou non
             if is_playing:
-                vw_engine.Jeu().start(difficulte)
+                vw_engine.Engine().start(difficulte)
                 break
                     
             # Update the display
@@ -140,5 +144,5 @@ class VW:
                 pygame.display.flip()
 
 if __name__ == "__main__":
-    game = VW()
+    game = VW_Menu()
     game.start()

@@ -188,7 +188,7 @@
 			<div class="flex flex-col w-full">
 				<p class="pr-2 mb-2">{$langue === 'fr' ? 'Niveaux :' : 'Levels :'}</p>
 
-				<div class="flex gap-x-8">
+				<div class="flex gap-x-8 items-center">
 					{#each niveaux as niveau}
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -203,6 +203,8 @@
 							<input type="radio" bind:group={selectedLevelName} id={niveau.Nom} name="niveau" class="mt-2" value={niveau.Nom} />
 						</div>
 					{/each}
+
+					<p class="w-36">Créer vos propres niveaux dans <code>/sources/keyboard/rythme/level_creator.py</code></p>
 				</div>
 			</div>
 		</div>

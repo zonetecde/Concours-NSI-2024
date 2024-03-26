@@ -28,6 +28,15 @@
 			on:mouseleave={() => (phraseExplicatique = '')}
 			on:mouseenter={() => (phraseExplicatique = $langue === 'fr' ? 'Améliorer votre précision et votre rythme à la souris' : 'Improve your mouse accuracy and rhythm')}
 		/>
+		<Exercice
+			image="/mouse/str.png"
+			nom="Save The Reactor"
+			imgStyle=" object-contain "
+			link="/mouse/str"
+			on:mouseleave={() => (phraseExplicatique = '')}
+			on:mouseenter={() =>
+				(phraseExplicatique = $langue === 'fr' ? 'Gérer votre stresse et améliorer votre capacité à analyser des situations' : 'Manage your stress and improve your ability to analyze situations')}
+		/>
 	</div>
 
 	<p class="text-center text-base lg:bottom-10 bottom-5 lg:text-xl absolute left-1/2 -translate-x-1/2">{phraseExplicatique}</p>

@@ -8,7 +8,9 @@ import queue
 
 ASSETS_FOLDER = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/assets/"
 
-class Jeu:
+class Engine:
+    """Gère l'execution de l'exercice Verbal Warfare
+    """
     CHARACTERE_DE_REMPLACEMENT = "_"
     BLANC = (255, 255, 255)
     NOIR = (0, 0, 0)
@@ -20,19 +22,18 @@ class Jeu:
         self.ecran = None
         self.police = None
         self.rectangles_mots = {}
-        self.score = 0
+        self.score = 0 # Score de l'utilisateur
         self.temps_dernier_mot = 0 # Temps du dernier mot ajouté
         self.temps_debut = 0 # Temps du début du jeu
         self.duree_jeu = 60 # Durée du jeu max
         self.en_cours = True
         self.input_text = "" # Texte saisi par l'utilisateur
-        self.rate = 0
+        self.rate = 0 # Nombre de mots ratés
         self.temps_avant_nouveau_mot = 1 # Temps avant d'ajouter un nouveau mot
-        self.chargeur = queue.Queue()
-        self.combo = 0
-        self.connexion = sqlite3.connect(os.path.dirname(os.path.abspath(__file__)) + "/mots.db")
+        self.chargeur = queue.Queue() # Chargeur de mots
+        self.combo = 0 # Combo de mots réussis
+        self.connexion = sqlite3.connect(os.path.dirname(os.path.abspath(__file__)) + "/mots.db") # Connexion à la base de données
         self.dictionnaires = self.executer_sql("SELECT mot FROM mots") # Récupère tous les mots de la base de données
-
 
     def verifier_mot_clique(self, pos):
         """
@@ -280,8 +281,8 @@ class Jeu:
             # Mettre à jour l'affichage
             pygame.display.flip()
 
-        # Fin du jeu
-        texte_fin_jeu = self.police.render("Fin du jeu", True, self.NOIR)
+        # Fin de l'exercice
+        texte_fin_jeu = self.police.render("Fin de l'exercice", True, self.NOIR)
         texte_score = self.police.render("Score : " + str(self.score), True, self.NOIR)
         self.ecran.blit(
             texte_score,
@@ -308,7 +309,7 @@ class Jeu:
         pygame.display.flip()
 
         # Attendre quelques secondes avant de quitter
-        pygame.time.wait(5000)
+        pygame.time.wait(3000)
 
         # Quitter pygame
         pygame.quit()
@@ -357,5 +358,5 @@ class Jeu:
 if __name__ == "__main__":
     pygame.init()
 
-    jeu = Jeu()
+    jeu = Engine()
     jeu.start()

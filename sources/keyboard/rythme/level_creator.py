@@ -162,6 +162,17 @@ class LevelCreator:
 AUDIO_PATH = os.path.dirname(__file__) + "/audios/"
 LEVEL_PATH = os.path.dirname(__file__) + "/saves/"
 
+print("=====================================")
+print("Création d'un niveau")
+print("=====================================")
+print("Son nom et son fichier musique est à renseigner dans le code")
+print("Appuyez sur une touche pour enregistrer la touche appuyée et sa durée")
+print("Appuyez sur 'Enter' pour sauvegarder le niveau")
+print("Appuyez sur 'Backspace' pour supprimer la dernière touche")
+print("Appuyez sur 'Left' pour revenir en arrière de 3 secondes")
+print("Ça enregistre !")
+print("=====================================")
+
 level_creator = LevelCreator("Blue Ocean 2", 1, "Blue Ocean.mp3", True)
 level_creator.create_level()
 
