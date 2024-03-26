@@ -40,7 +40,6 @@ class Api:
         # Ferme la fenêtre et relance le main.py
         # se place dans le meme dossier que ce fichier
         self.window.hide()
-
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         os.system("py main.py")
 
@@ -67,8 +66,13 @@ class Api:
             vw = VW_Menu()
             vw.start()
         elif nom == "STR":
+            temp = os.getcwd()
+            
             os.chdir(os.path.dirname((os.path.dirname(os.path.abspath(__file__)))))
             os.system("py ./sources/mouse/scripts/STR/STR.py")
+
+            # remet l'os chdir comme il était
+            os.chdir(temp)
 
     def recuperer_phrase_aleatoire_typescript(self, langue: str):
         """Récupère une phrase aléatoire d'un article wikipedia aléatoire pour l'exercice 'Type Script'

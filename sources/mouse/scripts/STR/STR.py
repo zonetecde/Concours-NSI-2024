@@ -5,7 +5,6 @@ import json
 import random
 from os.path import exists
 
-
 # Initialize Pygame
 pygame.init()
 
