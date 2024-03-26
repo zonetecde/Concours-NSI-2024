@@ -3,7 +3,7 @@
 Pour commencer à utiliser Key Mouse Training, cloner le dépôt GitHub à l'aide de la commande suivante :
 
 ```
-gh repo clone zonetecde/Concours-NSI-2023
+gh repo clone zonetecde/Concours-NSI-2024
 ```
 
 Ensuite, ouvrir le dossier du projet dans un terminal, et installer les dépendances à l'aide de la commande suivante :
