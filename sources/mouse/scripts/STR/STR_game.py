@@ -337,7 +337,7 @@ def module_target_practice():
     interiorPannel = pygame.draw.rect(screen, (10, 10, 10), (SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (41/72), SCREEN_WIDTH * (15/64), SCREEN_HEIGHT * (1/6)), 0, 30)    
     interiorPannelContour = pygame.draw.rect(screen, (45, 45, 45), (SCREEN_WIDTH * (1/128), SCREEN_HEIGHT * (41/72), SCREEN_WIDTH * (15/64), SCREEN_HEIGHT * (1/6)), 3, 30)
     
-    tickDifference = int((module_TP_randomNumberGiven - module_TP_setTimeTick) // 1.5)
+    tickDifference = int((module_TP_randomNumberGiven - module_TP_setTimeTick) // 2)
     circlesToDraw = pygame.time.get_ticks() // tickDifference
     circlesToDraw -= module_TP_targetsClicked
     circlesDrawnNumber = len(module_TP_targetsList)
@@ -545,7 +545,7 @@ def TETRIS_RightClicked():
 module_IP_danger_level = 0
 module_IP_PPT = 0.2
 module_IP_TPT = 0.4
-module_IP_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
+module_IP_randomNumberGiven = pygame.time.get_ticks() + (random.randint(2, 5) * 30 * 1000) / OVERALL_difficulty
 module_IP_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_IP_errored = False
 module_IP_firstTickTrue = False
@@ -553,7 +553,7 @@ module_IP_firstTickTrue = False
 module_IP_buttonsIndex = [0, 0, 0, 0]
 def reInit_Module_it_pops():
     global module_IP_randomNumberGiven
-    module_IP_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
+    module_IP_randomNumberGiven = pygame.time.get_ticks() + (random.randint(2, 5) * 30 * 1000) / OVERALL_difficulty
 def module_it_pops():
     global core_temperature, core_energy_provided
     global module_IP_danger_level, module_IP_lateness_MOE, module_IP_PPT, module_IP_randomNumberGiven, module_IP_TPT, module_IP_firstTickTrue, module_IP_timesToClick, module_IP_buttonsIndex
@@ -666,7 +666,7 @@ def IP_TopRightClicked():
 module_CTD_danger_level = 0
 module_CTD_PPT = 0.2
 module_CTD_TPT = 0.4
-module_CTD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
+module_CTD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(3, 6) * 30 * 1000) / OVERALL_difficulty
 module_CTD_lateness_MOE = 5000 + 500 *  (20 - OVERALL_difficulty)
 module_CTD_errored = False
 module_CTD_firstTickTrue = False
@@ -686,7 +686,7 @@ module_CTD_patternChosen = []
 module_CTD_patternProgressionIndex = 0
 def reInit_Module_connect_the_dots():
     global module_CTD_randomNumberGiven
-    module_CTD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(1, 3) * 30 * 1000) / OVERALL_difficulty
+    module_CTD_randomNumberGiven = pygame.time.get_ticks() + (random.randint(3, 6) * 30 * 1000) / OVERALL_difficulty
 def module_connect_the_dots():
     global core_temperature, core_energy_provided
     global module_CTD_danger_level, module_CTD_lateness_MOE, module_CTD_PPT, module_CTD_randomNumberGiven, module_CTD_TPT, module_CTD_firstTickTrue, module_CTD_timesToClick, module_CTD_patternChosen, module_CTD_patternProgressionIndex, module_CTD_patternsList
@@ -1046,39 +1046,62 @@ def module_central_unit(previousTemp):
         
     if core_temperature > 2000 and firstAlarmPlayed == False:
         alarm1Channel = pygame.mixer.Channel(4)
+        alarm1Channel.stop()
         alarm1Channel.play(pbAlarm1, loops = 10)
         firstAlarmPlayed = True
     
     if core_temperature > 2500 and firstOverheatWarnPlayed == False:
+        alertsChannel.stop()
         alertsChannel.play(coreOverheating)
         alarm2Channel = pygame.mixer.Channel(5)
+        alarm2Channel.stop()
         alarm2Channel.play(pbAlarm2, loops = 3)
         firstOverheatWarnPlayed = True
         
     if core_temperature > 3000 and thirdAlarmPlayed == False:
         alarm3Channel = pygame.mixer.Channel(6)
+        alarm3Channel.stop()
         alarm3Channel.play(pbAlarm3, loops = 2)
         thirdAlarmPlayed = True
         
     if core_temperature > 3200 and coreCritCutPlayed == False:
+        alertsChannel.stop()
         alertsChannel.play(coreAtCriticalCut)
         coreCritCutPlayed = True
         
     if core_temperature > 3500 and fifthAlarmPlayed == False:
         alarm5Channel = pygame.mixer.Channel(4)
+        alarm5Channel.stop()
         alarm5Channel.play(pbAlarm5)
         fifthAlarmPlayed = True
         
     if core_temperature > 3800 and fourthAlarmPlayed == False:
         alarm4Channel = pygame.mixer.Channel(5)
+        alarm4Channel.stop()
         alarm4Channel.play(pbAlarm4)
         fourthAlarmPlayed = True
         
     if core_temperature > 4000 and meltdownAnnouncementPlayed == False:
+        alertsChannel.stop()
         alertsChannel.play(coreMeltdownInTwoMinutes)
         OVERALL_CORE_MELTDOWN_STARTED = True
         OVERALL_CORE_MELTDOWN_STARTTICK = pygame.time.get_ticks()
-        meltdownAnnouncementPlayed = True
+        meltdownAnnouncementPlayed = True  
+        
+    if core_energy_provided > core_energy_demand:
+        change_set = False
+        if OVERALL_days >= 7:
+            core_energy_provided = 0
+            OVERALL_days += 1
+            if OVERALL_difficulty < 20:
+                OVERALL_difficulty += 1
+        for demand in core_energy_demand_list:
+            if demand == core_energy_demand and demand != core_energy_demand_list[-1] and change_set == False:
+                core_energy_demand = core_energy_demand_list[core_energy_demand_list.index(demand) + 1]
+                core_energy_provided = 0
+                OVERALL_days += 1
+                OVERALL_difficulty += 1
+                change_set = True
     
     if OVERALL_CORE_MELTDOWN_STARTED == True:
         if (OVERALL_CORE_MELTDOWN_STARTTICK + 120000 - pygame.time.get_ticks()) // 1000 < 70 and beforeLastAnnouncementPlayed == False:
@@ -1094,21 +1117,6 @@ def module_central_unit(previousTemp):
             alertsChannel.play(finalExplosion)
             GAME_OVER = True
             finalPlayed = True
-            
-        if core_energy_provided > core_energy_demand:
-            change_set = False
-            if OVERALL_days >= 7:
-                core_energy_provided = 0
-                OVERALL_days += 1
-                if OVERALL_difficulty < 20:
-                    OVERALL_difficulty += 1
-            for demand in core_energy_demand_list:
-                if demand == core_energy_demand and demand != core_energy_demand_list[-1] and change_set == False:
-                    core_energy_demand = core_energy_demand_list[core_energy_demand_list.index(demand) + 1]
-                    core_energy_provided = 0
-                    OVERALL_days += 1
-                    OVERALL_difficulty += 1
-                    change_set = True
                 
     pygame.draw.rect(screen, (0, 0, 0), (SCREEN_WIDTH * (6/16) + 5, SCREEN_HEIGHT * (5/8) + 55, SCREEN_WIDTH * (4/16) - 10, SCREEN_HEIGHT * (3/8) - 65), 0, 2)
     pygame.draw.rect(screen, (45, 45, 45), (SCREEN_WIDTH * (6/16) + 5, SCREEN_HEIGHT * (5/8) + 55, SCREEN_WIDTH * (4/16) - 10, SCREEN_HEIGHT * (3/8) - 65), 2, 2)
@@ -1176,7 +1184,6 @@ while running:
         module_connect_the_dots()
         module_code()
         module_cool_it_down()
-        
         
         #Central unit module
         core_temperature -= 1.0
