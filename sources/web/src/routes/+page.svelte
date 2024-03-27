@@ -1,7 +1,29 @@
 <script>
 	import LanguagePicker from '$lib/LanguagePicker.svelte';
-	import { langue } from '$lib/Store';
-	import Api from '../api/Api';
+	import { dyslexie, langue } from '$lib/Store';
+	import { onMount } from 'svelte';
+
+	/** @type {boolean} */
+	let toggleDyslexie = false;
+	let isMounted = false;
+
+	onMount(() => {
+		if ($dyslexie) {
+			toggleDyslexie = true;
+		}
+
+		isMounted = true;
+	});
+
+	$: if (toggleDyslexie && isMounted) {
+		document.body.classList.add('dyslexie');
+		dyslexie.set(true);
+		console.log($dyslexie);
+	} else if (!toggleDyslexie && isMounted) {
+		document.body.classList.remove('dyslexie');
+		dyslexie.set(false);
+		console.log($dyslexie);
+	}
 </script>
 
 <div class="flex h-screen items-center justify-center w-full" id="main">
@@ -45,6 +67,10 @@
 	</div>
 
 	<LanguagePicker />
+	<div class="w-30 absolute top-16 right-2 flex gap-x-2 bg-blue-400 px-4 py-2 rounded-xl border-2">
+		<input type="checkbox" id="dyslexie" bind:checked={toggleDyslexie} />
+		<label for="dyslexie" class="">Dyslexie</label>
+	</div>
 </div>
 
 <style>

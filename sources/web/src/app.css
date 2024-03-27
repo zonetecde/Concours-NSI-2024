@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+@font-face {
+	font-family: 'OpenDyslexic';
+	src: url('/static/fonts/OpenDyslexic3-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
 @tailwind base;
 @tailwind components;
@@ -31,4 +37,10 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
 	background: #0000004b;
+}
+
+/* Police dyslexie */
+
+.dyslexie {
+	font-family: 'OpenDyslexic';
 }
