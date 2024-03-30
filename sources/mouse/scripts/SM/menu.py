@@ -70,13 +70,13 @@ class SM:
             click = font.render(("(cliquez)" if langue == "fr" else "(click)"), 1, (255, 255, 255))
             screen.blit(click, (SCREEN_WIDTH * (28/64), SCREEN_HEIGHT * (400/720)))
 
-            title = font.render(("SM Aide contre Parkinson" if langue == "fr" else "SM Parkinson Eradicator"), 1, (255, 255, 255))
+            title = font.render(("SM Aide contre Parkinson" if langue == "fr" else "Scary Maze Parkinson Killer"), 1, (255, 255, 255))
             screen.blit(title, (SCREEN_WIDTH * (21/64), SCREEN_HEIGHT * (5/64)))
 
-            texte = font.render(("Entraînez-vous dans ces labyrinthes pour atténuer la maladie" if langue == "fr" else "Train in these mazes to alleviate the disease"), 1, (255, 255, 255))
+            texte = font.render(("Entraînez-vous dans ces labyrinthes pour atténuer la maladie" if langue == "fr" else "Fight the maze to kill the disease"), 1, (255, 255, 255))
             screen.blit(texte, (SCREEN_WIDTH * ((70 if langue == "fr" else 200)/1280), SCREEN_HEIGHT * (520/720)))
 
-            texte2 = font.render((("Il y a 10 niveaux à compléter." if langue == "fr" else "There are 10 levels to complete.")), 1, (255, 255, 255))
+            texte2 = font.render((("Il y a 10 niveaux à compléter." if langue == "fr" else "getting over 10 LVL made to help you")), 1, (255, 255, 255))
             screen.blit(texte2, (SCREEN_WIDTH * (294/1280), SCREEN_HEIGHT * (570/720)))
 
             for event in pygame.event.get():
